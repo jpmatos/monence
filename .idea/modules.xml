@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../dopo/.idea/dopo.iml" filepath="$PROJECT_DIR$/../dopo/.idea/dopo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/monence.iml" filepath="$PROJECT_DIR$/.idea/monence.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../react-router-blog-example/.idea/react-router-blog-example.iml" filepath="$PROJECT_DIR$/../react-router-blog-example/.idea/react-router-blog-example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../webpack-for-react/.idea/webpack-for-react.iml" filepath="$PROJECT_DIR$/../webpack-for-react/.idea/webpack-for-react.iml" />
+    </modules>
+  </component>
+</project>
