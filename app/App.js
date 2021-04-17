@@ -1,41 +1,21 @@
-import React from 'react';
-import './App.css';
-import {
-    HashRouter as Router,
-    Route,
-} from "react-router-dom";
-import Navbar from './components/Navbar';
-import Home from './contents/Home';
-import About from './contents/About';
-import Education from './contents/Education';
-import Skills from './contents/Skills';
-import Contact from './contents/Contact';
+import React, {Component} from "react";
+import MyNavbar from './components/MyNavbar';
+import MyCalendar from "./components/MyCalendar";
+import Container from "react-bootstrap/Container";
 
+// import './App.css';
 
-
-function App() {
-    return (
-        <Router>
+class App extends Component {
+    render() {
+        return (
             <div className="App">
-                <Navbar />
-                <Route exact path="/">
-                    <Home />
-                </Route>
-                <Route path="/about">
-                    <About />
-                </Route>
-                <Route path="/education">
-                    <Education />
-                </Route>
-                <Route path="/skills">
-                    <Skills />
-                </Route>
-                <Route path="/contact">
-                    <Contact />
-                </Route>
+                <MyNavbar/>
+                <Container style={{ height: 800 }}>
+                    <MyCalendar/>
+                </Container>
             </div>
-        </Router>
-    );
+        )
+    };
 }
 
 export default App;
