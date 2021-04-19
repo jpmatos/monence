@@ -1,19 +1,57 @@
 import React, {Component} from "react";
-import MyNavbar from './components/MyNavbar';
+import { LinkContainer } from 'react-router-bootstrap';
+import { HashRouter, Route } from "react-router-dom";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+
 import MyCalendar from "./components/MyCalendar";
-import Container from "react-bootstrap/Container";
+import PlaceHolder from "./components/PlaceHolder"
 
 // import './App.css';
 
 class App extends Component {
     render() {
         return (
-            <div className="App">
-                <MyNavbar/>
-                <Container style={{ height: 800 }}>
-                    <MyCalendar/>
-                </Container>
-            </div>
+            <HashRouter>
+                <Navbar bg="light" expand="lg">
+                    <Navbar.Brand>
+                        monence
+                    </Navbar.Brand>
+
+                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="mr-auto">
+                            <Nav.Item>
+                                <LinkContainer to="/">
+                                    <Nav.Link>
+                                        Home
+                                    </Nav.Link>
+                                </LinkContainer>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <LinkContainer to="/forecast">
+                                    <Nav.Link>
+                                        Forecast
+                                    </Nav.Link>
+                                </LinkContainer>
+                            </Nav.Item>
+                        </Nav>
+                        <Nav className="mr-sm-2">
+                            <Nav.Item>
+                                <LinkContainer to="/about">
+                                    <Nav.Link to="/about">
+                                        About
+                                    </Nav.Link>
+                                </LinkContainer>
+                            </Nav.Item>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Navbar>
+
+                <Route exact path="/" component={MyCalendar}/>
+                <Route path="/forecast" component={PlaceHolder}/>
+                <Route path="/about" component={PlaceHolder}/>
+            </HashRouter>
         )
     };
 }
