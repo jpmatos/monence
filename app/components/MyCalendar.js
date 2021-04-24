@@ -3,7 +3,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from "moment";
 import events from "../mock/events";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import Container from "react-bootstrap/Container";
+import Container from '@material-ui/core/Container';
 
 moment.locale("en");
 const localizer = momentLocalizer(moment)

@@ -11,6 +11,8 @@
     "serve": "webpack serve"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "@zach.codes/react-calendar": "^0.0.3",
     "bootstrap": "^4.6.0",
     "cookie-parser": "~1.4.4",
