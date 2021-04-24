@@ -17,6 +17,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import OverViewIcon from '@material-ui/icons/Visibility';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import ForecastIcon from '@material-ui/icons/TrendingUp';
+import Container from '@material-ui/core/Container';
 
 import {HashRouter, Route} from "react-router-dom";
 import {Link as RouterLink} from 'react-router-dom';
@@ -86,9 +87,7 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: theme.spacing(3)
     },
     content: {
-        flexGrow: 1,
-        paddingTop: theme.spacing(9) + 1,
-        paddingLeft: theme.spacing(10) + 1
+        paddingTop: theme.spacing(9) + 1
     },
 }));
 
@@ -124,6 +123,10 @@ export default function MyNavbar() {
 
     const handleDrawer = () => {
         setOpen(!open);
+    };
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
     };
 
     const handleDrawerClose = () => {
@@ -164,6 +167,8 @@ export default function MyNavbar() {
                         [classes.drawerClose]: !open,
                     }),
                 }}
+                onMouseEnter={handleDrawerOpen}
+                onMouseLeave={handleDrawerClose}
             >
                 <div className={classes.toolbar} />
                 <Divider/>
@@ -173,11 +178,11 @@ export default function MyNavbar() {
                     <ListItemLink to="/forecast" primary="Forecast" icon={<ForecastIcon/>} closeDrawer={handleDrawerClose} listClass={classes.list} />
                 </List>
             </Drawer>
-            <main className={classes.content}>
+            <Container maxWidth="lg" className={classes.content}>
                 <Route exact path="/" component={PlaceHolder}/>
                 <Route path="/calendar" component={MyCalendar}/>
                 <Route path="/forecast" component={PlaceHolder}/>
-            </main>
+            </Container>
         </HashRouter>
     );
 }

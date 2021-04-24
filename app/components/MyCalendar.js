@@ -4,6 +4,7 @@ import moment from "moment";
 import events from "../mock/events";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import Container from '@material-ui/core/Container';
+import FloatingActionButton from './FloatingActionButton'
 
 moment.locale("en");
 const localizer = momentLocalizer(moment)
@@ -18,6 +19,7 @@ class MyCalendar extends Component {
                     startAccessor="start"
                     endAccessor="end"
                 />
+                <FloatingActionButton />
             </Container>
         );
     }
