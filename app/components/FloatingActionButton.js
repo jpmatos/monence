@@ -30,7 +30,9 @@ const actions = [
     { icon: <FavoriteIcon />, name: 'Like' },
 ];
 
-export default function OpenIconSpeedDial() {
+export default function FloatingActionButton(props) {
+
+    const { handleClickOpen } = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [hidden, setHidden] = React.useState(false);
@@ -48,7 +50,7 @@ export default function OpenIconSpeedDial() {
     };
 
     return (
-        <Fab color="primary" aria-label="add" className={classes.fab}>
+        <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleClickOpen}>
             <AddIcon />
         </Fab>
     );

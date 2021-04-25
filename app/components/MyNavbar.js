@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ListItemLink(props) {
-    const {icon, primary, to, closeDrawer, listClass} = props;
+    const {icon, primary, to, listClass} = props;
 
     const renderLink = React.useMemo(
         () => React.forwardRef((itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />),
@@ -101,7 +101,7 @@ function ListItemLink(props) {
 
     return (
         <li>
-            <ListItem button component={renderLink} onClick={closeDrawer} className={listClass}>
+            <ListItem button component={renderLink} className={listClass}>
                 {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
                 <ListItemText primary={primary}/>
             </ListItem>
@@ -113,7 +113,6 @@ ListItemLink.propTypes = {
     icon: PropTypes.element,
     primary: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
-    closeDrawer: PropTypes.func.isRequired,
     listClass: PropTypes.element
 };
 
@@ -173,9 +172,9 @@ export default function MyNavbar() {
                 <div className={classes.toolbar} />
                 <Divider/>
                 <List>
-                    <ListItemLink to="/" primary="Overview" icon={<OverViewIcon/>} closeDrawer={handleDrawerClose} listClass={classes.list} />
-                    <ListItemLink to="/calendar" primary="Calendar" icon={<CalendarIcon/>} closeDrawer={handleDrawerClose} listClass={classes.list} />
-                    <ListItemLink to="/forecast" primary="Forecast" icon={<ForecastIcon/>} closeDrawer={handleDrawerClose} listClass={classes.list} />
+                    <ListItemLink to="/" primary="Overview" icon={<OverViewIcon/>} listClass={classes.list} />
+                    <ListItemLink to="/calendar" primary="Calendar" icon={<CalendarIcon/>} listClass={classes.list} />
+                    <ListItemLink to="/forecast" primary="Forecast" icon={<ForecastIcon/>} listClass={classes.list} />
                 </List>
             </Drawer>
             <Container maxWidth="lg" className={classes.content}>
