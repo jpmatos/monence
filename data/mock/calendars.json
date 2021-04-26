@@ -1,0 +1,15 @@
+[
+  {
+    "name": "calendar01",
+    "id": "01",
+    "items": [
+      {
+        "title": "Already Here Item",
+        "allDay": true,
+        "start": "2021-04-26T05:15:05.217Z",
+        "end": "2021-04-26T05:15:05.217Z",
+        "value": 10
+      }
+    ]
+  }
+]
