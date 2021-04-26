@@ -10,12 +10,14 @@ import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import Grid from '@material-ui/core/Grid'
+import Input from '@material-ui/core/Input'
 
 export default function NewExpenseFormDialog(props) {
 
-    let {open, setOpen} = props;
+    let {open, setOpen, newItem} = props;
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [value, setValue] = React.useState();
+    const [itemTitle , setItemTitle] = React.useState('');
 
     const handleClose = () => {
         setOpen(false);
@@ -23,13 +25,21 @@ export default function NewExpenseFormDialog(props) {
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
+    const handleTitleChange = (event) => {
+        setItemTitle(event.target.value)
+    }
 
     const handleCreate = () => {
-        axios.post('/item', {
-            'date': selectedDate,
+        const item = {
+            'title': itemTitle,
+            'allDay': true,
+            'start': selectedDate,
+            'end': selectedDate,
             'value': value
-        })
+        }
+        axios.post('/calendar/01/item', item)
             .then(resp => {
+                newItem(item)
                 setOpen(false)
             })
             .catch(err => {
@@ -47,6 +57,16 @@ export default function NewExpenseFormDialog(props) {
                     justify="space-between"
                     alignItems="stretch"
                 >
+                    <Input
+                        autoFocus
+                        placeholder="New Item"
+                        margin="dense"
+                        id="title"
+                        label="Name"
+                        value={itemTitle}
+                        onChange={handleTitleChange}
+                        type="string"
+                    />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             disableToolbar
