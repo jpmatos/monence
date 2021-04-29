@@ -8,9 +8,9 @@ import {Calendar} from 'react-big-calendar'
 import {momentLocalizer} from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
-import FloatingActionButton from './FloatingActionButton'
-import NewEventFormDialog from './NewEventFormDialog'
-import ViewEventFormDialog from './ViewEventFormDialog'
+import FloatingActionButton from '../FloatingActionButton'
+import CreateEventFormDialog from '../forms/CreateEventFormDialog'
+import UpdateEventFormDialog from '../forms/UpdateEventFormDialog'
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)
@@ -92,10 +92,10 @@ export default class MyCalendar extends React.Component {
                     onSelectEvent={this.onClickEvent}
                 />
                 <FloatingActionButton handleOnClickFAB={this.handleClickOpen}/>
-                <NewEventFormDialog isOpen={this.state.isNewEventFDOpen} setOpen={this.setNewExpenseFD}
-                                    handleNewEvent={this.handleNewEvent}/>
-                <ViewEventFormDialog isOpen={this.state.isEventFDOpen} setOpen={this.setEventFD}
-                                     currentlyOpenEvent={this.state.currentlyOpenEvent}/>
+                <CreateEventFormDialog isOpen={this.state.isNewEventFDOpen} setOpen={this.setNewExpenseFD}
+                                       handleNewEvent={this.handleNewEvent}/>
+                <UpdateEventFormDialog isOpen={this.state.isEventFDOpen} setOpen={this.setEventFD}
+                                       currentlyOpenEvent={this.state.currentlyOpenEvent}/>
             </Container>
         )
     }

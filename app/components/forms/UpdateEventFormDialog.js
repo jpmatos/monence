@@ -13,7 +13,7 @@ import {MuiPickersUtilsProvider} from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 
-export default class ViewEventFormDialog extends React.Component {
+export default class UpdateEventFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
