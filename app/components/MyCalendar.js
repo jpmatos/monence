@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import Container from '@material-ui/core/Container';
 import FloatingActionButton from './FloatingActionButton'
 import NewExpenseFormDialog from './NewExpenseFormDialog'
+import EventFormDialog from './EventFormDialog'
 import axios from "axios";
 
 moment.locale("en");
@@ -13,23 +14,35 @@ const localizer = momentLocalizer(moment)
 
 export default function MyCalendar() {
 
-    const [open, setOpen] = React.useState(false);
-
+    const [isNewEventFDOpen, setNewExpenseFD] = React.useState(false);
+    const [isEventFDOpen, setEventFD] = React.useState(false)
     const [events, setEvents] = React.useState([]);
+    const [currentlyOpenEvent, setCurrentlyOpenEvent] = React.useState({})
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setNewExpenseFD(true);
     };
 
-    const handleNewItem = (item) => {
+    const handleNewEvent = (item) => {
         events.push(item)
     }
 
+    const onClickEvent = (event, e) => {
+        console.log(event)
+        setCurrentlyOpenEvent(event)
+        setEventFD(true)
+    }
+
     React.useEffect(() => {
+        //Disable calendar
         axios.get('/calendar/01')
             .then(res => {
                 const calendar = res.data
                 setEvents(calendar.items)
+                //Enable
+            })
+            .catch(err => {
+                //Inform user server did not respond
             })
     }, [])
 
@@ -40,9 +53,11 @@ export default function MyCalendar() {
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
+                onSelectEvent={onClickEvent}
             />
-            <FloatingActionButton handleClickOpen={handleClickOpen}/>
-            <NewExpenseFormDialog open={open} setOpen={setOpen} newItem={handleNewItem}/>
+            <FloatingActionButton handleOnClickFAB={handleClickOpen}/>
+            <NewExpenseFormDialog isOpen={isNewEventFDOpen} setOpen={setNewExpenseFD} handleNewEvent={handleNewEvent}/>
+            <EventFormDialog isOpen={isEventFDOpen} setOpen={setEventFD} currentlyOpenEvent={currentlyOpenEvent} />
         </Container>
     );
 }

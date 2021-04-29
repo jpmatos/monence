@@ -14,7 +14,7 @@ import Input from '@material-ui/core/Input'
 
 export default function NewExpenseFormDialog(props) {
 
-    let {open, setOpen, newItem} = props;
+    let {isOpen, setOpen, handleNewEvent} = props;
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [value, setValue] = React.useState();
     const [itemTitle , setItemTitle] = React.useState('');
@@ -39,7 +39,7 @@ export default function NewExpenseFormDialog(props) {
         }
         axios.post('/calendar/01/item', item)
             .then(resp => {
-                newItem(item)
+                handleNewEvent(item)
                 setOpen(false)
             })
             .catch(err => {
@@ -48,7 +48,7 @@ export default function NewExpenseFormDialog(props) {
     }
 
     return (
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">New Expense</DialogTitle>
             <DialogContent>
                 <Grid

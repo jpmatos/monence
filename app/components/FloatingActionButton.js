@@ -32,7 +32,7 @@ const actions = [
 
 export default function FloatingActionButton(props) {
 
-    const { handleClickOpen } = props;
+    const { handleOnClickFAB } = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [hidden, setHidden] = React.useState(false);
@@ -50,7 +50,7 @@ export default function FloatingActionButton(props) {
     };
 
     return (
-        <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleClickOpen}>
+        <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleOnClickFAB}>
             <AddIcon />
         </Fab>
     );
