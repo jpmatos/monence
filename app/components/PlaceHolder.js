@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 
-class PlaceHolder extends Component {
+class PlaceHolder extends React.Component {
     render() {
         return (
             <h4>TODO</h4>

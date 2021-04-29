@@ -1,14 +1,10 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import FileCopyIcon from '@material-ui/icons/FileCopyOutlined';
-import SaveIcon from '@material-ui/icons/Save';
-import PrintIcon from '@material-ui/icons/Print';
-import ShareIcon from '@material-ui/icons/Share';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import React from 'react'
 
-const useStyles = makeStyles((theme) => ({
+import {withStyles} from '@material-ui/core/styles'
+import Fab from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
+
+const useStyles = (theme) => ({
     root: {
         height: 380,
         transform: 'translateZ(0px)',
@@ -20,38 +16,25 @@ const useStyles = makeStyles((theme) => ({
         bottom: '5%',
         zIndex: 1050
     }
-}));
+})
 
-const actions = [
-    { icon: <FileCopyIcon />, name: 'Copy' },
-    { icon: <SaveIcon />, name: 'Save' },
-    { icon: <PrintIcon />, name: 'Print' },
-    { icon: <ShareIcon />, name: 'Share' },
-    { icon: <FavoriteIcon />, name: 'Like' },
-];
+class FloatingActionButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            hidden: false
+        }
+    }
 
-export default function FloatingActionButton(props) {
-
-    const { handleOnClickFAB } = props;
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-    const [hidden, setHidden] = React.useState(false);
-
-    const handleVisibility = () => {
-        setHidden((prevHidden) => !prevHidden);
-    };
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    return (
-        <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleOnClickFAB}>
-            <AddIcon />
-        </Fab>
-    );
+    render() {
+        const {classes} = this.props;
+        return (
+            <Fab color='primary' aria-label='add' className={classes.fab} onClick={this.props.handleOnClickFAB}>
+                <AddIcon/>
+            </Fab>
+        )
+    }
 }
+
+export default withStyles(useStyles)(FloatingActionButton)

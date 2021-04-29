@@ -1,9 +1,7 @@
-import React, {Component} from "react";
+import React from "react";
 import MyNavbar from './components/MyNavbar'
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 
-class App extends Component {
+class App extends React.Component {
     render() {
         return (
             <MyNavbar/>

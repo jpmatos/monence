@@ -1,33 +1,33 @@
-import React from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import OverViewIcon from '@material-ui/icons/Visibility';
-import CalendarIcon from '@material-ui/icons/CalendarToday';
-import ForecastIcon from '@material-ui/icons/TrendingUp';
-import Container from '@material-ui/core/Container';
+import React from 'react'
+import clsx from 'clsx'
+import PropTypes from 'prop-types'
+import {HashRouter, Route} from 'react-router-dom'
+import {Link as RouterLink} from 'react-router-dom'
 
-import {HashRouter, Route} from "react-router-dom";
-import {Link as RouterLink} from 'react-router-dom';
-import MyCalendar from "./MyCalendar";
-import PlaceHolder from "./PlaceHolder";
+import {withStyles} from '@material-ui/core/styles'
+import Drawer from '@material-ui/core/Drawer'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import List from '@material-ui/core/List'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
+import IconButton from '@material-ui/core/IconButton'
+import MenuIcon from '@material-ui/icons/Menu'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import OverViewIcon from '@material-ui/icons/Visibility'
+import CalendarIcon from '@material-ui/icons/CalendarToday'
+import ForecastIcon from '@material-ui/icons/TrendingUp'
+import Container from '@material-ui/core/Container'
 
+import MyCalendar from './MyCalendar'
+import PlaceHolder from './PlaceHolder'
 
-const drawerWidth = 220;
+const drawerWidth = 220
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme) => ({
     root: {
         display: 'flex',
     },
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflowX: 'hidden',
-        width: theme.spacing(7) +1,
+        width: theme.spacing(7) + 1,
         [theme.breakpoints.up('sm')]: {
             width: theme.spacing(9) + 1,
         },
@@ -89,15 +89,15 @@ const useStyles = makeStyles((theme) => ({
     content: {
         paddingTop: theme.spacing(9) + 1
     },
-}));
+})
 
 function ListItemLink(props) {
-    const {icon, primary, to, listClass} = props;
+    const {icon, primary, to, listClass} = props
 
     const renderLink = React.useMemo(
         () => React.forwardRef((itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />),
         [to],
-    );
+    )
 
     return (
         <li>
@@ -106,7 +106,7 @@ function ListItemLink(props) {
                 <ListItemText primary={primary}/>
             </ListItem>
         </li>
-    );
+    )
 }
 
 ListItemLink.propTypes = {
@@ -114,74 +114,83 @@ ListItemLink.propTypes = {
     primary: PropTypes.string.isRequired,
     to: PropTypes.string.isRequired,
     listClass: PropTypes.element
-};
-
-export default function MyNavbar() {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-
-    const handleDrawer = () => {
-        setOpen(!open);
-    };
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
-
-    return (
-        <HashRouter>
-            <CssBaseline/>
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar)}
-            >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawer}
-                        edge="start"
-                        className={clsx(classes.menuButton)}
-                    >
-                        <MenuIcon/>
-                    </IconButton>
-                    <Typography variant="h6" noWrap>
-                        Monence
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                })}
-                classes={{
-                    paper: clsx({
-                        [classes.drawerOpen]: open,
-                        [classes.drawerClose]: !open,
-                    }),
-                }}
-                onMouseEnter={handleDrawerOpen}
-                onMouseLeave={handleDrawerClose}
-            >
-                <div className={classes.toolbar} />
-                <Divider/>
-                <List>
-                    <ListItemLink to="/" primary="Overview" icon={<OverViewIcon/>} listClass={classes.list} />
-                    <ListItemLink to="/calendar" primary="Calendar" icon={<CalendarIcon/>} listClass={classes.list} />
-                    <ListItemLink to="/forecast" primary="Forecast" icon={<ForecastIcon/>} listClass={classes.list} />
-                </List>
-            </Drawer>
-            <Container maxWidth="lg" className={classes.content}>
-                <Route exact path="/" component={PlaceHolder}/>
-                <Route path="/calendar" component={MyCalendar}/>
-                <Route path="/forecast" component={PlaceHolder}/>
-            </Container>
-        </HashRouter>
-    );
 }
+
+class MyNavbar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false
+        }
+    }
+
+    handleDrawer = () => {
+        this.setState({open: !this.state.open})
+    }
+    handleDrawerOpen = () => {
+        this.setState({open: true})
+    }
+    handleDrawerClose = () => {
+        this.setState({open: false})
+    }
+
+    render() {
+        const {classes} = this.props;
+        return (
+            <HashRouter>
+                <CssBaseline/>
+                <AppBar
+                    position='fixed'
+                    className={clsx(classes.appBar)}
+                >
+                    <Toolbar>
+                        <IconButton
+                            color='inherit'
+                            aria-label='open drawer'
+                            onClick={this.handleDrawer}
+                            edge='start'
+                            className={clsx(classes.menuButton)}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant='h6' noWrap>
+                            Monence
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Drawer
+                    variant='permanent'
+                    className={clsx(classes.drawer, {
+                        [classes.drawerOpen]: this.state.open,
+                        [classes.drawerClose]: !this.state.open,
+                    })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen]: this.state.open,
+                            [classes.drawerClose]: !this.state.open,
+                        }),
+                    }}
+                    onMouseEnter={this.handleDrawerOpen}
+                    onMouseLeave={this.handleDrawerClose}
+                >
+                    <div className={classes.toolbar}/>
+                    <Divider/>
+                    <List>
+                        <ListItemLink to='/' primary='Overview' icon={<OverViewIcon/>} listClass={classes.list}/>
+                        <ListItemLink to='/calendar' primary='Calendar' icon={<CalendarIcon/>}
+                                      listClass={classes.list}/>
+                        <ListItemLink to='/forecast' primary='Forecast' icon={<ForecastIcon/>}
+                                      listClass={classes.list}/>
+                    </List>
+                </Drawer>
+                <Container maxWidth='lg' className={classes.content}>
+                    <Route exact path='/' component={PlaceHolder}/>
+                    <Route path='/calendar' component={MyCalendar}/>
+                    <Route path='/forecast' component={PlaceHolder}/>
+                </Container>
+            </HashRouter>
+        )
+    }
+}
+
+export default withStyles(useStyles)(MyNavbar)
