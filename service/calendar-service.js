@@ -10,6 +10,10 @@ class CalendarService{
         return db.postItem(calendarId, item)
     }
 
+    static deleteItem(calendarId, itemId){
+        return db.deleteItem(calendarId, itemId)
+    }
+
 }
 
 module.exports = CalendarService

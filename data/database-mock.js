@@ -26,6 +26,19 @@ class DatabaseMock {
         return Promise.resolve({'message': `Added item ${item}`})
     }
 
+    static deleteItem(calendarId, itemId){
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        const itemIdx = this.calendars[calendarIdx].items.findIndex(item => item.id === itemId)
+        if (itemIdx === -1)
+            return Promise.resolve({'message': `Could not find item ${itemId}`})
+
+        this.calendars[calendarIdx].items.splice(itemIdx, 1)
+        return Promise.resolve({'message': `Deleted item with id ${itemId}`})
+    }
+
     static readFile(filePath) {
         return fs
             .readFile(filePath)

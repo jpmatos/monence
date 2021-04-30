@@ -9,8 +9,8 @@ import {momentLocalizer} from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 import FloatingActionButton from '../FloatingActionButton'
-import CreateEventFormDialog from '../forms/CreateEventFormDialog'
-import UpdateEventFormDialog from '../forms/UpdateEventFormDialog'
+import CreateItemFormDialog from '../forms/CreateItemFormDialog'
+import UpdateItemFormDialog from '../forms/UpdateItemFormDialog'
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)
@@ -19,40 +19,38 @@ export default class MyCalendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isNewEventFDOpen: false,
-            isEventFDOpen: false,
-            events: [],
-            currentlyOpenEvent: {}
+            isNewItemFDOpen: false,
+            isItemFDOpen: false,
+            items: [],
+            currentlyOpenItem: {}
         }
     }
 
-
-    // const [isNewEventFDOpen, setNewExpenseFD] = React.useState(false)
-    // const [isEventFDOpen, setEventFD] = React.useState(false)
-    // const [events, setEvents] = React.useState([])
-    // const [currentlyOpenEvent, setCurrentlyOpenEvent] = React.useState({})
-
     handleClickOpen = () => {
-        this.setState({isNewEventFDOpen: true})
+        this.setState({isNewItemFDOpen: true})
+    }
+    handleNewItem = (item) => {
+        this.state.items.push(item)
+    }
+    handleDeleteItem = (id) => {
+        const itemIdx = this.state.items.findIndex(i => i.id === id)
+        if(itemIdx !== -1)
+            this.state.items.splice(itemIdx, 1)
     }
 
-    handleNewEvent = (item) => {
-        this.state.events.push(item)
-    }
-
-    onClickEvent = (event) => {
+    onClickItem = (item) => {
         this.setState({
-            currentlyOpenEvent: event,
-            isEventFDOpen: true
+            currentlyOpenItem: item,
+            isItemFDOpen: true
         })
     }
 
-    setNewExpenseFD = (event) => {
-        this.setState({isNewEventFDOpen: event})
+    setNewItemFD = (event) => {
+        this.setState({isNewItemFDOpen: event})
     }
 
-    setEventFD = (event) => {
-        this.setState({isEventFDOpen: event})
+    setItemFD = (event) => {
+        this.setState({isItemFDOpen: event})
     }
 
     componentDidMount() {
@@ -60,7 +58,7 @@ export default class MyCalendar extends React.Component {
         axios.get('/calendar/01')
             .then(res => {
                 const calendar = res.data
-                this.setState({events: calendar.items})
+                this.setState({items: calendar.items})
                 //Enable
             })
             .catch(err => {
@@ -68,34 +66,22 @@ export default class MyCalendar extends React.Component {
             })
     }
 
-    // React.useEffect(() => {
-    //     //Disable calendar
-    //     axios.get('/calendar/01')
-    //         .then(res => {
-    //             const calendar = res.data
-    //             setEvents(calendar.items)
-    //             //Enable
-    //         })
-    //         .catch(err => {
-    //             //Inform user server did not respond
-    //         })
-    // }, [])
-
     render() {
         return (
             <Container style={{height: 800}}>
                 <Calendar
                     localizer={localizer}
-                    events={this.state.events}
+                    events={this.state.items}
                     startAccessor='start'
                     endAccessor='end'
-                    onSelectEvent={this.onClickEvent}
+                    onSelectEvent={this.onClickItem}
                 />
                 <FloatingActionButton handleOnClickFAB={this.handleClickOpen}/>
-                <CreateEventFormDialog isOpen={this.state.isNewEventFDOpen} setOpen={this.setNewExpenseFD}
-                                       handleNewEvent={this.handleNewEvent}/>
-                <UpdateEventFormDialog isOpen={this.state.isEventFDOpen} setOpen={this.setEventFD}
-                                       currentlyOpenEvent={this.state.currentlyOpenEvent}/>
+                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}
+                                      handleNewItem={this.handleNewItem}/>
+                <UpdateItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
+                                      currentlyOpenItem={this.state.currentlyOpenItem}
+                                      handleDeleteItem={this.handleDeleteItem}/>
             </Container>
         )
     }

@@ -16,6 +16,10 @@ function calendarWebApi(){
         calendarController.postItem(req, res, next)
     })
 
+    router.delete('/:calendarId/item/:itemId', (req, res, next) => {
+        calendarController.deleteItem(req, res, next)
+    })
+
     return router
 }
 

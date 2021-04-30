@@ -14,13 +14,14 @@ import {KeyboardDatePicker} from '@material-ui/pickers'
 
 import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import {Box} from "@material-ui/core";
 
-export default class CreateEventFormDialog extends React.Component {
+export default class CreateItemFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             itemTitle: null,
-            selectedDate: null,
+            selectedDate: new Date(),
             value: null
         }
     }
@@ -47,7 +48,7 @@ export default class CreateEventFormDialog extends React.Component {
         }
         axios.post('/calendar/01/item', item)
             .then(resp => {
-                this.props.handleNewEvent(item)
+                this.props.handleNewItem(item)  //TODO SHOULD BE ITEM FROM RESPONSE!
                 this.props.setOpen(false)
             })
             .catch(err => {
@@ -108,12 +109,23 @@ export default class CreateEventFormDialog extends React.Component {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleClose} color='primary'>
-                        Cancel
-                    </Button>
-                    <Button onClick={this.handleCreate} color='primary'>
-                        Create
-                    </Button>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                    >
+                        <Box pl={1}>
+                            <Button onClick={this.handleClose} color='primary'>
+                                Cancel
+                            </Button>
+                        </Box>
+                    </Grid>
+                    <Box pr={1}>
+                        <Button onClick={this.handleCreate} color='primary'>
+                            Create
+                        </Button>
+                    </Box>
                 </DialogActions>
             </Dialog>
         )

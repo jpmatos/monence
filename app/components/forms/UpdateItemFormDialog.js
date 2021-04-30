@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -12,14 +13,16 @@ import {MuiPickersUtilsProvider} from '@material-ui/pickers'
 
 import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import {Box} from "@material-ui/core";
 
-export default class UpdateEventFormDialog extends React.Component {
+export default class UpdateItemFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             itemTitle: null,
             selectedDate: null,
-            value: null
+            value: null,
+            editable: false
         }
     }
 
@@ -35,17 +38,30 @@ export default class UpdateEventFormDialog extends React.Component {
     handleClose = () => {
         this.props.setOpen(false)
     }
+    handleEdit = () => {
+        this.setState({editable: true})
+    }
     handleUpdate = () => {
+
     }
     handleDelete = () => {
+        axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.id}`)
+            .then(resp => {
+                this.props.handleDeleteItem(this.props.currentlyOpenItem.id)
+                this.handleClose()
+            })
+            .catch(err => {
+                this.handleClose()
+            })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.isOpen !== prevProps.isOpen && this.props.isOpen) {
             this.setState({
-                itemTitle: this.props.currentlyOpenEvent.title,
-                selectedDate: this.props.currentlyOpenEvent.start,
-                value: this.props.currentlyOpenEvent.value
+                itemTitle: this.props.currentlyOpenItem.title,
+                selectedDate: this.props.currentlyOpenItem.start,
+                value: this.props.currentlyOpenItem.value,
+                editable: false
             })
         }
     }
@@ -53,8 +69,7 @@ export default class UpdateEventFormDialog extends React.Component {
     render() {
         return (
             <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby='form-dialog-title'>
-
-                <DialogTitle id='form-dialog-title'>{this.props.currentlyOpenEvent.title}</DialogTitle>
+                <DialogTitle id='form-dialog-title'>{this.props.currentlyOpenItem.title}</DialogTitle>
                 <DialogContent>
                     <Grid
                         container
@@ -64,6 +79,9 @@ export default class UpdateEventFormDialog extends React.Component {
                     >
                         <Input
                             autoFocus
+                            inputProps={
+                                {readOnly: !this.state.editable}
+                            }
                             placeholder='New Name'
                             label='Rename'
                             margin='dense'
@@ -75,6 +93,9 @@ export default class UpdateEventFormDialog extends React.Component {
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
                                 disableToolbar
+                                inputProps={
+                                    {readOnly: !this.state.editable}
+                                }
                                 autoOk={true}
                                 variant='inline'
                                 format='MM/dd/yyyy'
@@ -89,6 +110,9 @@ export default class UpdateEventFormDialog extends React.Component {
                             />
                         </MuiPickersUtilsProvider>
                         <CurrencyTextField
+                            inputProps={
+                                {readOnly: !this.state.editable}
+                            }
                             label='Amount'
                             variant='standard'
                             value={this.state.value}
@@ -104,15 +128,28 @@ export default class UpdateEventFormDialog extends React.Component {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleClose} color='primary'>
-                        Cancel
-                    </Button>
-                    <Button color='primary'>
-                        Delete
-                    </Button>
-                    <Button color='primary'>
-                        Update
-                    </Button>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                    >
+                        <Box pl={1}>
+                            <Button onClick={this.handleClose} color='primary'>
+                                Cancel
+                            </Button>
+                        </Box>
+                    </Grid>
+                    <Box onClick={this.handleDelete} display={this.state.editable ? "none" : ""}>
+                        <Button color='primary'>
+                            Delete
+                        </Button>
+                    </Box>
+                    <Box pr={1}>
+                        <Button onClick={this.state.editable ? this.handleUpdate : this.handleEdit} color='primary'>
+                            {this.state.editable ? "Update" : "Edit"}
+                        </Button>
+                    </Box>
                 </DialogActions>
             </Dialog>
         )

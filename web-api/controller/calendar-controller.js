@@ -25,6 +25,15 @@ class CalendarController{
             .then(msg => res.status(201).json(msg))
             .catch(next)
     }
+
+    static deleteItem(req, res, next) {
+        const calendarId = req.params.calendarId
+        const itemId = req.params.itemId
+        return calendarService
+            .deleteItem(calendarId, itemId)
+            .then(msg => res.status(201).json(msg))
+            .catch(next)
+    }
 }
 
 module.exports = CalendarController

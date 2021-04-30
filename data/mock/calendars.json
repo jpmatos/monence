@@ -5,6 +5,7 @@
     "id": "01",
     "items": [
       {
+        "id": "item01id",
         "title": "Already Here Item",
         "type": "expense",
         "allDay": true,
