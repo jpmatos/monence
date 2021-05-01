@@ -17,30 +17,30 @@ class CalendarController{
             .catch(next)
     }
 
-    static postItem(req, res, next) {
+    static postExpense(req, res, next) {
         const calendarId = req.params.calendarId
-        const item = req.body
+        const expense = req.body
         return calendarService
-            .postItem(calendarId, item)
+            .postExpense(calendarId, expense)
             .then(item => res.status(201).json(item))
             .catch(next)
     }
 
-    static deleteItem(req, res, next) {
+    static deleteExpense(req, res, next) {
         const calendarId = req.params.calendarId
-        const itemId = req.params.itemId
+        const expenseId = req.params.expenseId
         return calendarService
-            .deleteItem(calendarId, itemId)
+            .deleteExpense(calendarId, expenseId)
             .then(msg => res.status(201).json(msg))
             .catch(next)
     }
 
-    static putItem(req, res, next) {
+    static putExpense(req, res, next) {
         const calendarId = req.params.calendarId
-        const itemId = req.params.itemId
-        const item = req.body
+        const expenseId = req.params.expenseId
+        const expense = req.body
         return calendarService
-            .putItem(calendarId, itemId, item)
+            .putExpense(calendarId, expenseId, expense)
             .then(item => res.status(201).json(item))
             .catch(next)
     }

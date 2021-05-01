@@ -63,7 +63,7 @@ export default class MyCalendar extends React.Component {
         axios.get('/calendar/01')
             .then(res => {
                 const calendar = res.data
-                this.setState({items: calendar.items})
+                this.setState({items: calendar.expenses})       //TODO join with gains
                 //Enable
             })
             .catch(err => {

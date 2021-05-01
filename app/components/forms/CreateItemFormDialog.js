@@ -46,9 +46,12 @@ export default class CreateItemFormDialog extends React.Component {
             'end': this.state.selectedDate,
             'value': this.state.value
         }
-        axios.post('/calendar/01/item', item)
+
+        //TODO Check if it is expense or gain
+
+        axios.post('/calendar/01/expense', item)
             .then(resp => {
-                this.props.handleNewItem(resp.data)  //TODO SHOULD BE ITEM FROM RESPONSE!
+                this.props.handleNewItem(resp.data)
                 this.props.setOpen(false)
             })
             .catch(err => {

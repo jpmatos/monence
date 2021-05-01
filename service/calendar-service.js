@@ -6,16 +6,16 @@ class CalendarService{
         return db.getCalendar(calendarId)
     }
 
-    static postItem(calendarId, item){
-        return db.postItem(calendarId, item)
+    static postExpense(calendarId, item){
+        return db.postItem(calendarId, item, 'expenses')
     }
 
-    static deleteItem(calendarId, itemId){
-        return db.deleteItem(calendarId, itemId)
+    static deleteExpense(calendarId, itemId){
+        return db.deleteItem(calendarId, itemId, 'expenses')
     }
 
-    static putItem(calendarId, itemId, item){
-        return db.putItem(calendarId, itemId, item)
+    static putExpense(calendarId, itemId, item){
+        return db.putItem(calendarId, itemId, item, 'expenses')
     }
 }
 

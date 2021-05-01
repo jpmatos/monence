@@ -12,16 +12,16 @@ function calendarWebApi(){
         calendarController.getCalendar(req, res, next)
     })
 
-    router.post('/:calendarId/item', (req, res, next) => {
-        calendarController.postItem(req, res, next)
+    router.post('/:calendarId/expense', (req, res, next) => {
+        calendarController.postExpense(req, res, next)
     })
 
-    router.delete('/:calendarId/item/:itemId', (req, res, next) => {
-        calendarController.deleteItem(req, res, next)
+    router.delete('/:calendarId/expense/:expenseId', (req, res, next) => {
+        calendarController.deleteExpense(req, res, next)
     })
 
-    router.put('/:calendarId/item/:itemId', (req, res, next) => {
-        calendarController.putItem(req, res, next)
+    router.put('/:calendarId/expense/:expenseId', (req, res, next) => {
+        calendarController.putExpense(req, res, next)
     })
 
     return router

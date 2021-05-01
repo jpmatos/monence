@@ -18,42 +18,42 @@ class DatabaseMock {
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
-    static postItem(calendarId, item){
+    static postItem(calendarId, item, type){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
         item.id = uuid()
 
-        this.calendars[calendarIdx].items.push(item)
+        this.calendars[calendarIdx][type].push(item)
         return Promise.resolve(item)
     }
 
-    static deleteItem(calendarId, itemId){
+    static deleteItem(calendarId, itemId, type){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const itemIdx = this.calendars[calendarIdx].items.findIndex(item => item.id === itemId)
+        const itemIdx = this.calendars[calendarIdx][type].findIndex(item => item.id === itemId)
         if (itemIdx === -1)
             return Promise.resolve({'message': `Could not find item ${itemId}`})
 
-        this.calendars[calendarIdx].items.splice(itemIdx, 1)
+        this.calendars[calendarIdx][type].splice(itemIdx, 1)
         return Promise.resolve({'message': `Deleted item with id ${itemId}`})
     }
 
-    static putItem(calendarId, itemId, item){
+    static putItem(calendarId, itemId, item, type){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const itemIdx = this.calendars[calendarIdx].items.findIndex(i => i.id === itemId)
+        const itemIdx = this.calendars[calendarIdx][type].findIndex(i => i.id === itemId)
         if (itemIdx === -1)
             return Promise.resolve({'message': `Could not find item ${itemId}`})
 
-        const currItem = this.calendars[calendarIdx].items[itemIdx]
+        const currItem = this.calendars[calendarIdx][type][itemIdx]
 
-        this.calendars[calendarIdx].items[itemIdx] = {
+        this.calendars[calendarIdx][type][itemIdx] = {
             'id': currItem.id,
             'title': !item.title || item.title.length === 0 ? currItem.title : item.title,
             'type': currItem.type,
@@ -63,7 +63,7 @@ class DatabaseMock {
             'value': !item.value || item.value === 0 ? currItem.value : item.value
         }
 
-        return Promise.resolve(this.calendars[calendarIdx].items[itemIdx])
+        return Promise.resolve(this.calendars[calendarIdx][type][itemIdx])
     }
 
     static readFile(filePath) {

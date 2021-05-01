@@ -3,16 +3,19 @@
     "name": "calendar01",
     "ownerId": "userId",
     "id": "01",
-    "items": [
+    "expenses": [
       {
         "id": "222d19a1-6799-4237-a8a7-bc5ad76e8f6f",
-        "title": "Already Here Item",
         "type": "expense",
+        "title": "Already Here Item",
         "allDay": true,
         "start": "2021-05-26T05:15:05.217Z",
         "end": "2021-05-26T05:15:05.217Z",
         "value": 10
       }
+    ],
+    "gains": [
+
     ]
   }
 ]

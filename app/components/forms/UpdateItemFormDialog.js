@@ -48,7 +48,10 @@ export default class UpdateItemFormDialog extends React.Component {
             'end': this.state.selectedDate,
             'value': this.state.value
         }
-        axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.id}`, item)
+
+        //TODO Check if it is expense or gain
+
+        axios.put(`/calendar/01/expense/${this.props.currentlyOpenItem.id}`, item)
             .then(resp => {
                 this.props.handleUpdateItem(resp.data)
                 this.handleClose()
@@ -58,7 +61,10 @@ export default class UpdateItemFormDialog extends React.Component {
             })
     }
     handleDelete = () => {
-        axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.id}`)
+
+        //TODO Check if it is expense or gain
+
+        axios.delete(`/calendar/01/expense/${this.props.currentlyOpenItem.id}`)
             .then(resp => {
                 this.props.handleDeleteItem(this.props.currentlyOpenItem.id)
                 this.handleClose()
