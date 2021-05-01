@@ -7,6 +7,8 @@ import Container from '@material-ui/core/Container'
 import {Calendar} from 'react-big-calendar'
 import {momentLocalizer} from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import {red} from '@material-ui/core/colors';
+import {green} from '@material-ui/core/colors';
 
 import FloatingActionButton from '../FloatingActionButton'
 import CreateItemFormDialog from '../forms/CreateItemFormDialog'
@@ -63,12 +65,33 @@ export default class MyCalendar extends React.Component {
         axios.get('/calendar/01')
             .then(res => {
                 const calendar = res.data
-                this.setState({items: calendar.expenses})       //TODO join with gains
+                this.setState({items: calendar.expenses.concat(calendar.gains)})       //TODO join with gains
                 //Enable
             })
             .catch(err => {
                 //Inform user server did not respond
             })
+    }
+
+    eventStyleGetter(event, start, end, isSelected){
+        let backgroundColor = '#' + event.hexColor;
+        switch (event.type){
+            case 'expense':
+                backgroundColor = red[500]
+                break
+            case 'gain':
+                backgroundColor = green[500]
+                break
+        }
+        return {
+            style: {
+                backgroundColor: backgroundColor,
+                borderRadius: '0px',
+                opacity: 0.8,
+                border: '0px',
+                display: 'block'
+            }
+        };
     }
 
     render() {
@@ -80,6 +103,7 @@ export default class MyCalendar extends React.Component {
                     startAccessor='start'
                     endAccessor='end'
                     onSelectEvent={this.onClickItem}
+                    eventPropGetter={this.eventStyleGetter}
                 />
                 <FloatingActionButton handleOnClickFAB={this.handleClickOpen}/>
                 <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}

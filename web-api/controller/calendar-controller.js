@@ -44,6 +44,34 @@ class CalendarController{
             .then(item => res.status(201).json(item))
             .catch(next)
     }
+
+    static postGain(req, res, next) {
+        const calendarId = req.params.calendarId
+        const gain = req.body
+        return calendarService
+            .postGain(calendarId, gain)
+            .then(item => res.status(201).json(item))
+            .catch(next)
+    }
+
+    static deleteGain(req, res, next){
+        const calendarId = req.params.calendarId
+        const gainId = req.params.gainId
+        return calendarService
+            .deleteGain(calendarId, gainId)
+            .then(msg => res.status(201).json(msg))
+            .catch(next)
+    }
+
+    static putGain(req, res, next){
+        const calendarId = req.params.calendarId
+        const gainId = req.params.gainId
+        const gain = req.body
+        return calendarService
+            .putGain(calendarId, gainId, gain)
+            .then(item => res.status(201).json(item))
+            .catch(next)
+    }
 }
 
 module.exports = CalendarController
