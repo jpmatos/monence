@@ -15,6 +15,7 @@ import {KeyboardDatePicker} from '@material-ui/pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box} from "@material-ui/core";
+import ItemTypeSwitch from "../ItemTypeSwitch";
 
 export default class CreateItemFormDialog extends React.Component {
     constructor(props) {
@@ -22,7 +23,8 @@ export default class CreateItemFormDialog extends React.Component {
         this.state = {
             itemTitle: null,
             selectedDate: new Date(),
-            value: null
+            value: null,
+            type: 'expense'
         }
     }
 
@@ -38,6 +40,14 @@ export default class CreateItemFormDialog extends React.Component {
     handleValueChange = (event) => {
         this.setState({value: event.target.value})
     }
+    handleTypeChange = (isGain) => {
+        if(!isGain){
+            this.setState({type: 'expense'})
+        } else {
+            this.setState({type: 'gain'})
+        }
+    }
+
     handleCreate = () => {
         const item = {
             'title': this.state.itemTitle,
@@ -47,9 +57,7 @@ export default class CreateItemFormDialog extends React.Component {
             'value': this.state.value
         }
 
-        //TODO Check if it is expense or gain
-
-        axios.post('/calendar/01/expense', item)
+        axios.post(`/calendar/01/${this.state.type}`, item)
             .then(resp => {
                 this.props.handleNewItem(resp.data)
                 this.props.setOpen(false)
@@ -62,7 +70,7 @@ export default class CreateItemFormDialog extends React.Component {
     render() {
         return (
             <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby='form-dialog-title'>
-                <DialogTitle id='form-dialog-title'>New Expense</DialogTitle>
+                <DialogTitle id='form-dialog-title'>New Item</DialogTitle>
                 <DialogContent>
                     <Grid
                         container
@@ -72,7 +80,7 @@ export default class CreateItemFormDialog extends React.Component {
                     >
                         <Input
                             autoFocus
-                            placeholder='New Item'
+                            placeholder='Item Name'
                             margin='dense'
                             id='title'
                             label='Name'
@@ -108,6 +116,9 @@ export default class CreateItemFormDialog extends React.Component {
                             onChange={this.handleValueChange}
                             textAlign='left'
                             placeholder='20.00'
+                        />
+                        <ItemTypeSwitch
+                            handleTypeChange={this.handleTypeChange}
                         />
                     </Grid>
                 </DialogContent>

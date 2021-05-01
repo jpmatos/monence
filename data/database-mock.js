@@ -24,6 +24,7 @@ class DatabaseMock {
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
         item.id = uuid()
+        item.type = type
 
         this.calendars[calendarIdx][type].push(item)
         return Promise.resolve(item)
