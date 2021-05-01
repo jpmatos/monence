@@ -22,7 +22,7 @@ class CalendarController{
         const item = req.body
         return calendarService
             .postItem(calendarId, item)
-            .then(msg => res.status(201).json(msg))
+            .then(item => res.status(201).json(item))
             .catch(next)
     }
 
@@ -32,6 +32,16 @@ class CalendarController{
         return calendarService
             .deleteItem(calendarId, itemId)
             .then(msg => res.status(201).json(msg))
+            .catch(next)
+    }
+
+    static putItem(req, res, next) {
+        const calendarId = req.params.calendarId
+        const itemId = req.params.itemId
+        const item = req.body
+        return calendarService
+            .putItem(calendarId, itemId, item)
+            .then(item => res.status(201).json(item))
             .catch(next)
     }
 }

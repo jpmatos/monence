@@ -27,7 +27,7 @@ export default class UpdateItemFormDialog extends React.Component {
     }
 
     handleTitleChange = (event) => {
-        this.setState({itemTitle: event.target.itemTitle})
+        this.setState({itemTitle: event.target.value})
     }
     handleDateChange = (event) => {
         this.setState({selectedDate: event})
@@ -42,7 +42,20 @@ export default class UpdateItemFormDialog extends React.Component {
         this.setState({editable: true})
     }
     handleUpdate = () => {
-
+        const item = {
+            'title': this.state.itemTitle,
+            'start': this.state.selectedDate,
+            'end': this.state.selectedDate,
+            'value': this.state.value
+        }
+        axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.id}`, item)
+            .then(resp => {
+                this.props.handleUpdateItem(resp.data)
+                this.handleClose()
+            })
+            .catch(err => {
+                this.handleClose()
+            })
     }
     handleDelete = () => {
         axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.id}`)

@@ -34,8 +34,13 @@ export default class MyCalendar extends React.Component {
     }
     handleDeleteItem = (id) => {
         const itemIdx = this.state.items.findIndex(i => i.id === id)
-        if(itemIdx !== -1)
+        if (itemIdx !== -1)
             this.state.items.splice(itemIdx, 1)
+    }
+    handleUpdateItem = (item) => {
+        const itemIdx = this.state.items.findIndex(i => i.id === item.id)
+        if (itemIdx !== -1)
+            this.state.items[itemIdx] = item
     }
 
     onClickItem = (item) => {
@@ -81,7 +86,8 @@ export default class MyCalendar extends React.Component {
                                       handleNewItem={this.handleNewItem}/>
                 <UpdateItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
                                       currentlyOpenItem={this.state.currentlyOpenItem}
-                                      handleDeleteItem={this.handleDeleteItem}/>
+                                      handleDeleteItem={this.handleDeleteItem}
+                                      handleUpdateItem={this.handleUpdateItem}/>
             </Container>
         )
     }

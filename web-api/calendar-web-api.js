@@ -20,6 +20,10 @@ function calendarWebApi(){
         calendarController.deleteItem(req, res, next)
     })
 
+    router.put('/:calendarId/item/:itemId', (req, res, next) => {
+        calendarController.putItem(req, res, next)
+    })
+
     return router
 }
 
