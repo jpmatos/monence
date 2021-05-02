@@ -18,48 +18,51 @@ class DatabaseMock {
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
-    static postItem(calendarId, item, type){
+    static postItem(calendarId, item, arrayName){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
         item.id = uuid()
 
-        this.calendars[calendarIdx][type].push(item)
+        this.calendars[calendarIdx][arrayName].push(item)
         return Promise.resolve(item)
     }
 
-    static deleteItem(calendarId, itemId, type){
+    static deleteItem(calendarId, itemId){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const itemIdx = this.calendars[calendarIdx][type].findIndex(item => item.id === itemId)
-        if (itemIdx === -1)
-            return Promise.resolve({'message': `Could not find item ${itemId}`})
+        const arrNames = ["expenses", "gains", "recurrentExpenses", "recurrentGains"]
+        arrNames.forEach(arrName => {
+            this.calendars[calendarIdx][arrName] = this.calendars[calendarIdx][arrName].filter((item) => item.id !== itemId)
+        })
 
-        this.calendars[calendarIdx][type].splice(itemIdx, 1)
         return Promise.resolve({'message': `Deleted item with id ${itemId}`})
     }
 
-    static putItem(calendarId, itemId, item, type){
+    static putItem(calendarId, itemId, item){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const itemIdx = this.calendars[calendarIdx][type].findIndex(i => i.id === itemId)
-        if (itemIdx === -1)
-            return Promise.resolve({'message': `Could not find item ${itemId}`})
-
+        let itemIdx = -1, type = ''
+        const arrNames = ["expenses", "gains", "recurrentExpenses", "recurrentGains"]
+        arrNames.some(arrName => {
+            itemIdx = this.calendars[calendarIdx][arrName].findIndex(i => i.id === itemId)
+            if(itemIdx !== -1){
+                type = arrName
+                return true
+            }
+        })
         const currItem = this.calendars[calendarIdx][type][itemIdx]
 
         this.calendars[calendarIdx][type][itemIdx] = {
             'id': currItem.id,
             'title': !item.title || item.title.length === 0 ? currItem.title : item.title,
             'type': currItem.type,
-            'allDay': currItem.allDay,
             'start': item.start,
-            'end': item.end,
             'value': !item.value || item.value === 0 ? currItem.value : item.value
         }
 

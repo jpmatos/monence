@@ -2,8 +2,8 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import {red} from '@material-ui/core/colors';
-import {green} from '@material-ui/core/colors';
+import {yellow} from '@material-ui/core/colors';
+import {blue} from '@material-ui/core/colors';
 import {Box} from "@material-ui/core";
 
 const AntSwitch = withStyles((theme) => ({
@@ -21,7 +21,7 @@ const AntSwitch = withStyles((theme) => ({
         backgroundColor: '#fff',
     },
     track: {
-        background: `linear-gradient(to right, ${red[500]}, ${red[500]})`,
+        background: `linear-gradient(to right, ${yellow[700]}, ${yellow[700]})`,
         opacity: '1 !important',
         borderRadius: 20,
         position: 'relative',
@@ -35,12 +35,12 @@ const AntSwitch = withStyles((theme) => ({
             textAlign: 'center',
         },
         '&:before': {
-            content: '"Gain"',
+            content: '"Rec."',
             left: 4,
             opacity: 0,
         },
         '&:after': {
-            content: '"Cost"',
+            content: '"One"',
             right: 4,
         },
     },
@@ -56,7 +56,7 @@ const AntSwitch = withStyles((theme) => ({
             backgroundColor: '#fff',
         },
         '& + $track': {
-            background: `linear-gradient(to right, ${green[500]}, ${green[500]})`,
+            background: `linear-gradient(to right, ${blue[500]}, ${blue[500]})`,
             '&:before': {
                 opacity: 1,
             },
@@ -67,9 +67,9 @@ const AntSwitch = withStyles((theme) => ({
     },
 }))(Switch);
 
-export default function ItemTypeSwitch(props) {
+export default function ItemRecurrencySwitch(props) {
     const handleChange = (event) => {
-        props.handleTypeChange(event.target.checked) // true=cost/expense false=gain
+        props.handleRecurrencyChange(event.target.checked) // true=Multi false=One-Time
     };
 
     return (

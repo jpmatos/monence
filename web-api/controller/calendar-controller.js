@@ -17,58 +17,30 @@ class CalendarController{
             .catch(next)
     }
 
-    static postExpense(req, res, next) {
+    static postItem(req, res, next) {
         const calendarId = req.params.calendarId
-        const expense = req.body
+        const item = req.body
         return calendarService
-            .postExpense(calendarId, expense)
+            .postItem(calendarId, item, item.type, item.recurrency)
             .then(item => res.status(201).json(item))
             .catch(next)
     }
 
-    static deleteExpense(req, res, next) {
+    static deleteItem(req, res, next) {
         const calendarId = req.params.calendarId
-        const expenseId = req.params.expenseId
+        const itemId = req.params.itemId
         return calendarService
-            .deleteExpense(calendarId, expenseId)
+            .deleteItem(calendarId, itemId)
             .then(msg => res.status(201).json(msg))
             .catch(next)
     }
 
-    static putExpense(req, res, next) {
+    static putItem(req, res, next) {
         const calendarId = req.params.calendarId
-        const expenseId = req.params.expenseId
-        const expense = req.body
+        const itemId = req.params.itemId
+        const item = req.body
         return calendarService
-            .putExpense(calendarId, expenseId, expense)
-            .then(item => res.status(201).json(item))
-            .catch(next)
-    }
-
-    static postGain(req, res, next) {
-        const calendarId = req.params.calendarId
-        const gain = req.body
-        return calendarService
-            .postGain(calendarId, gain)
-            .then(item => res.status(201).json(item))
-            .catch(next)
-    }
-
-    static deleteGain(req, res, next){
-        const calendarId = req.params.calendarId
-        const gainId = req.params.gainId
-        return calendarService
-            .deleteGain(calendarId, gainId)
-            .then(msg => res.status(201).json(msg))
-            .catch(next)
-    }
-
-    static putGain(req, res, next){
-        const calendarId = req.params.calendarId
-        const gainId = req.params.gainId
-        const gain = req.body
-        return calendarService
-            .putGain(calendarId, gainId, gain)
+            .putItem(calendarId, itemId, item)
             .then(item => res.status(201).json(item))
             .catch(next)
     }

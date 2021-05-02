@@ -20,6 +20,7 @@
     "@zach.codes/react-calendar": "^0.0.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "capitalize": "^2.0.3",
     "cookie-parser": "~1.4.4",
     "css-loader": "^5.2.1",
     "date-fns": "^2.21.0",

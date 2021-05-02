@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import capitalize from 'capitalize'
 
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -13,35 +14,53 @@ import {MuiPickersUtilsProvider} from '@material-ui/pickers'
 
 import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import {Box} from "@material-ui/core";
+import {Box, TextField} from "@material-ui/core";
 
 export default class UpdateItemFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             itemTitle: null,
+            validTitle: true,
             selectedDate: null,
             value: null,
+            validValue: true,
             editable: false
         }
     }
 
+    handleClose = () => {
+        this.props.setOpen(false)
+        // this.setState({
+        //     itemTitle: null,
+        //     validTitle: true,
+        //     selectedDate: new Date(),
+        //     value: null,
+        //     validValue: true,
+        // })
+    }
     handleTitleChange = (event) => {
-        this.setState({itemTitle: event.target.value})
+        this.setState({
+            itemTitle: event.target.value,
+            validTitle: event.target.value !== ''
+        })
     }
     handleDateChange = (event) => {
         this.setState({selectedDate: event})
     }
     handleValueChange = (event) => {
-        this.setState({value: event.target.value})
-    }
-    handleClose = () => {
-        this.props.setOpen(false)
+        this.setState({
+            value: event.target.value,
+            validValue: event.target.value != 0
+        })
     }
     handleEdit = () => {
         this.setState({editable: true})
     }
     handleUpdate = () => {
+        if(!this.state.validTitle || !this.state.validValue)
+            return;
+
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
@@ -49,7 +68,19 @@ export default class UpdateItemFormDialog extends React.Component {
             'value': this.state.value
         }
 
-        axios.put(`/calendar/01/${this.props.currentlyOpenItem.type}/${this.props.currentlyOpenItem.id}`, item)
+        let fail = false
+        if(item.title === null || item.title === '') {
+            fail = true
+            this.setState({validTitle: false})
+        }
+        if(item.value === null || item.value == 0){
+            fail = true
+            this.setState({validValue: false})
+        }
+        if(fail)
+            return
+
+        axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.id}`, item)
             .then(resp => {
                 this.props.handleUpdateItem(resp.data)
                 this.handleClose()
@@ -59,7 +90,7 @@ export default class UpdateItemFormDialog extends React.Component {
             })
     }
     handleDelete = () => {
-        axios.delete(`/calendar/01/${this.props.currentlyOpenItem.type}/${this.props.currentlyOpenItem.id}`)
+        axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.id}`)
             .then(resp => {
                 this.props.handleDeleteItem(this.props.currentlyOpenItem.id)
                 this.handleClose()
@@ -67,6 +98,13 @@ export default class UpdateItemFormDialog extends React.Component {
             .catch(err => {
                 this.handleClose()
             })
+    }
+
+    capitalizeWord() {
+        if (this.props.currentlyOpenItem.type !== undefined)
+            return capitalize.words(this.props.currentlyOpenItem.type)
+        else
+            return ''
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -83,22 +121,25 @@ export default class UpdateItemFormDialog extends React.Component {
     render() {
         return (
             <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby='form-dialog-title'>
-                <DialogTitle id='form-dialog-title'>{this.props.currentlyOpenItem.title}</DialogTitle>
+                <Box mb={-1}>
+                    <DialogTitle id='form-dialog-title'>
+                        {this.capitalizeWord()}
+                    </DialogTitle>
+                </Box>
                 <DialogContent>
                     <Grid
                         container
                         direction='column'
-                        justify='space-between'
+                        justify='flex-start'
                         alignItems='stretch'
                     >
-                        <Input
-                            autoFocus
+                        <TextField
+                            error={!this.state.validTitle}
                             inputProps={
                                 {readOnly: !this.state.editable}
                             }
                             placeholder='New Name'
-                            label='Rename'
-                            margin='dense'
+                            label='Title'
                             id='title'
                             value={this.state.itemTitle}
                             onChange={this.handleTitleChange}
@@ -124,11 +165,11 @@ export default class UpdateItemFormDialog extends React.Component {
                             />
                         </MuiPickersUtilsProvider>
                         <CurrencyTextField
+                            error={!this.state.validValue}
                             inputProps={
                                 {readOnly: !this.state.editable}
                             }
                             label='Amount'
-                            variant='standard'
                             value={this.state.value}
                             currencySymbol='€'
                             //minimumValue='0'

@@ -32,7 +32,12 @@ export default class MyCalendar extends React.Component {
         this.setState({isNewItemFDOpen: true})
     }
     handleNewItem = (item) => {
-        this.state.items.push(item)
+        if(item.recurrency === 'single') {
+            item.allDay = true
+            item.end = item.start
+            this.state.items.push(item)
+        }
+        //TODO new recurring items
     }
     handleDeleteItem = (id) => {
         const itemIdx = this.state.items.findIndex(i => i.id === id)
@@ -65,7 +70,13 @@ export default class MyCalendar extends React.Component {
         axios.get('/calendar/01')
             .then(res => {
                 const calendar = res.data
-                this.setState({items: calendar.expenses.concat(calendar.gains)})       //TODO join with gains
+                let items = calendar.expenses.concat(calendar.gains)
+                items.forEach(item => {
+                    item.allDay = true
+                    item.end = item.start
+                })
+
+                this.setState({items: items})       //TODO make this global
                 //Enable
             })
             .catch(err => {
