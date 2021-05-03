@@ -58,7 +58,7 @@ export default class UpdateItemFormDialog extends React.Component {
         this.setState({editable: true})
     }
     handleUpdate = () => {
-        if(!this.state.validTitle || !this.state.validValue)
+        if (!this.state.validTitle || !this.state.validValue)
             return;
 
         const item = {
@@ -69,15 +69,15 @@ export default class UpdateItemFormDialog extends React.Component {
         }
 
         let fail = false
-        if(item.title === null || item.title === '') {
+        if (item.title === null || item.title === '') {
             fail = true
             this.setState({validTitle: false})
         }
-        if(item.value === null || item.value == 0){
+        if (item.value === null || item.value == 0) {
             fail = true
             this.setState({validValue: false})
         }
-        if(fail)
+        if (fail)
             return
 
         axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.id}`, item)
@@ -102,7 +102,8 @@ export default class UpdateItemFormDialog extends React.Component {
 
     capitalizeWord() {
         if (this.props.currentlyOpenItem.type !== undefined)
-            return capitalize.words(this.props.currentlyOpenItem.type)
+            return capitalize.words((this.props.currentlyOpenItem.recurrency === 'recurrent' ? 'recurring ' : '')
+                + this.props.currentlyOpenItem.type)
         else
             return ''
     }
