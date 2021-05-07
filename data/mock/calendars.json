@@ -10,14 +10,22 @@
         "recurrency": "single",
         "title": "Presentation Expenses",
         "start": "2021-05-25T05:15:05.217Z",
-        "value": 20
+        "value": "20.00"
       }
     ],
     "gains": [
 
     ],
     "recurrentExpenses": [
-
+      {
+        "id": "222d19a1-6799-4237-a8a7-bc5ad76e8f6a",
+        "type": "expense",
+        "recurrency": "recurrent",
+        "title": "Presentation Expenses 2",
+        "start": "2021-05-25T05:15:05.217Z",
+        "end": "2021-23-25T05:15:05.217Z",
+        "value": "20.00"
+      }
     ],
     "recurrentGains": [
 

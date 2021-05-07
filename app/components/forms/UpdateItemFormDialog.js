@@ -65,7 +65,7 @@ export default class UpdateItemFormDialog extends React.Component {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
             'end': this.state.selectedDate,
-            'value': this.state.value
+            'value': this.state.value.replaceAll(',', '')
         }
 
         let fail = false
@@ -171,6 +171,7 @@ export default class UpdateItemFormDialog extends React.Component {
                                 {readOnly: !this.state.editable}
                             }
                             label='Amount'
+                            variant='standard'
                             value={this.state.value}
                             currencySymbol='€'
                             //minimumValue='0'

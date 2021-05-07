@@ -61,6 +61,8 @@ class DatabaseMock {
         this.calendars[calendarIdx][type][itemIdx] = {
             'id': currItem.id,
             'title': !item.title || item.title.length === 0 ? currItem.title : item.title,
+            'recurrency': currItem.recurrency,
+            'recurrencyPeriod': currItem.recurrencyPeriod,
             'type': currItem.type,
             'start': item.start,
             'value': !item.value || item.value === 0 ? currItem.value : item.value

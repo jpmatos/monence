@@ -90,27 +90,27 @@ export default class CreateItemFormDialog extends React.Component {
         if (!this.state.validTitle || !this.state.validValue)
             return;
 
-        const item = {
-            'title': this.state.itemTitle,
-            'start': this.state.selectedDate,
-            'end': this.state.selectedEndDate,
-            'value': this.state.value,
-            'type': this.state.type,                            //expense/gain
-            'recurrency': this.state.recurrency,                //single/recurrent
-            'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
-        }
-
         let fail = false
-        if (item.title === null || item.title === '') {
+        if (this.state.itemTitle === null || this.state.itemTitle === '') {
             fail = true
             this.setState({validTitle: false})
         }
-        if (item.value === null || item.value == 0) {
+        if (this.state.value === null || this.state.value == 0) {
             fail = true
             this.setState({validValue: false})
         }
         if (fail)
             return
+
+        const item = {
+            'title': this.state.itemTitle,
+            'start': this.state.selectedDate,
+            'end': this.state.selectedEndDate,
+            'value': this.state.value.replaceAll(',', ''),
+            'type': this.state.type,                            //expense/gain
+            'recurrency': this.state.recurrency,                //single/recurrent
+            'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
+        }
 
         axios.post(`/calendar/01/item`, item)
             .then(resp => {

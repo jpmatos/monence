@@ -73,8 +73,11 @@ export default class MyCalendar extends React.Component {
     }
     handleUpdateItem = (item) => {
         const itemIdx = this.state.items.findIndex(i => i.id === item.id)
-        if (itemIdx !== -1)
+        if (itemIdx !== -1) {
+            item.allDay = true
+            item.end = item.start
             this.state.items[itemIdx] = item
+        }
     }
 
     onClickItem = (item) => {
