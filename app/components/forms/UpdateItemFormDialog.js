@@ -8,15 +8,15 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
-import Input from '@material-ui/core/Input'
 import {KeyboardDatePicker} from '@material-ui/pickers'
 import {MuiPickersUtilsProvider} from '@material-ui/pickers'
 
 import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box, TextField} from "@material-ui/core";
+import CalendarContext from "../context/CalendarContext";
 
-export default class UpdateItemFormDialog extends React.Component {
+class UpdateItemFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -31,13 +31,6 @@ export default class UpdateItemFormDialog extends React.Component {
 
     handleClose = () => {
         this.props.setOpen(false)
-        // this.setState({
-        //     itemTitle: null,
-        //     validTitle: true,
-        //     selectedDate: new Date(),
-        //     value: null,
-        //     validValue: true,
-        // })
     }
     handleTitleChange = (event) => {
         this.setState({
@@ -82,7 +75,7 @@ export default class UpdateItemFormDialog extends React.Component {
 
         axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.id}`, item)
             .then(resp => {
-                this.props.handleUpdateItem(resp.data)
+                this.context.handleUpdateItem(resp.data)
                 this.handleClose()
             })
             .catch(err => {
@@ -92,7 +85,7 @@ export default class UpdateItemFormDialog extends React.Component {
     handleDelete = () => {
         axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.id}`)
             .then(resp => {
-                this.props.handleDeleteItem(this.props.currentlyOpenItem.id)
+                this.context.handleDeleteItem(this.props.currentlyOpenItem.id)
                 this.handleClose()
             })
             .catch(err => {
@@ -212,3 +205,7 @@ export default class UpdateItemFormDialog extends React.Component {
         )
     }
 }
+
+UpdateItemFormDialog.contextType = CalendarContext
+
+export default UpdateItemFormDialog

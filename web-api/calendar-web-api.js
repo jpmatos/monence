@@ -26,4 +26,10 @@ function calendarWebApi(){
     return router
 }
 
+// '/calendar/:calendarId/item/ -- não existe
+// '/calendar/:calendarId/item/singular' -- post
+// '/calendar/:calendarId/item/singular/:itemId' -- put/delete
+
+// '/calendar/:calendarId/item/recurring/:itemId'
+
 module.exports = calendarWebApi

@@ -15,11 +15,12 @@ import {blue} from '@material-ui/core/colors';
 import FloatingActionButton from '../FloatingActionButton'
 import CreateItemFormDialog from '../forms/CreateItemFormDialog'
 import UpdateItemFormDialog from '../forms/UpdateItemFormDialog'
+import CalendarContext from '../context/CalendarContext'
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)
 
-export default class MyCalendar extends React.Component {
+class MyCalendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,52 +33,6 @@ export default class MyCalendar extends React.Component {
 
     handleClickOpen = () => {
         this.setState({isNewItemFDOpen: true})
-    }
-    handleNewItem = (item) => {
-        if (item.recurrency === 'single') {
-            item.allDay = true
-            item.end = item.start
-            this.state.items.push(item)
-        }
-        if (item.recurrency === 'recurrent') {
-            let period = 'month'
-            switch (item.recurrencyPeriod){
-                case 'weekly':
-                    period = 'week'
-                    break
-                case 'monthly':
-                    period = 'month'
-                    break
-                case 'yearly':
-                    period = 'year'
-                    break
-            }
-
-            item.allDay = true
-            let newItems = []
-            let newDate = moment(item.start)
-            const endDate = moment(item.end)
-            do{
-                item.start = newDate.clone().toDate()
-                item.end = newDate.clone().toDate()
-                newItems.push(Object.assign({}, item))
-                newDate = newDate.add(1, period)
-            } while (newDate.isBefore(endDate.add(1, 'day')))
-            this.state.items = this.state.items.concat(newItems)
-        }
-    }
-    handleDeleteItem = (id) => {
-        const itemIdx = this.state.items.findIndex(i => i.id === id)
-        if (itemIdx !== -1)
-            this.state.items.splice(itemIdx, 1)
-    }
-    handleUpdateItem = (item) => {
-        const itemIdx = this.state.items.findIndex(i => i.id === item.id)
-        if (itemIdx !== -1) {
-            item.allDay = true
-            item.end = item.start
-            this.state.items[itemIdx] = item
-        }
     }
 
     onClickItem = (item) => {
@@ -93,49 +48,6 @@ export default class MyCalendar extends React.Component {
 
     setItemFD = (event) => {
         this.setState({isItemFDOpen: event})
-    }
-
-    componentDidMount() {
-        //Disable calendar
-        axios.get('/calendar/01')
-            .then(res => {
-                const calendar = res.data
-                let items = calendar.expenses.concat(calendar.gains)
-                items.forEach(item => {
-                    item.allDay = true
-                    item.end = item.start
-                })
-                calendar.recurrentExpenses.concat(calendar.recurrentGains).forEach((item) => {
-                    let period = 'month'
-                    switch (item.recurrencyPeriod){
-                        case 'weekly':
-                            period = 'week'
-                            break
-                        case 'monthly':
-                            period = 'month'
-                            break
-                        case 'yearly':
-                            period = 'year'
-                            break
-                    }
-
-                    item.allDay = true
-                    let newDate = moment(item.start)
-                    const endDate = moment(item.end)
-                    do{
-                        item.start = newDate.clone().toDate()
-                        item.end = newDate.clone().toDate()
-                        items.push(Object.assign({}, item))
-                        newDate = newDate.add(1, period)
-                    } while (newDate.isBefore(endDate.add(1, 'day')))
-                })
-
-                this.setState({items: items})       //TODO make this global
-                //Enable
-            })
-            .catch(err => {
-                //Inform user server did not respond
-            })
     }
 
     eventStyleGetter(event, start, end, isSelected) {
@@ -170,20 +82,21 @@ export default class MyCalendar extends React.Component {
             <Container style={{height: 800}}>
                 <Calendar
                     localizer={localizer}
-                    events={this.state.items}
+                    events={this.context.getItems()}
                     startAccessor='start'
                     endAccessor='end'
                     onSelectEvent={this.onClickItem}
                     eventPropGetter={this.eventStyleGetter}
                 />
                 <FloatingActionButton handleOnClickFAB={this.handleClickOpen}/>
-                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}
-                                      handleNewItem={this.handleNewItem}/>
+                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD} />
                 <UpdateItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
-                                      currentlyOpenItem={this.state.currentlyOpenItem}
-                                      handleDeleteItem={this.handleDeleteItem}
-                                      handleUpdateItem={this.handleUpdateItem}/>
+                                      currentlyOpenItem={this.state.currentlyOpenItem}/>
             </Container>
         )
     }
 }
+
+MyCalendar.contextType = CalendarContext
+
+export default MyCalendar

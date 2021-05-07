@@ -17,8 +17,9 @@ import {Box, TextField} from "@material-ui/core";
 import ItemTypeSwitch from "../ItemTypeSwitch";
 import ItemRecurrencySwitch from "../ItemRecurrencySwitch";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import CalendarContext from "../context/CalendarContext";
 
-export default class CreateItemFormDialog extends React.Component {
+class CreateItemFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -114,7 +115,7 @@ export default class CreateItemFormDialog extends React.Component {
 
         axios.post(`/calendar/01/item`, item)
             .then(resp => {
-                this.props.handleNewItem(resp.data)
+                this.context.handleNewItem(resp.data)
                 this.handleClose()
             })
             .catch(err => {
@@ -253,3 +254,7 @@ export default class CreateItemFormDialog extends React.Component {
         )
     }
 }
+
+CreateItemFormDialog.contextType = CalendarContext
+
+export default CreateItemFormDialog

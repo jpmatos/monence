@@ -21,9 +21,10 @@
         "id": "222d19a1-6799-4237-a8a7-bc5ad76e8f6a",
         "type": "expense",
         "recurrency": "recurrent",
+        "recurrencyPeriod": "weekly",
         "title": "Presentation Expenses 2",
-        "start": "2021-05-25T05:15:05.217Z",
-        "end": "2021-23-25T05:15:05.217Z",
+        "start": "2021-05-05T05:15:05.217Z",
+        "end": "2021-05-23T05:15:05.217Z",
         "value": "20.00"
       }
     ],
