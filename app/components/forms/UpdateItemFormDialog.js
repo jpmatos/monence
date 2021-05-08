@@ -23,9 +23,11 @@ class UpdateItemFormDialog extends React.Component {
             itemTitle: null,
             validTitle: true,
             selectedDate: null,
+            selectedEndDate: null,
             value: null,
             validValue: true,
-            editable: false
+            editable: false,
+            isRecurrent: false
         }
     }
 
@@ -41,6 +43,10 @@ class UpdateItemFormDialog extends React.Component {
     handleDateChange = (event) => {
         this.setState({selectedDate: event})
     }
+    handleEndDateChange = (event) => {
+        this.setState({selectedEndDate: event})
+    }
+
     handleValueChange = (event) => {
         this.setState({
             value: event.target.value,
@@ -57,9 +63,11 @@ class UpdateItemFormDialog extends React.Component {
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
-            'end': this.state.selectedDate,
             'value': this.state.value.replaceAll(',', '')
         }
+
+        if(this.props.currentlyOpenItem.recurrency === 'recurrent')
+            item.end = this.state.selectedEndDate
 
         let fail = false
         if (item.title === null || item.title === '') {
@@ -103,11 +111,24 @@ class UpdateItemFormDialog extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.isOpen !== prevProps.isOpen && this.props.isOpen) {
+            let start, end
+            const isRecurrent = this.props.currentlyOpenItem.recurrency === 'recurrent'
+            if (isRecurrent) {
+                const res = this.context.getRecurrentDates(this.props.currentlyOpenItem.id)
+                start = res.start
+                end = res.end
+            } else {
+                start = this.props.currentlyOpenItem.start
+                end = null
+            }
+
             this.setState({
-                itemTitle: this.props.currentlyOpenItem.title,
-                selectedDate: this.props.currentlyOpenItem.start,
-                value: this.props.currentlyOpenItem.value,
-                editable: false
+                "itemTitle": this.props.currentlyOpenItem.title,
+                "selectedDate": start,
+                "selectedEndDate": end,
+                "value": this.props.currentlyOpenItem.value,
+                "editable": false,
+                "isRecurrent": isRecurrent
             })
         }
     }
@@ -158,6 +179,27 @@ class UpdateItemFormDialog extends React.Component {
                                 }}
                             />
                         </MuiPickersUtilsProvider>
+                        {this.state.isRecurrent ?
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    disableToolbar
+                                    inputProps={
+                                        {readOnly: !this.state.editable}
+                                    }
+                                    autoOk={true}
+                                    variant='inline'
+                                    format='MM/dd/yyyy'
+                                    margin='normal'
+                                    id='end-date-picker-inline'
+                                    label='Date'
+                                    value={this.state.selectedEndDate}
+                                    onChange={this.handleEndDateChange}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
+                            : null}
                         <CurrencyTextField
                             error={!this.state.validValue}
                             inputProps={

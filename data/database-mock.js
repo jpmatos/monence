@@ -65,6 +65,7 @@ class DatabaseMock {
             'recurrencyPeriod': currItem.recurrencyPeriod,
             'type': currItem.type,
             'start': item.start,
+            'end': item.end === null ? undefined : item.end,
             'value': !item.value || item.value === 0 ? currItem.value : item.value
         }
 
