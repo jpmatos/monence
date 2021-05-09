@@ -21,7 +21,7 @@ class CalendarController{
         const calendarId = req.params.calendarId
         const item = req.body
         return calendarService
-            .postItem(calendarId, item, item.type, item.recurrency)
+            .postItem(calendarId, item)
             .then(item => res.status(201).json(item))
             .catch(next)
     }
@@ -41,6 +41,35 @@ class CalendarController{
         const item = req.body
         return calendarService
             .putItem(calendarId, itemId, item)
+            .then(item => res.status(201).json(item))
+            .catch(next)
+    }
+
+    //Recurrent
+    static postItemRecurrent(req, res, next) {
+        const calendarId = req.params.calendarId
+        const item = req.body
+        return calendarService
+            .postItemRecurrent(calendarId, item)
+            .then(item => res.status(201).json(item))
+            .catch(next)
+    }
+
+    static deleteItemRecurrent(req, res, next) {
+        const calendarId = req.params.calendarId
+        const itemId = req.params.itemId
+        return calendarService
+            .deleteItemRecurrent(calendarId, itemId)
+            .then(msg => res.status(201).json(msg))
+            .catch(next)
+    }
+
+    static putItemRecurrent(req, res, next) {
+        const calendarId = req.params.calendarId
+        const itemId = req.params.itemId
+        const item = req.body
+        return calendarService
+            .putItemRecurrent(calendarId, itemId, item)
             .then(item => res.status(201).json(item))
             .catch(next)
     }

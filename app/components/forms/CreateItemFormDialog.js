@@ -113,7 +113,7 @@ class CreateItemFormDialog extends React.Component {
             'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
         }
 
-        axios.post(`/calendar/01/item`, item)
+        axios.post(`/calendar/01/item/${item.recurrency}`, item)
             .then(resp => {
                 this.context.handleNewItem(resp.data)
                 this.handleClose()

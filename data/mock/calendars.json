@@ -3,7 +3,7 @@
     "name": "calendar01",
     "ownerId": "userId",
     "id": "01",
-    "expenses": [
+    "single": [
       {
         "id": "222d19a1-6799-4237-a8a7-bc5ad76e8f6f",
         "type": "expense",
@@ -13,10 +13,7 @@
         "value": "20.00"
       }
     ],
-    "gains": [
-
-    ],
-    "recurrentExpenses": [
+    "recurrent": [
       {
         "id": "222d19a1-6799-4237-a8a7-bc5ad76e8f6a",
         "type": "expense",
@@ -27,9 +24,6 @@
         "end": "2021-05-23T05:15:05.217Z",
         "value": "20.00"
       }
-    ],
-    "recurrentGains": [
-
     ]
   }
 ]

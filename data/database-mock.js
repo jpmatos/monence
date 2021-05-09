@@ -11,14 +11,14 @@ class DatabaseMock {
         return DatabaseMock
     }
 
-    static getCalendar(calendarId){
+    static getCalendar(calendarId) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
-    static postItem(calendarId, item, arrayName){
+    static postItem(calendarId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -29,36 +29,25 @@ class DatabaseMock {
         return Promise.resolve(item)
     }
 
-    static deleteItem(calendarId, itemId){
+    static deleteItem(calendarId, itemId, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const arrNames = ["expenses", "gains", "recurrentExpenses", "recurrentGains"]
-        arrNames.forEach(arrName => {
-            this.calendars[calendarIdx][arrName] = this.calendars[calendarIdx][arrName].filter((item) => item.id !== itemId)
-        })
+        this.calendars[calendarIdx][arrayName] = this.calendars[calendarIdx][arrayName].filter((item) => item.id !== itemId)
 
         return Promise.resolve({'message': `Deleted item with id ${itemId}`})
     }
 
-    static putItem(calendarId, itemId, item){
+    static putItem(calendarId, itemId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        let itemIdx = -1, type = ''
-        const arrNames = ["expenses", "gains", "recurrentExpenses", "recurrentGains"]
-        arrNames.some(arrName => {
-            itemIdx = this.calendars[calendarIdx][arrName].findIndex(i => i.id === itemId)
-            if(itemIdx !== -1){
-                type = arrName
-                return true
-            }
-        })
-        const currItem = this.calendars[calendarIdx][type][itemIdx]
+        const itemIdx = this.calendars[calendarIdx][arrayName].findIndex(i => i.id === itemId)
+        const currItem = this.calendars[calendarIdx][arrayName][itemIdx]
 
-        this.calendars[calendarIdx][type][itemIdx] = {
+        this.calendars[calendarIdx][arrayName][itemIdx] = {
             'id': currItem.id,
             'title': !item.title || item.title.length === 0 ? currItem.title : item.title,
             'recurrency': currItem.recurrency,
@@ -69,7 +58,7 @@ class DatabaseMock {
             'value': !item.value || item.value === 0 ? currItem.value : item.value
         }
 
-        return Promise.resolve(this.calendars[calendarIdx][type][itemIdx])
+        return Promise.resolve(this.calendars[calendarIdx][arrayName][itemIdx])
     }
 
     static readFile(filePath) {

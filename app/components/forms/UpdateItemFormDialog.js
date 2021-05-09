@@ -66,7 +66,7 @@ class UpdateItemFormDialog extends React.Component {
             'value': this.state.value.replaceAll(',', '')
         }
 
-        if(this.props.currentlyOpenItem.recurrency === 'recurrent')
+        if (this.props.currentlyOpenItem.recurrency === 'recurrent')
             item.end = this.state.selectedEndDate
 
         let fail = false
@@ -81,7 +81,7 @@ class UpdateItemFormDialog extends React.Component {
         if (fail)
             return
 
-        axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.id}`, item)
+        axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.recurrency}/${this.props.currentlyOpenItem.id}`, item)
             .then(resp => {
                 this.context.handleUpdateItem(resp.data)
                 this.handleClose()
@@ -91,7 +91,7 @@ class UpdateItemFormDialog extends React.Component {
             })
     }
     handleDelete = () => {
-        axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.id}`)
+        axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.recurrency}/${this.props.currentlyOpenItem.id}`)
             .then(resp => {
                 this.context.handleDeleteItem(this.props.currentlyOpenItem.id)
                 this.handleClose()

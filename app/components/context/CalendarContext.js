@@ -24,7 +24,7 @@ function setCalendar(id) {
 }
 
 function getRecurrentDates(id) {
-    const res = calendar.recurrentExpenses.concat(calendar.recurrentGains).find(item => item.id === id)
+    const res = calendar.recurrent.find(item => item.id === id)
     return {start: res.start, end: res.end}
 }
 
@@ -32,14 +32,14 @@ function getItems() {
     if (items !== null)
         return items
 
-    items = calendar.expenses.concat(calendar.gains)
+    items = calendar.single.slice()
     items.forEach(item => {
         item.allDay = true
         item.end = item.start
     })
 
     let period = 'month'
-    calendar.recurrentExpenses.concat(calendar.recurrentGains).forEach((it) => {
+    calendar.recurrent.forEach((it) => {
         let item = Object.assign({}, it)
         switch (item.recurrencyPeriod) {
             case 'weekly':
@@ -146,7 +146,7 @@ function handleUpdateItem(item) {
 
 function handleDeleteItem(id) {
     //TODO delete item from calendar
-    
+
     const itemIdx = items.findIndex(i => i.id === id)
     if (itemIdx !== -1)
         items.splice(itemIdx, 1)

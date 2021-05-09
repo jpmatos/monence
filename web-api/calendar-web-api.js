@@ -11,25 +11,34 @@ function calendarWebApi(){
         calendarController.getCalendar(req, res, next)
     })
 
-    router.post('/:calendarId/item', (req, res, next) => {
+    //Single
+    router.post('/:calendarId/item/single', (req, res, next) => {
         calendarController.postItem(req, res, next)
     })
 
-    router.delete('/:calendarId/item/:itemId', (req, res, next) => {
+    router.delete('/:calendarId/item/single/:itemId', (req, res, next) => {
         calendarController.deleteItem(req, res, next)
     })
 
-    router.put('/:calendarId/item/:itemId', (req, res, next) => {
+    router.put('/:calendarId/item/single/:itemId', (req, res, next) => {
         calendarController.putItem(req, res, next)
     })
 
+    //Recurrent
+    router.post('/:calendarId/item/recurrent', (req, res, next) => {
+        calendarController.postItemRecurrent(req, res, next)
+    })
+
+    router.delete('/:calendarId/item/recurrent/:itemId', (req, res, next) => {
+        calendarController.deleteItemRecurrent(req, res, next)
+    })
+
+    router.put('/:calendarId/item/recurrent/:itemId', (req, res, next) => {
+        calendarController.putItemRecurrent(req, res, next)
+    })
+
+
     return router
 }
-
-// '/calendar/:calendarId/item/ -- não existe
-// '/calendar/:calendarId/item/singular' -- post
-// '/calendar/:calendarId/item/singular/:itemId' -- put/delete
-
-// '/calendar/:calendarId/item/recurring/:itemId'
 
 module.exports = calendarWebApi
