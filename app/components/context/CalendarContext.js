@@ -7,6 +7,7 @@ const CalendarContext = React.createContext(undefined);
 let calendar = null;
 let calendarId = null;
 let items = null;       //This will be referenced in events prop of ReactBigCalendar
+let calendarDate = null;
 
 function getCalendar() {
     if (calendar === null)
@@ -145,6 +146,20 @@ function handleUpdateItem(item) {
     }
 }
 
+function getCalendarDate(){
+    if (calendarDate !== null)
+        return calendarDate
+    return calendarDate = moment(moment.now()).toDate()
+}
+
+function setCalendarDateMonth(offset){
+    calendarDate = moment(calendarDate).add(offset, 'month').toDate()
+}
+
+function setCalendarDate(date){
+    calendarDate = date
+}
+
 function handleDeleteItem(id) {
     calendar.single = calendar.single.filter(it => it.id !== id)
     calendar.recurrent = calendar.recurrent.filter(it => it.id !== id)
@@ -162,7 +177,10 @@ export const value = {
     getRecurrentDates: getRecurrentDates,
     handleNewItem: handleNewItem,
     handleUpdateItem: handleUpdateItem,
-    handleDeleteItem: handleDeleteItem
+    handleDeleteItem: handleDeleteItem,
+    setCalendarDate: setCalendarDate,
+    getCalendarDate: getCalendarDate,
+    setCalendarDateMonth: setCalendarDateMonth
 }
 
 export default CalendarContext;

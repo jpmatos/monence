@@ -15,6 +15,8 @@ import FloatingActionButton from '../FloatingActionButton'
 import CreateItemFormDialog from '../forms/CreateItemFormDialog'
 import UpdateItemFormDialog from '../forms/UpdateItemFormDialog'
 import CalendarContext from '../context/CalendarContext'
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)
@@ -32,6 +34,23 @@ class MyCalendar extends React.Component {
 
     handleClickOpen = () => {
         this.setState({isNewItemFDOpen: true})
+    }
+
+    handleAdvanceMonth = (event) => {
+        event.stopPropagation()
+        this.context.setCalendarDateMonth(1)
+        this.forceUpdate()
+    }
+
+    handleRecedeMonth = (event) => {
+        event.stopPropagation()
+        this.context.setCalendarDateMonth(-1)
+        this.forceUpdate()
+    }
+
+    handleDateChange = (event) => {
+        this.context.setCalendarDate(event)
+        this.forceUpdate()
     }
 
     onClickItem = (item) => {
@@ -79,16 +98,27 @@ class MyCalendar extends React.Component {
     render() {
         return (
             <Container style={{height: 800}}>
+                <Typography variant='h4' align='center'>
+                    {moment(this.context.getCalendarDate()).format("MMMM YYYY")}
+                </Typography>
                 <Calendar
                     localizer={localizer}
+                    date={this.context.getCalendarDate()}
                     events={this.context.getItems()}
                     startAccessor='start'
                     endAccessor='end'
                     onSelectEvent={this.onClickItem}
                     eventPropGetter={this.eventStyleGetter}
+                    toolbar={false}
+                    onNavigate={() => {
+                    }}
                 />
-                <FloatingActionButton handleOnClickFAB={this.handleClickOpen}/>
-                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD} />
+                <FloatingActionButton date={this.context.getCalendarDate()}
+                                      handleOnClickFAB={this.handleClickOpen}
+                                      handleDateChange={this.handleDateChange}
+                                      handleAdvanceMonth={this.handleAdvanceMonth}
+                                      handleRecedeMonth={this.handleRecedeMonth}/>
+                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}/>
                 <UpdateItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
                                       currentlyOpenItem={this.state.currentlyOpenItem}/>
             </Container>

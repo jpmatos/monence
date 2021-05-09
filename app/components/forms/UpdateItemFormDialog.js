@@ -163,9 +163,7 @@ class UpdateItemFormDialog extends React.Component {
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
                                 disableToolbar
-                                inputProps={
-                                    {readOnly: !this.state.editable}
-                                }
+                                readOnly={!this.state.editable}
                                 autoOk={true}
                                 variant='inline'
                                 format='MM/dd/yyyy'
@@ -183,9 +181,7 @@ class UpdateItemFormDialog extends React.Component {
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                 <KeyboardDatePicker
                                     disableToolbar
-                                    inputProps={
-                                        {readOnly: !this.state.editable}
-                                    }
+                                    readOnly={!this.state.editable}
                                     autoOk={true}
                                     variant='inline'
                                     format='MM/dd/yyyy'

@@ -1,8 +1,13 @@
 import React from 'react'
 
 import {withStyles} from '@material-ui/core/styles'
-import Fab from '@material-ui/core/Fab'
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import AddIcon from '@material-ui/icons/Add'
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import {SpeedDial, SpeedDialAction} from "@material-ui/lab";
+import {DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const useStyles = (theme) => ({
     root: {
@@ -22,19 +27,45 @@ class FloatingActionButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
-            hidden: false
+            isDatePickerOpen: false
         }
+    }
+
+    handleDatePicker(event) {
+        event.stopPropagation()
+        this.setState({isDatePickerOpen: true})
     }
 
     render() {
         const {classes} = this.props;
         return (
-            <Fab color='primary' aria-label='add' className={classes.fab} onClick={this.props.handleOnClickFAB}>
-                <AddIcon/>
-            </Fab>
+            <div>
+                <SpeedDial ariaLabel={'SpeedDial'} open={true} className={classes.fab} icon={<AddIcon/>}
+                           onClick={this.props.handleOnClickFAB}>
+                    <SpeedDialAction key='Retreat Month' title='-1 Month' icon={<KeyboardArrowDownIcon/>}
+                                     onClick={this.props.handleRecedeMonth}/>
+                    <SpeedDialAction key='Advance Month' title='+1 Month' icon={<KeyboardArrowUpIcon/>}
+                                     onClick={this.props.handleAdvanceMonth}/>
+                    <SpeedDialAction key='Pick Date' title={'Set Date'} icon={<CalendarTodayIcon/>}
+                                     onClick={this.handleDatePicker.bind(this)}/>
+                </SpeedDial>
+
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <DatePicker
+                        disableToolbar
+                        views={["year", "month"]}
+                        open={this.state.isDatePickerOpen}
+                        onOpen={() => this.setState({isDatePickerOpen: true})}
+                        onClose={() => this.setState({isDatePickerOpen: false})}
+                        value={this.props.date}
+                        onChange={this.props.handleDateChange}
+                        TextFieldComponent={() => null}
+                    />
+                </MuiPickersUtilsProvider>
+            </div>
         )
     }
+
 }
 
 export default withStyles(useStyles)(FloatingActionButton)

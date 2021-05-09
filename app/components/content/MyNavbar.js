@@ -21,9 +21,11 @@ import OverViewIcon from '@material-ui/icons/Visibility'
 import CalendarIcon from '@material-ui/icons/CalendarToday'
 import ForecastIcon from '@material-ui/icons/TrendingUp'
 import Container from '@material-ui/core/Container'
+import EuroIcon from '@material-ui/icons/Euro';
 
 import MyCalendar from './MyCalendar'
 import PlaceHolder from './PlaceHolder'
+import MyBudget from "./MyBudget";
 
 const drawerWidth = 220
 
@@ -179,6 +181,8 @@ class MyNavbar extends React.Component {
                         <ListItemLink to='/' primary='Overview' icon={<OverViewIcon/>} listClass={classes.list}/>
                         <ListItemLink to='/calendar' primary='Calendar' icon={<CalendarIcon/>}
                                       listClass={classes.list}/>
+                        <ListItemLink to='/budget' primary='Budget' icon={<EuroIcon/>}
+                                      listClass={classes.list}/>
                         <ListItemLink to='/forecast' primary='Forecast' icon={<ForecastIcon/>}
                                       listClass={classes.list}/>
                     </List>
@@ -186,6 +190,7 @@ class MyNavbar extends React.Component {
                 <Container maxWidth='lg' className={classes.content}>
                     <Route exact path='/' component={PlaceHolder}/>
                     <Route path='/calendar' component={MyCalendar}/>
+                    <Route path='/budget' component={MyBudget}/>
                     <Route path='/forecast' component={PlaceHolder}/>
                 </Container>
             </HashRouter>
