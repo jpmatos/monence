@@ -70,7 +70,7 @@ function renderItems() {
 }
 
 function handleNewItem(item) {
-    //TODO add item to calendar
+    calendar[item.recurrency].push(Object.assign({}, item))
 
     if (item.recurrency === 'single') {
         item.allDay = true
@@ -106,7 +106,8 @@ function handleNewItem(item) {
 }
 
 function handleUpdateItem(item) {
-    //TODO add item to calendar
+    calendar[item.recurrency] = calendar[item.recurrency].filter(it => it.id !== item.id)
+    calendar[item.recurrency].push(Object.assign({}, item))
 
     if (item.recurrency === 'recurrent') {
         let period = 'month'
@@ -145,7 +146,8 @@ function handleUpdateItem(item) {
 }
 
 function handleDeleteItem(id) {
-    //TODO delete item from calendar
+    calendar.single = calendar.single.filter(it => it.id !== id)
+    calendar.recurrent = calendar.recurrent.filter(it => it.id !== id)
 
     const itemIdx = items.findIndex(i => i.id === id)
     if (itemIdx !== -1)
