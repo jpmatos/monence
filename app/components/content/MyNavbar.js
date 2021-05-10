@@ -111,13 +111,6 @@ function ListItemLink(props) {
     )
 }
 
-ListItemLink.propTypes = {
-    icon: PropTypes.element,
-    primary: PropTypes.string.isRequired,
-    to: PropTypes.string.isRequired,
-    listClass: PropTypes.element
-}
-
 class MyNavbar extends React.Component {
     constructor(props) {
         super(props);
@@ -172,7 +165,7 @@ class MyNavbar extends React.Component {
                             [classes.drawerClose]: !this.state.open,
                         }),
                     }}
-                    onMouseEnter={this.handleDrawerOpen}
+                    // onMouseEnter={this.handleDrawerOpen}
                     onMouseLeave={this.handleDrawerClose}
                 >
                     <div className={classes.toolbar}/>

@@ -39,7 +39,7 @@ class FloatingActionButton extends React.Component {
     render() {
         const {classes} = this.props;
         return (
-            <div>
+            <React.Fragment>
                 <SpeedDial ariaLabel={'SpeedDial'} open={true} className={classes.fab} icon={<AddIcon/>}
                            onClick={this.props.handleOnClickFAB}>
                     <SpeedDialAction key='Retreat Month' title='-1 Month' icon={<KeyboardArrowDownIcon/>}
@@ -49,7 +49,6 @@ class FloatingActionButton extends React.Component {
                     <SpeedDialAction key='Pick Date' title={'Set Date'} icon={<CalendarTodayIcon/>}
                                      onClick={this.handleDatePicker.bind(this)}/>
                 </SpeedDial>
-
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DatePicker
                         disableToolbar
@@ -62,7 +61,7 @@ class FloatingActionButton extends React.Component {
                         TextFieldComponent={() => null}
                     />
                 </MuiPickersUtilsProvider>
-            </div>
+            </React.Fragment>
         )
     }
 

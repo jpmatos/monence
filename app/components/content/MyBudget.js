@@ -9,6 +9,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {withStyles} from '@material-ui/core/styles'
 import {Box} from "@material-ui/core";
+import FloatingActionButton from "../FloatingActionButton";
+import CalendarContext from "../context/CalendarContext";
+import Typography from "@material-ui/core/Typography";
+import moment from "moment";
 
 
 const useStyles = (themes) => ({
@@ -60,12 +64,36 @@ class MyBudget extends React.Component {
             ]
         }]
 
+    handleClickOpen = () => {
+        // this.setState({isNewItemFDOpen: true})
+    }
+
+    handleAdvanceMonth = (event) => {
+        event.stopPropagation()
+        this.context.setCalendarDateMonth(1)
+        this.forceUpdate()
+    }
+
+    handleRecedeMonth = (event) => {
+        event.stopPropagation()
+        this.context.setCalendarDateMonth(-1)
+        this.forceUpdate()
+    }
+
+    handleDateChange = (event) => {
+        this.context.setCalendarDate(event)
+        this.forceUpdate()
+    }
+
     render() {
         const {classes} = this.props;
         return (
             <Container>
+                <Typography variant='h4' align='center'>
+                    {moment(this.context.getCalendarDate()).format("MMMM YYYY")}
+                </Typography>
                 {this.periods.map(period => (
-                    <Box mb={3}>
+                    <Box mb={3} key={period.name}>
                         <h4>{period.name}</h4>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} size="small" aria-label="a dense table">
@@ -95,9 +123,16 @@ class MyBudget extends React.Component {
                         </TableContainer>
                     </Box>
                 ))}
+                <FloatingActionButton date={this.context.getCalendarDate()}
+                                      handleOnClickFAB={this.handleClickOpen}
+                                      handleDateChange={this.handleDateChange}
+                                      handleAdvanceMonth={this.handleAdvanceMonth}
+                                      handleRecedeMonth={this.handleRecedeMonth}/>
             </Container>
         );
     }
 }
+
+MyBudget.contextType = CalendarContext
 
 export default withStyles(useStyles)(MyBudget)

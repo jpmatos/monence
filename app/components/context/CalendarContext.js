@@ -55,14 +55,14 @@ function getItems() {
         }
 
         item.allDay = true
-        let newDate = moment(item.start)
-        const endDate = moment(item.end)
+        let newDate = moment(item.start).clone()
+        const endDate = moment(item.end).clone().add(1, 'day')
         do {
             item.start = newDate.clone().toDate()
             item.end = newDate.clone().toDate()
             items.push(Object.assign({}, item))
             newDate = newDate.add(1, period)
-        } while (newDate.isBefore(endDate.add(1, 'day')))
+        } while (newDate.isBefore(endDate))
     })
     return items
 }
@@ -94,14 +94,14 @@ function handleNewItem(item) {
 
         item.allDay = true
         let newItems = []
-        let newDate = moment(item.start)
-        const endDate = moment(item.end)
+        let newDate = moment(item.start).clone()
+        const endDate = moment(item.end).clone().add(1, 'day')
         do {
             item.start = newDate.clone().toDate()
             item.end = newDate.clone().toDate()
             newItems.push(Object.assign({}, item))
             newDate = newDate.add(1, period)
-        } while (newDate.isBefore(endDate.add(1, 'day')))
+        } while (newDate.isBefore(endDate))
         items = items.concat(newItems)
     }
 }
@@ -126,14 +126,14 @@ function handleUpdateItem(item) {
 
         item.allDay = true
         let newItems = []
-        let newDate = moment(item.start)
-        const endDate = moment(item.end)
+        let newDate = moment(item.start).clone()
+        const endDate = moment(item.end).clone().add(1, 'day')
         do {
             item.start = newDate.clone().toDate()
             item.end = newDate.clone().toDate()
             newItems.push(Object.assign({}, item))
             newDate = newDate.add(1, period)
-        } while (newDate.isBefore(endDate.add(1, 'day')))
+        } while (newDate.isBefore(endDate))
 
         items = items.filter(i => i.id !== item.id).concat(newItems)
     } else {
