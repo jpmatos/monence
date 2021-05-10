@@ -39,70 +39,21 @@ function getItems() {
         item.end = item.start
     })
 
-    let period = 'month'
-    calendar.recurrent.forEach((it) => {
-        let item = Object.assign({}, it)
-        switch (item.recurrencyPeriod) {
-            case 'weekly':
-                period = 'week'
-                break
-            case 'monthly':
-                period = 'month'
-                break
-            case 'yearly':
-                period = 'year'
-                break
-        }
-
-        item.allDay = true
-        let newDate = moment(item.start).clone()
-        const endDate = moment(item.end).clone().add(1, 'day')
-        do {
-            item.start = newDate.clone().toDate()
-            item.end = newDate.clone().toDate()
-            items.push(Object.assign({}, item))
-            newDate = newDate.add(1, period)
-        } while (newDate.isBefore(endDate))
+    calendar.recurrent.forEach((item) => {
+        items = items.concat(buildRecurrentItem(item))
     })
     return items
-}
-
-function renderItems() {
 }
 
 function handleNewItem(item) {
     calendar[item.recurrency].push(Object.assign({}, item))
 
-    if (item.recurrency === 'single') {
+    if (item.recurrency === 'recurrent') {
+        items = items.concat(buildRecurrentItem(item))
+    } else {
         item.allDay = true
         item.end = item.start
         items.push(item)
-    }
-    if (item.recurrency === 'recurrent') {
-        let period = 'month'
-        switch (item.recurrencyPeriod) {
-            case 'weekly':
-                period = 'week'
-                break
-            case 'monthly':
-                period = 'month'
-                break
-            case 'yearly':
-                period = 'year'
-                break
-        }
-
-        item.allDay = true
-        let newItems = []
-        let newDate = moment(item.start).clone()
-        const endDate = moment(item.end).clone().add(1, 'day')
-        do {
-            item.start = newDate.clone().toDate()
-            item.end = newDate.clone().toDate()
-            newItems.push(Object.assign({}, item))
-            newDate = newDate.add(1, period)
-        } while (newDate.isBefore(endDate))
-        items = items.concat(newItems)
     }
 }
 
@@ -111,30 +62,7 @@ function handleUpdateItem(item) {
     calendar[item.recurrency].push(Object.assign({}, item))
 
     if (item.recurrency === 'recurrent') {
-        let period = 'month'
-        switch (item.recurrencyPeriod) {
-            case 'weekly':
-                period = 'week'
-                break
-            case 'monthly':
-                period = 'month'
-                break
-            case 'yearly':
-                period = 'year'
-                break
-        }
-
-        item.allDay = true
-        let newItems = []
-        let newDate = moment(item.start).clone()
-        const endDate = moment(item.end).clone().add(1, 'day')
-        do {
-            item.start = newDate.clone().toDate()
-            item.end = newDate.clone().toDate()
-            newItems.push(Object.assign({}, item))
-            newDate = newDate.add(1, period)
-        } while (newDate.isBefore(endDate))
-
+        const newItems = buildRecurrentItem(item)
         items = items.filter(i => i.id !== item.id).concat(newItems)
     } else {
         const itemIdx = items.findIndex(i => i.id === item.id)
@@ -144,6 +72,43 @@ function handleUpdateItem(item) {
             items[itemIdx] = item
         }
     }
+}
+
+function handleDeleteItem(id) {
+    calendar.single = calendar.single.filter(it => it.id !== id)
+    calendar.recurrent = calendar.recurrent.filter(it => it.id !== id)
+
+    const itemIdx = items.findIndex(i => i.id === id)
+    if (itemIdx !== -1)
+        items.splice(itemIdx, 1)
+}
+
+function buildRecurrentItem(item) {
+    let res = []
+    let current = Object.assign({}, item)
+    let period = 'month'
+    switch (current.recurrencyPeriod) {
+        case 'weekly':
+            period = 'week'
+            break
+        case 'monthly':
+            period = 'month'
+            break
+        case 'yearly':
+            period = 'year'
+            break
+    }
+
+    current.allDay = true
+    let newDate = moment(current.start).clone()
+    const endDate = moment(current.end).clone().add(1, 'day')
+    do {
+        current.start = newDate.clone().toDate()
+        current.end = newDate.clone().toDate()
+        res.push(Object.assign({}, current))
+        newDate = newDate.add(1, period)
+    } while (newDate.isBefore(endDate))
+    return res
 }
 
 function getCalendarDate(){
@@ -160,19 +125,9 @@ function setCalendarDate(date){
     calendarDate = date
 }
 
-function handleDeleteItem(id) {
-    calendar.single = calendar.single.filter(it => it.id !== id)
-    calendar.recurrent = calendar.recurrent.filter(it => it.id !== id)
-
-    const itemIdx = items.findIndex(i => i.id === id)
-    if (itemIdx !== -1)
-        items.splice(itemIdx, 1)
-}
-
 export const value = {
     setCalendar: setCalendar,
     getCalendar: getCalendar,
-    renderItems: renderItems,
     getItems: getItems,
     getRecurrentDates: getRecurrentDates,
     handleNewItem: handleNewItem,
