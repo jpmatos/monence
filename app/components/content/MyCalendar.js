@@ -17,6 +17,7 @@ import UpdateItemFormDialog from '../forms/UpdateItemFormDialog'
 import CalendarContext from '../context/CalendarContext'
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import {RemoveScrollBar} from "react-remove-scroll-bar";
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)

@@ -1,6 +1,7 @@
 import React from "react";
 import MyNavbar from './components/content/MyNavbar'
 import CalendarContext from "./components/context/CalendarContext";
+import './App.css'
 
 class App extends React.Component {
     constructor(props) {

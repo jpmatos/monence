@@ -121,7 +121,7 @@ function getCalendarDate(){
 }
 
 function setCalendarDateMonth(offset){
-    calendarDate = calendarDate.add(offset, 'month')
+    calendarDate = moment(calendarDate).add(offset, 'month')
 }
 
 function setCalendarDate(date){
