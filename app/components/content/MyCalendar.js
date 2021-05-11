@@ -13,7 +13,7 @@ import {blue} from '@material-ui/core/colors';
 
 import FloatingActionButton from '../FloatingActionButton'
 import CreateItemFormDialog from '../forms/CreateItemFormDialog'
-import UpdateItemFormDialog from '../forms/UpdateItemFormDialog'
+import ViewItemFormDialog from '../forms/ViewItemFormDialog'
 import CalendarContext from '../context/CalendarContext'
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -120,8 +120,8 @@ class MyCalendar extends React.Component {
                                       handleAdvanceMonth={this.handleAdvanceMonth}
                                       handleRecedeMonth={this.handleRecedeMonth}/>
                 <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}/>
-                <UpdateItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
-                                      currentlyOpenItem={this.state.currentlyOpenItem}/>
+                <ViewItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
+                                    currentlyOpenItem={this.state.currentlyOpenItem}/>
             </Container>
         )
     }

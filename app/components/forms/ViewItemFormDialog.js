@@ -14,7 +14,7 @@ import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box, TextField} from "@material-ui/core";
 import CalendarContext from "../context/CalendarContext";
 
-class UpdateItemFormDialog extends React.Component {
+class ViewItemFormDialog extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -238,6 +238,6 @@ class UpdateItemFormDialog extends React.Component {
     }
 }
 
-UpdateItemFormDialog.contextType = CalendarContext
+ViewItemFormDialog.contextType = CalendarContext
 
-export default UpdateItemFormDialog
+export default ViewItemFormDialog

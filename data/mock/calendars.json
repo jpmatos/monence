@@ -28,16 +28,19 @@
     "budget": {
       "week": [
         {
+          "id": "ce3cc2e8-9853-4e76-8c64-0b958fd9eb1a",
           "date": "2021-05-03T00:00:00.000Z",
           "value": "500.00",
           "period": "week"
         },
         {
+          "id": "9bfd9ab6-df49-4116-aa74-bc0d6704687b",
           "date": "2021-05-17T00:00:00.000Z",
           "value": "500.00",
           "period": "week"
         },
         {
+          "id": "7ecaec6b-8d62-43c6-b011-8656ff004efe",
           "date": "2021-05-10T00:00:00.000Z",
           "value": "500.00",
           "period": "week"
@@ -45,6 +48,7 @@
       ],
       "month": [
         {
+          "id": "eb39dbb1-2965-46d0-8ddd-c25041ab32c1",
           "date": "2021-05-01T00:00:00.000Z",
           "value": "500.00",
           "period": "month"
@@ -52,6 +56,7 @@
       ],
       "year": [
         {
+          "id": "baff0adc-74e9-4c90-80c7-b858c2d6ab3d",
           "date": "2021-01-01T00:00:00.000Z",
           "value": "1000.0",
           "period": "year"

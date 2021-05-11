@@ -113,23 +113,32 @@ function buildRecurrentItem(item) {
     return res
 }
 
-function getCalendarDate(){
+function getCalendarDate() {
     if (calendarDate !== null)
         return moment(calendarDate).toDate()
     calendarDate = moment.now()
     return moment(calendarDate).toDate()
 }
 
-function setCalendarDateMonth(offset){
+function setCalendarDateMonth(offset) {
     calendarDate = moment(calendarDate).add(offset, 'month')
 }
 
-function setCalendarDate(date){
+function setCalendarDate(date) {
     calendarDate = moment(date)
 }
 
-function handleNewBudget(budget){
+function handleNewBudget(budget) {
     calendar.budget[budget.period].push(budget)
+}
+
+function getBudget(id, period) {
+    return calendar.budget[period].find(budget => budget.id === id)
+}
+
+function handleUpdateBudget(budget) {
+    const idx = calendar.budget[budget.period].findIndex(i => i.id === budget.id)
+    calendar.budget[budget.period][idx] = budget
 }
 
 export const value = {
@@ -143,7 +152,9 @@ export const value = {
     setCalendarDate: setCalendarDate,
     getCalendarDate: getCalendarDate,
     setCalendarDateMonth: setCalendarDateMonth,
-    handleNewBudget: handleNewBudget
+    handleNewBudget: handleNewBudget,
+    getBudget: getBudget,
+    handleUpdateBudget: handleUpdateBudget
 }
 
 export default CalendarContext;

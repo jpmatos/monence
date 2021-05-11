@@ -61,14 +61,34 @@ class DatabaseMock {
         return Promise.resolve(this.calendars[calendarIdx][arrayName][itemIdx])
     }
 
-    static postBudget(calendarId, budget){
+    static postBudget(calendarId, budget) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
+        budget.id = uuid()
+
         this.calendars[calendarIdx].budget[budget.period].push(budget)
 
         return Promise.resolve(budget)
+    }
+
+    static putBudget(calendarId, budgetId, budget) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        const budgetIdx = this.calendars[calendarIdx].budget[budget.period].findIndex(i => i.id === budgetId)
+        const currBudget = this.calendars[calendarIdx].budget[budget.period][budgetIdx]
+
+        this.calendars[calendarIdx].budget[budget.period][budgetIdx] = {
+            'id': currBudget.id,
+            'date': budget.date,
+            'value': budget.value,
+            'period': currBudget.period
+        }
+
+        return Promise.resolve(this.calendars[calendarIdx].budget[budget.period][budgetIdx])
     }
 
     static readFile(filePath) {

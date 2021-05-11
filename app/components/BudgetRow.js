@@ -19,6 +19,10 @@ export default class BudgetRow extends React.Component {
         }
     }
 
+    onClick = () => {
+        this.props.onClick(this.props.row.id, this.props.row.period)
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -29,13 +33,13 @@ export default class BudgetRow extends React.Component {
                             {this.state.open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
                         </IconButton>
                     </TableCell>
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" onClick={this.onClick}>
                         {this.props.row.name}
                     </TableCell>
-                    <TableCell align="right">{this.props.row.budget}</TableCell>
-                    <TableCell align="right">{this.props.row.expenses}</TableCell>
-                    <TableCell align="right">{this.props.row.gains}</TableCell>
-                    <TableCell align="right">{this.props.row.total}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.budget}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.expenses}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.gains}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.total}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
@@ -55,8 +59,8 @@ export default class BudgetRow extends React.Component {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {this.props.row.items.map((item) => (
-                                            <TableRow key={item.title + item.start}>
+                                        {this.props.row.items.map((item, index) => (
+                                            <TableRow key={index}>
                                                 <TableCell component="th" scope="row">
                                                     {item.title}
                                                 </TableCell>

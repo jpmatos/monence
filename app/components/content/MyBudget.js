@@ -15,13 +15,16 @@ import moment from "moment";
 import BudgetRow from "../BudgetRow";
 import CreateBudgetFormDialog from "../forms/CreateBudgetFormDialog";
 import axios from "axios";
+import ViewBudgetFormDialog from "../forms/ViewBudgetFormDialog";
 
 class MyBudget extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             periods: [],
-            isNewBudgetFDOpen: false
+            isNewBudgetFDOpen: false,
+            isBudgetFDOpen: false,
+            currentlyOpenBudget: {}
         }
     }
 
@@ -50,6 +53,10 @@ class MyBudget extends React.Component {
         this.setState({isNewBudgetFDOpen: event})
     }
 
+    setBudgetFD = (event) => {
+        this.setState({isBudgetFDOpen: event})
+    }
+
     handleNewBudget = (budget, cb) => {
         axios.post(`/calendar/01/budget`, budget)
             .then(resp => {
@@ -62,6 +69,26 @@ class MyBudget extends React.Component {
             })
     }
 
+    handleUpdateBudget = (id, budget, cb) => {
+        axios.put(`/calendar/01/budget/${id}`, budget)
+            .then(resp => {
+                this.context.handleUpdateBudget(resp.data)
+                cb()
+                this.updatePeriods()
+            })
+            .catch(err => {
+                cb()
+            })
+    }
+
+    onClickBudget = (id, period) => {
+        const budget = this.context.getBudget(id, period)
+        this.setState({
+            currentlyOpenBudget: budget,
+            isBudgetFDOpen: true
+        })
+    }
+
     updatePeriods = () => {
         this.context.getCalendar().then(calendar => {
             let weekRows = []
@@ -71,11 +98,13 @@ class MyBudget extends React.Component {
                 })
                 .sort((first, second) => moment(first.date).isAfter(second.date))
                 .map(week => {
+                    const id = week.id
+                    const period = week.period
                     const start = moment(week.date).startOf('isoWeek')
                     const end = start.clone().add(7, 'day')
                     const date = `${start.format('MMM DD')} - ${end.clone().subtract(1, 'day').format('MMM DD')}`
                     const budget = parseFloat(week.value)
-                    weekRows.push(this.buildRow(start, end, date, budget))
+                    weekRows.push(this.buildRow(id, period, start, end, date, budget))
                 })
 
             let monthRows = []
@@ -84,11 +113,13 @@ class MyBudget extends React.Component {
                     return moment(month.date).isSame(this.context.getCalendarDate(), 'month')
                 })
                 .map(month => {
+                    const id = month.id
+                    const period = month.period
                     const start = moment(month.date).startOf('month')
                     const end = start.clone().endOf('month')
                     const date = `${start.format('MMMM')}`
                     const budget = parseFloat(month.value)
-                    monthRows.push(this.buildRow(start, end, date, budget))
+                    monthRows.push(this.buildRow(id, period, start, end, date, budget))
                 })
 
             let yearRows = []
@@ -97,11 +128,13 @@ class MyBudget extends React.Component {
                     return moment(month.date).isSame(this.context.getCalendarDate(), 'year')
                 })
                 .map(year => {
+                    const id = year.id
+                    const period = year.period
                     const start = moment(year.date).startOf('year')
                     const end = start.clone().endOf('year')
                     const date = `${start.format('YYYY')}`
                     const budget = parseFloat(year.value)
-                    yearRows.push(this.buildRow(start, end, date, budget))
+                    yearRows.push(this.buildRow(id, period, start, end, date, budget))
                 })
 
             this.setState({
@@ -123,7 +156,7 @@ class MyBudget extends React.Component {
         })
     }
 
-    buildRow(start, end, date, budget) {
+    buildRow(id, period, start, end, date, budget) {
         const items = this.context.getItems().filter(item => {
             return moment(item.start).isBefore(end) && moment(item.end).isAfter(start)
         })
@@ -141,6 +174,8 @@ class MyBudget extends React.Component {
             }
         })
         return {
+            "id": id,
+            "period": period,
             "name": date,
             "budget": budget,
             "expenses": expenses,
@@ -176,8 +211,8 @@ class MyBudget extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {period.items.map((row) => (
-                                        <BudgetRow key={row.title + row.start} row={row}/>
+                                    {period.items.map((row, index) => (
+                                        <BudgetRow key={index} row={row} onClick={this.onClickBudget}/>
                                     ))}
                                 </TableBody>
                             </Table>
@@ -191,6 +226,9 @@ class MyBudget extends React.Component {
                                       handleRecedeMonth={this.handleRecedeMonth}/>
                 <CreateBudgetFormDialog isOpen={this.state.isNewBudgetFDOpen} setOpen={this.setNewBudgetFD}
                                         handleNewBudget={this.handleNewBudget}/>
+                <ViewBudgetFormDialog isOpen={this.state.isBudgetFDOpen} setOpen={this.setBudgetFD}
+                                      currentlyOpenBudget={this.state.currentlyOpenBudget}
+                                      handleUpdateBudget={this.handleUpdateBudget}/>
             </Container>
         );
     }
