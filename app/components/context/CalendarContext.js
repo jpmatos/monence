@@ -128,6 +128,10 @@ function setCalendarDate(date){
     calendarDate = moment(date)
 }
 
+function handleNewBudget(budget){
+    calendar.budget[budget.period].push(budget)
+}
+
 export const value = {
     setCalendar: setCalendar,
     getCalendar: getCalendar,
@@ -138,7 +142,8 @@ export const value = {
     handleDeleteItem: handleDeleteItem,
     setCalendarDate: setCalendarDate,
     getCalendarDate: getCalendarDate,
-    setCalendarDateMonth: setCalendarDateMonth
+    setCalendarDateMonth: setCalendarDateMonth,
+    handleNewBudget: handleNewBudget
 }
 
 export default CalendarContext;

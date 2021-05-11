@@ -13,17 +13,20 @@ import CalendarContext from "../context/CalendarContext";
 import Typography from "@material-ui/core/Typography";
 import moment from "moment";
 import BudgetRow from "../BudgetRow";
+import CreateBudgetFormDialog from "../forms/CreateBudgetFormDialog";
+import axios from "axios";
 
 class MyBudget extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            periods: []
+            periods: [],
+            isNewBudgetFDOpen: false
         }
     }
 
     handleClickOpen = () => {
-        // this.setState({isNewItemFDOpen: true})
+        this.setState({isNewBudgetFDOpen: true})
     }
 
     handleAdvanceMonth = (event) => {
@@ -43,6 +46,22 @@ class MyBudget extends React.Component {
         this.updatePeriods()
     }
 
+    setNewBudgetFD = (event) => {
+        this.setState({isNewBudgetFDOpen: event})
+    }
+
+    handleNewBudget = (budget, cb) => {
+        axios.post(`/calendar/01/budget`, budget)
+            .then(resp => {
+                this.context.handleNewBudget(resp.data)
+                cb()
+                this.updatePeriods()
+            })
+            .catch(err => {
+                cb()
+            })
+    }
+
     updatePeriods = () => {
         this.context.getCalendar().then(calendar => {
             let weekRows = []
@@ -50,8 +69,9 @@ class MyBudget extends React.Component {
                 .filter(week => {
                     return moment(week.date).isSame(this.context.getCalendarDate(), 'month')
                 })
+                .sort((first, second) => moment(first.date).isAfter(second.date))
                 .map(week => {
-                    const start = moment(week.date).startOf('week')
+                    const start = moment(week.date).startOf('isoWeek')
                     const end = start.clone().add(7, 'day')
                     const date = `${start.format('MMM DD')} - ${end.clone().subtract(1, 'day').format('MMM DD')}`
                     const budget = parseFloat(week.value)
@@ -169,6 +189,8 @@ class MyBudget extends React.Component {
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}
                                       handleRecedeMonth={this.handleRecedeMonth}/>
+                <CreateBudgetFormDialog isOpen={this.state.isNewBudgetFDOpen} setOpen={this.setNewBudgetFD}
+                                        handleNewBudget={this.handleNewBudget}/>
             </Container>
         );
     }

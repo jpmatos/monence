@@ -73,6 +73,16 @@ class CalendarController{
             .then(item => res.status(201).json(item))
             .catch(next)
     }
+
+    //Budget
+    static postBudget(req, res, next) {
+        const calendarId = req.params.calendarId
+        const budget = req.body
+        return calendarService
+            .postBudget(calendarId, budget)
+            .then(budget => res.status(201).json(budget))
+            .catch(next)
+    }
 }
 
 module.exports = CalendarController

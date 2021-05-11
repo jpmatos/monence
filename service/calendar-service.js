@@ -39,6 +39,11 @@ class CalendarService {
             item.end = moment.utc(item.end).startOf('day').toISOString()
         return db.putItem(calendarId, itemId, item, 'recurrent')
     }
+
+    static postBudget(calendarId, budget) {
+        budget.date = moment.utc(budget.date).startOf('day').toISOString()
+        return db.postBudget(calendarId, budget)
+    }
 }
 
 module.exports = CalendarService

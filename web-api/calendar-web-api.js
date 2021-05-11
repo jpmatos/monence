@@ -37,6 +37,10 @@ function calendarWebApi(){
         calendarController.putItemRecurrent(req, res, next)
     })
 
+    //Budget
+    router.post('/:calendarId/budget', (req, res, next) => {
+        calendarController.postBudget(req, res, next)
+    })
 
     return router
 }
