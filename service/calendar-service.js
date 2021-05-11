@@ -49,6 +49,10 @@ class CalendarService {
         budget.date = moment.utc(budget.date).startOf('day').toISOString()
         return db.putBudget(calendarId, budgetId, budget)
     }
+
+    static deleteBudget(calendarId, budgetId) {
+        return db.deleteBudget(calendarId, budgetId)
+    }
 }
 
 module.exports = CalendarService

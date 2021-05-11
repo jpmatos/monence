@@ -141,6 +141,11 @@ function handleUpdateBudget(budget) {
     calendar.budget[budget.period][idx] = budget
 }
 
+function handleDeleteBudget(id, period) {
+    const idx = calendar.budget[period].findIndex(i => i.id === id)
+    calendar.budget[period].splice(idx, 1)
+}
+
 export const value = {
     setCalendar: setCalendar,
     getCalendar: getCalendar,
@@ -154,7 +159,8 @@ export const value = {
     setCalendarDateMonth: setCalendarDateMonth,
     handleNewBudget: handleNewBudget,
     getBudget: getBudget,
-    handleUpdateBudget: handleUpdateBudget
+    handleUpdateBudget: handleUpdateBudget,
+    handleDeleteBudget: handleDeleteBudget
 }
 
 export default CalendarContext;

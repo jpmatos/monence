@@ -60,6 +60,10 @@ class ViewBudgetFormDialog extends React.Component {
         this.props.handleUpdateBudget(this.props.currentlyOpenBudget.id, budget, this.handleClose)
     }
 
+    handleDelete = () => {
+        this.props.handleDeleteBudget(this.props.currentlyOpenBudget.id, this.props.currentlyOpenBudget.period, this.handleClose)
+    }
+
     printTitle() {
         if (this.props.currentlyOpenBudget.period !== undefined)
             return capitalize.words((this.props.currentlyOpenBudget.period + ' Budget'))

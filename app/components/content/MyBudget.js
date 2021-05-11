@@ -81,6 +81,18 @@ class MyBudget extends React.Component {
             })
     }
 
+    handleDeleteBudget = (id, period, cb) => {
+        axios.delete(`/calendar/01/budget/${id}`)
+            .then(resp => {
+                this.context.handleDeleteBudget(id, period)   //TODO Change to response from id
+                cb()
+                this.updatePeriods()
+            })
+            .catch(err => {
+                cb()
+            })
+    }
+
     onClickBudget = (id, period) => {
         const budget = this.context.getBudget(id, period)
         this.setState({
@@ -228,7 +240,8 @@ class MyBudget extends React.Component {
                                         handleNewBudget={this.handleNewBudget}/>
                 <ViewBudgetFormDialog isOpen={this.state.isBudgetFDOpen} setOpen={this.setBudgetFD}
                                       currentlyOpenBudget={this.state.currentlyOpenBudget}
-                                      handleUpdateBudget={this.handleUpdateBudget}/>
+                                      handleUpdateBudget={this.handleUpdateBudget}
+                                      handleDeleteBudget={this.handleDeleteBudget}/>
             </Container>
         );
     }

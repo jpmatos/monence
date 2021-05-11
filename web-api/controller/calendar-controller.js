@@ -93,6 +93,15 @@ class CalendarController{
             .then(budget => res.status(201).json(budget))
             .catch(next)
     }
+
+    static deleteBudget(req, res, next) {
+        const calendarId = req.params.calendarId
+        const budgetId = req.params.budgetId
+        return calendarService
+            .deleteBudget(calendarId, budgetId)
+            .then(msg => res.status(201).json(msg))
+            .catch(next)
+    }
 }
 
 module.exports = CalendarController

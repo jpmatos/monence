@@ -46,6 +46,10 @@ function calendarWebApi(){
         calendarController.putBudget(req, res, next)
     })
 
+    router.delete('/:calendarId/budget/:budgetId', ((req, res, next) => {
+        calendarController.deleteBudget(req, res, next)
+    }))
+
     return router
 }
 

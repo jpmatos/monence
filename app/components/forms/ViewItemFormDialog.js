@@ -88,10 +88,11 @@ class ViewItemFormDialog extends React.Component {
                 this.handleClose()
             })
     }
+
     handleDelete = () => {
         axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.recurrency}/${this.props.currentlyOpenItem.id}`)
             .then(resp => {
-                this.context.handleDeleteItem(this.props.currentlyOpenItem.id)
+                this.context.handleDeleteItem(this.props.currentlyOpenItem.id)  //TODO Change to response from id
                 this.handleClose()
             })
             .catch(err => {
