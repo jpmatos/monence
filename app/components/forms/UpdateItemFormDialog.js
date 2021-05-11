@@ -9,9 +9,7 @@ import Button from '@material-ui/core/Button'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import {KeyboardDatePicker} from '@material-ui/pickers'
-import {MuiPickersUtilsProvider} from '@material-ui/pickers'
 
-import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box, TextField} from "@material-ui/core";
 import CalendarContext from "../context/CalendarContext";
@@ -160,41 +158,37 @@ class UpdateItemFormDialog extends React.Component {
                             onChange={this.handleTitleChange}
                             type='string'
                         />
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            readOnly={!this.state.editable}
+                            autoOk={true}
+                            variant='inline'
+                            format='DD/MM/YYYY'
+                            margin='normal'
+                            id='date-picker-inline'
+                            label='Date'
+                            value={this.state.selectedDate}
+                            onChange={this.handleDateChange}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                        {this.state.isRecurrent ?
                             <KeyboardDatePicker
                                 disableToolbar
                                 readOnly={!this.state.editable}
                                 autoOk={true}
                                 variant='inline'
-                                format='MM/dd/yyyy'
+                                format='DD/MM/YYYY'
                                 margin='normal'
-                                id='date-picker-inline'
+                                id='end-date-picker-inline'
                                 label='Date'
-                                value={this.state.selectedDate}
-                                onChange={this.handleDateChange}
+                                value={this.state.selectedEndDate}
+                                onChange={this.handleEndDateChange}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
                             />
-                        </MuiPickersUtilsProvider>
-                        {this.state.isRecurrent ?
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <KeyboardDatePicker
-                                    disableToolbar
-                                    readOnly={!this.state.editable}
-                                    autoOk={true}
-                                    variant='inline'
-                                    format='MM/dd/yyyy'
-                                    margin='normal'
-                                    id='end-date-picker-inline'
-                                    label='Date'
-                                    value={this.state.selectedEndDate}
-                                    onChange={this.handleEndDateChange}
-                                    KeyboardButtonProps={{
-                                        'aria-label': 'change date',
-                                    }}
-                                />
-                            </MuiPickersUtilsProvider>
                             : null}
                         <CurrencyTextField
                             error={!this.state.validValue}

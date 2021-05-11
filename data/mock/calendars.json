@@ -9,7 +9,7 @@
         "type": "expense",
         "recurrency": "single",
         "title": "Presentation Expenses",
-        "start": "2021-05-25T05:15:05.217Z",
+        "start": "2021-05-25",
         "value": "20.00"
       }
     ],
@@ -20,15 +20,15 @@
         "recurrency": "recurrent",
         "recurrencyPeriod": "weekly",
         "title": "Presentation Expenses 2",
-        "start": "2021-05-05T05:15:05.217Z",
-        "end": "2021-05-23T05:15:05.217Z",
+        "start": "2021-05-05",
+        "end": "2021-05-23",
         "value": "20.00"
       }
     ],
     "budget": {
       "week": [
         {
-          "date": "2021-05-03T05:15:05.217Z",
+          "date": "2021-05-03",
           "value": "500.00"
         }
       ],

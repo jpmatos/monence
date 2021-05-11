@@ -5,10 +5,14 @@ import CalendarContext from './components/context/CalendarContext'
 import {value} from './components/context/CalendarContext'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
 
 
 ReactDOM.render(
-    <CalendarContext.Provider value={value}>
-        <App/>
-    </CalendarContext.Provider>
+    <MuiPickersUtilsProvider utils={MomentUtils}>
+        <CalendarContext.Provider value={value}>
+            <App/>
+        </CalendarContext.Provider>
+    </MuiPickersUtilsProvider>
     , document.getElementById('root'));

@@ -1,6 +1,5 @@
 import React from 'react'
 import axios from 'axios'
-import 'date-fns'
 
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
@@ -8,10 +7,8 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Grid from '@material-ui/core/Grid'
-import {MuiPickersUtilsProvider} from '@material-ui/pickers'
 import {KeyboardDatePicker} from '@material-ui/pickers'
 
-import DateFnsUtils from '@date-io/date-fns'
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box, TextField} from "@material-ui/core";
 import ItemTypeSwitch from "../ItemTypeSwitch";
@@ -106,12 +103,14 @@ class CreateItemFormDialog extends React.Component {
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
-            'end': this.state.selectedEndDate,
             'value': this.state.value.replaceAll(',', ''),
             'type': this.state.type,                            //expense/gain
             'recurrency': this.state.recurrency,                //single/recurrent
             'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
         }
+
+        if(this.state.recurrency === "recurrent")
+            item.end = this.state.selectedEndDate
 
         axios.post(`/calendar/01/item/${item.recurrency}`, item)
             .then(resp => {
@@ -144,22 +143,20 @@ class CreateItemFormDialog extends React.Component {
                             onChange={this.handleTitleChange}
                             type='string'
                         />
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <KeyboardDatePicker
-                                disableToolbar
-                                autoOk={true}
-                                variant='inline'
-                                format='MM/dd/yyyy'
-                                margin='normal'
-                                id='date-picker-inline'
-                                label='Date'
-                                value={this.state.selectedDate}
-                                onChange={this.handleDateChange}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </MuiPickersUtilsProvider>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            autoOk={true}
+                            variant='inline'
+                            format='DD/MM/YYYY'
+                            margin='normal'
+                            id='date-picker-inline'
+                            label='Date'
+                            value={this.state.selectedDate}
+                            onChange={this.handleDateChange}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
                         <CurrencyTextField
                             error={!this.state.validValue}
                             label='Amount'
@@ -188,7 +185,7 @@ class CreateItemFormDialog extends React.Component {
                             />
                         </Grid>
                         {this.state.recurrency === 'recurrent' ?
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <React.Fragment>
                                 <Grid
                                     container
                                     direction="row"
@@ -217,7 +214,7 @@ class CreateItemFormDialog extends React.Component {
                                     disableToolbar
                                     autoOk={true}
                                     variant='inline'
-                                    format='MM/dd/yyyy'
+                                    format='DD/MM/YYYY'
                                     margin='normal'
                                     id='date-picker-inline'
                                     label='End Date'
@@ -227,7 +224,7 @@ class CreateItemFormDialog extends React.Component {
                                         'aria-label': 'change date',
                                     }}
                                 />
-                            </MuiPickersUtilsProvider>
+                            </React.Fragment>
                             : null}
                     </Grid>
                 </DialogContent>

@@ -33,10 +33,8 @@ function getItems() {
     if (items !== null)
         return items
 
-    items = calendar.single.slice()
-    items.forEach(item => {
-        item.allDay = true
-        item.end = item.start
+    items = calendar.single.slice().map(item => {
+        return buildSingleItem(item)
     })
 
     calendar.recurrent.forEach((item) => {
@@ -51,9 +49,7 @@ function handleNewItem(item) {
     if (item.recurrency === 'recurrent') {
         items = items.concat(buildRecurrentItem(item))
     } else {
-        item.allDay = true
-        item.end = item.start
-        items.push(item)
+        items.push(buildSingleItem(item))
     }
 }
 
@@ -67,9 +63,7 @@ function handleUpdateItem(item) {
     } else {
         const itemIdx = items.findIndex(i => i.id === item.id)
         if (itemIdx !== -1) {
-            item.allDay = true
-            item.end = item.start
-            items[itemIdx] = item
+            items[itemIdx] = buildSingleItem(item)
         }
     }
 }
@@ -81,6 +75,14 @@ function handleDeleteItem(id) {
     const itemIdx = items.findIndex(i => i.id === id)
     if (itemIdx !== -1)
         items.splice(itemIdx, 1)
+}
+
+function buildSingleItem(item) {
+    let current = Object.assign({}, item)
+    current.allDay = true
+    current.start = moment(item.start)
+    current.end = moment(item.start)
+    return current
 }
 
 function buildRecurrentItem(item) {
@@ -100,11 +102,11 @@ function buildRecurrentItem(item) {
     }
 
     current.allDay = true
-    let newDate = moment(current.start).clone()
-    const endDate = moment(current.end).clone().add(1, 'day')
+    let newDate = moment(current.start)
+    const endDate = moment(current.end).add(1, 'day')
     do {
-        current.start = newDate.clone().toDate()
-        current.end = newDate.clone().toDate()
+        current.start = newDate.clone()
+        current.end = newDate.clone()
         res.push(Object.assign({}, current))
         newDate = newDate.add(1, period)
     } while (newDate.isBefore(endDate))
@@ -113,16 +115,17 @@ function buildRecurrentItem(item) {
 
 function getCalendarDate(){
     if (calendarDate !== null)
-        return calendarDate
-    return calendarDate = moment(moment.now()).toDate()
+        return moment(calendarDate).toDate()
+    calendarDate = moment.now()
+    return moment(calendarDate).toDate()
 }
 
 function setCalendarDateMonth(offset){
-    calendarDate = moment(calendarDate).add(offset, 'month').toDate()
+    calendarDate = calendarDate.add(offset, 'month')
 }
 
 function setCalendarDate(date){
-    calendarDate = date
+    calendarDate = moment(date)
 }
 
 export const value = {

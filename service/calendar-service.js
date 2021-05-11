@@ -1,3 +1,4 @@
+const moment = require ('moment')
 const db = require('../data/database-mock')
 
 class CalendarService{
@@ -7,25 +8,7 @@ class CalendarService{
     }
 
     static postItem(calendarId, item){
-        // let arrayName = ''
-        // switch (item.type){
-        //     case 'expense':
-        //         delete item.end
-        //         delete item.recurrencyPeriod
-        //         arrayName = 'expenses'
-        //         break
-        //     // case 'expenserecurrent':
-        //     //     arrayName = 'recurrentExpenses'
-        //     //     break
-        //     case 'gain':
-        //         delete item.end
-        //         delete item.recurrencyPeriod
-        //         arrayName = 'gains'
-        //         break
-        //     // case 'gainrecurrent':
-        //     //     arrayName = 'recurrentGains'
-        //     //     break
-        // }
+        item.start = moment(item.start).startOf('day').toISOString()
         return db.postItem(calendarId, item, 'single')
     }
 
@@ -34,10 +17,14 @@ class CalendarService{
     }
 
     static putItem(calendarId, itemId, item){
+        if(item.start !== undefined)
+            item.start = moment(item.start).startOf('day').toISOString()
         return db.putItem(calendarId, itemId, item, 'single')
     }
 
     static postItemRecurrent(calendarId, item){
+        item.start = moment(item.start).startOf('day').toISOString()
+        item.end = moment(item.end).startOf('day').toISOString()
         return db.postItem(calendarId, item, 'recurrent')
     }
 
@@ -46,6 +33,10 @@ class CalendarService{
     }
 
     static putItemRecurrent(calendarId, itemId, item){
+        if(item.start !== undefined)
+            item.start = moment(item.start).startOf('day').toISOString()
+        if(item.end !== undefined)
+        item.end = moment(item.end).startOf('day').toISOString()
         return db.putItem(calendarId, itemId, item, 'recurrent')
     }
 }
