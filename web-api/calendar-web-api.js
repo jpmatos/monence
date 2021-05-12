@@ -1,8 +1,6 @@
-const express = require('express');
-const router = express.Router();
 const calendarController = require('./controller/calendar-controller')
 
-function calendarWebApi(){
+function calendarWebApi(router){
     /* GET hello. */
     router.get('/hello', (req, res, next) => {
         calendarController.hello(req, res, next)

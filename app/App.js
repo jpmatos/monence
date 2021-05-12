@@ -4,6 +4,7 @@ import {CalendarContext} from "./components/context/CalendarContext";
 import './App.css'
 import axios from "axios";
 import moment from "moment";
+import {UserContext} from "./components/context/UserContext";
 
 class App extends React.Component {
     constructor(props) {
@@ -179,17 +180,14 @@ class App extends React.Component {
     }
 
 
+    ///TODO Show a loading screen instead of null
     render() {
         return (
             <CalendarContext.Provider value={this.state}>
-                <div>
-                    {this.state.calendar !== null ? <MyNavbar/> : null}
-                </div>
+                {this.state.calendar !== null ? <MyNavbar/> : null}
             </CalendarContext.Provider>
         )
     };
 }
-
-App.contextType = CalendarContext
 
 export default App;
