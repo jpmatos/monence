@@ -14,10 +14,9 @@ import {blue} from '@material-ui/core/colors';
 import FloatingActionButton from '../FloatingActionButton'
 import CreateItemFormDialog from '../forms/CreateItemFormDialog'
 import ViewItemFormDialog from '../forms/ViewItemFormDialog'
-import CalendarContext from '../context/CalendarContext'
-import Button from "@material-ui/core/Button";
+import {CalendarContext} from '../context/CalendarContext'
 import Typography from "@material-ui/core/Typography";
-import {RemoveScrollBar} from "react-remove-scroll-bar";
+import axios from "axios";
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)
@@ -39,19 +38,19 @@ class MyCalendar extends React.Component {
 
     handleAdvanceMonth = (event) => {
         event.stopPropagation()
-        this.context.setCalendarDateMonth(1)
+        this.context.offsetCalendarDate(1)
         this.forceUpdate()
     }
 
     handleRecedeMonth = (event) => {
         event.stopPropagation()
-        this.context.setCalendarDateMonth(-1)
-        this.forceUpdate()
+        this.context.offsetCalendarDate(-1)
+        // this.forceUpdate()
     }
 
     handleDateChange = (event) => {
         this.context.setCalendarDate(event)
-        this.forceUpdate()
+        // this.forceUpdate()
     }
 
     onClickItem = (item) => {
@@ -67,6 +66,45 @@ class MyCalendar extends React.Component {
 
     setItemFD = (event) => {
         this.setState({isItemFDOpen: event})
+    }
+
+    getRecurrentDates = (itemId) => {
+        const res = this.context.calendar.recurrent.find(item => item.id === itemId)
+        return {start: res.start, end: res.end}
+    }
+
+    handleNewItem = (item, cb) => {
+        axios.post(`/calendar/01/item/${item.recurrency}`, item)
+            .then(resp => {
+                this.context.handleNewItem(resp.data)
+                cb()
+            })
+            .catch(err => {
+                cb()
+            })
+    }
+
+    handleUpdateItem = (itemId, recurrency, item, cb) => {
+        axios.put(`/calendar/01/item/${recurrency}/${itemId}`, item)
+            .then(resp => {
+                this.context.handleUpdateItem(resp.data)
+                cb()
+            })
+            .catch(err => {
+                cb()
+            })
+
+    }
+
+    handleDeleteItem = (itemId, recurrency, cb) => {
+        axios.delete(`/calendar/01/item/${recurrency}/${itemId}`)
+            .then(resp => {
+                this.context.handleDeleteItem(itemId)  //TODO Change to response from id
+                cb()
+            })
+            .catch(err => {
+                cb()
+            })
     }
 
     eventStyleGetter(event, start, end, isSelected) {
@@ -100,12 +138,12 @@ class MyCalendar extends React.Component {
         return (
             <Container style={{height: 800}}>
                 <Typography variant='h4' align='center'>
-                    {moment(this.context.getCalendarDate()).format("MMMM YYYY")}
+                    {moment(this.context.calendarDate).format("MMMM YYYY")}
                 </Typography>
                 <Calendar
                     localizer={localizer}
-                    date={this.context.getCalendarDate()}
-                    events={this.context.getItems()}
+                    date={moment(this.context.calendarDate).toDate()}
+                    events={this.context.items}
                     startAccessor='start'
                     endAccessor='end'
                     onSelectEvent={this.onClickItem}
@@ -114,14 +152,18 @@ class MyCalendar extends React.Component {
                     onNavigate={() => {
                     }}
                 />
-                <FloatingActionButton date={this.context.getCalendarDate()}
+                <FloatingActionButton date={this.context.calendarDate}
                                       handleOnClickFAB={this.handleClickOpen}
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}
                                       handleRecedeMonth={this.handleRecedeMonth}/>
-                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}/>
+                <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}
+                                      handleNewItem={this.handleNewItem}/>
                 <ViewItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
-                                    currentlyOpenItem={this.state.currentlyOpenItem}/>
+                                    currentlyOpenItem={this.state.currentlyOpenItem}
+                                    getRecurrentDates={this.getRecurrentDates}
+                                    handleUpdateItem={this.handleUpdateItem}
+                                    handleDeleteItem={this.handleDeleteItem}/>
             </Container>
         )
     }

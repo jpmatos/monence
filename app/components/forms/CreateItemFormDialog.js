@@ -14,7 +14,6 @@ import {Box, TextField} from "@material-ui/core";
 import ItemTypeSwitch from "../ItemTypeSwitch";
 import ItemRecurrencySwitch from "../ItemRecurrencySwitch";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
-import CalendarContext from "../context/CalendarContext";
 
 class CreateItemFormDialog extends React.Component {
     constructor(props) {
@@ -112,14 +111,7 @@ class CreateItemFormDialog extends React.Component {
         if(this.state.recurrency === "recurrent")
             item.end = this.state.selectedEndDate
 
-        axios.post(`/calendar/01/item/${item.recurrency}`, item)
-            .then(resp => {
-                this.context.handleNewItem(resp.data)
-                this.handleClose()
-            })
-            .catch(err => {
-                this.handleClose()
-            })
+        this.props.handleNewItem(item, this.handleClose)
     }
 
     render() {
@@ -251,7 +243,5 @@ class CreateItemFormDialog extends React.Component {
         )
     }
 }
-
-CreateItemFormDialog.contextType = CalendarContext
 
 export default CreateItemFormDialog

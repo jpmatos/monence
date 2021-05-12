@@ -12,7 +12,6 @@ import {KeyboardDatePicker} from '@material-ui/pickers'
 
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box, TextField} from "@material-ui/core";
-import CalendarContext from "../context/CalendarContext";
 
 class ViewItemFormDialog extends React.Component {
     constructor(props) {
@@ -79,25 +78,11 @@ class ViewItemFormDialog extends React.Component {
         if (fail)
             return
 
-        axios.put(`/calendar/01/item/${this.props.currentlyOpenItem.recurrency}/${this.props.currentlyOpenItem.id}`, item)
-            .then(resp => {
-                this.context.handleUpdateItem(resp.data)
-                this.handleClose()
-            })
-            .catch(err => {
-                this.handleClose()
-            })
+        this.props.handleUpdateItem(this.props.currentlyOpenItem.id, this.props.currentlyOpenItem.recurrency, item, this.handleClose)
     }
 
     handleDelete = () => {
-        axios.delete(`/calendar/01/item/${this.props.currentlyOpenItem.recurrency}/${this.props.currentlyOpenItem.id}`)
-            .then(resp => {
-                this.context.handleDeleteItem(this.props.currentlyOpenItem.id)  //TODO Change to response from id
-                this.handleClose()
-            })
-            .catch(err => {
-                this.handleClose()
-            })
+        this.props.handleDeleteItem(this.props.currentlyOpenItem.id, this.props.currentlyOpenItem.recurrency, this.handleClose)
     }
 
     capitalizeWord() {
@@ -113,7 +98,7 @@ class ViewItemFormDialog extends React.Component {
             let start, end
             const isRecurrent = this.props.currentlyOpenItem.recurrency === 'recurrent'
             if (isRecurrent) {
-                const res = this.context.getRecurrentDates(this.props.currentlyOpenItem.id)
+                const res = this.props.getRecurrentDates(this.props.currentlyOpenItem.id)
                 start = res.start
                 end = res.end
             } else {
@@ -238,7 +223,5 @@ class ViewItemFormDialog extends React.Component {
         )
     }
 }
-
-ViewItemFormDialog.contextType = CalendarContext
 
 export default ViewItemFormDialog
