@@ -8,6 +8,10 @@ class UserService {
     static getCalendars(userId) {
         return db.getCalendars(userId)
     }
+
+    static postCalendar(userId, calendar) {
+        return db.postCalendar(userId, calendar)
+    }
 }
 
 module.exports =  UserService

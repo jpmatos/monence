@@ -130,6 +130,30 @@ class DatabaseMock {
         return Promise.resolve(this.users[userIdx].calendars)
     }
 
+    static postCalendar(userId, calendar) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
+        calendar.id = uuid()
+
+        this.users[userIdx].calendars.push(calendar)
+        this.calendars.push({
+            "name": calendar.name,
+            "ownerId": userId,
+            "id": calendar.id,
+            "single": [],
+            "recurrent": [],
+            "budget": {
+                "week": [],
+                "month": [],
+                "year": []
+            }
+        })
+
+        return Promise.resolve(calendar)
+    }
+
     static readFile(filePath) {
         return fs
             .readFile(filePath)

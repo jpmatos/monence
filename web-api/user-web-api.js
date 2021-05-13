@@ -5,6 +5,10 @@ function userWebApi(router) {
         userController.getCalendars(req, res, next)
     })
 
+    router.post('/calendars', (req, res, next) => {
+        userController.postCalendar(req, res, next)
+    })
+
     return router
 }
 
