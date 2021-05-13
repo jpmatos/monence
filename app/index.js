@@ -13,7 +13,8 @@ class UserContextBinder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            session: null
+            session: null,
+            calendars: null
         }
     }
 
@@ -21,14 +22,27 @@ class UserContextBinder extends React.Component {
         axios.get('/auth/session')
             .then(res => {
                 this.setState({session: res.data})
+                if (res.data.isAuthenticated)
+                    axios.get('/user/calendars')
+                        .then((res) => {
+                            this.setState({calendars: res.data})
+                        })
             })
     }
 
-    ///TODO Add a loading screen while waiting for session
+    ///TODO Add a loading screen while waiting for session and calendars
     render() {
         return (
             <UserContext.Provider value={this.state}>
-                {this.state.session === null ? null : this.state.session.isAuthenticated ? <App/> : <LoginPage/>}
+                {this.state.session !== null ?
+                    this.state.session.isAuthenticated ?
+                        this.state.calendars !== null ?
+                            this.state.calendars.length !== 0 ?
+                                <App/> :
+                                <LoginPage needsCalendar={true}/> :
+                            null :
+                        <LoginPage needsCalendar={false}/> :
+                    null}
             </UserContext.Provider>
         );
     }

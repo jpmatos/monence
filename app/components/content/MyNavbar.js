@@ -1,6 +1,5 @@
 import React from 'react'
 import clsx from 'clsx'
-import PropTypes from 'prop-types'
 import {HashRouter, Route} from 'react-router-dom'
 import {Link as RouterLink} from 'react-router-dom'
 
@@ -171,7 +170,7 @@ class MyNavbar extends React.Component {
                     <div className={classes.toolbar}/>
                     <Divider/>
                     <List>
-                        <ListItemLink to='/' primary='Overview' icon={<OverViewIcon/>} listClass={classes.list}/>
+                        <ListItemLink to='/home' primary='Home' icon={<OverViewIcon/>} listClass={classes.list}/>
                         <ListItemLink to='/calendar' primary='Calendar' icon={<CalendarIcon/>}
                                       listClass={classes.list}/>
                         <ListItemLink to='/budget' primary='Budget' icon={<EuroIcon/>}
@@ -181,7 +180,7 @@ class MyNavbar extends React.Component {
                     </List>
                 </Drawer>
                 <Container maxWidth='lg' className={classes.content}>
-                    <Route exact path='/' component={PlaceHolder}/>
+                    <Route path='/home' component={PlaceHolder}/>
                     <Route path='/calendar' component={MyCalendar}/>
                     <Route path='/budget' component={MyBudget}/>
                     <Route path='/forecast' component={PlaceHolder}/>

@@ -11,8 +11,9 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import GoogleButton from "react-google-button";
+import {UserContext} from "../context/UserContext";
 
 function Copyright() {
     return (
@@ -24,7 +25,7 @@ function Copyright() {
     );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme => ({
     root: {
         height: '100vh',
     },
@@ -55,37 +56,42 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function LoginPage() {
-    const classes = useStyles();
+class LoginPage extends React.Component {
 
-    return (
-        <Grid container component="main" className={classes.root}>
-            <CssBaseline/>
-            <Grid item xs={false} sm={4} md={7} className={classes.image}/>
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} container
-                  direction="column"
-                  justify="center"
-                  alignItems="center">
-                <div className={classes.paper}>
-                    <Box mb={2}>
-                        <Typography variant="h4">
-                            Monence
-                        </Typography>
-                    </Box>
-                    {/*<Avatar className={classes.avatar}>*/}
-                    {/*    <LockOutlinedIcon/>*/}
-                    {/*</Avatar>*/}
-                    <form className={classes.form} noValidate>
-                        <GoogleButton onClick={(e) => {
-                            e.preventDefault();
-                            window.location.href = '/auth/google';
-                        }}/>
-                        <Box mt={5}>
-                            <Copyright/>
+    render() {
+        const {classes} = this.props
+        return (
+            <Grid container component="main" className={classes.root}>
+                <CssBaseline/>
+                <Grid item xs={false} sm={4} md={7} className={classes.image}/>
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} container
+                      direction="column"
+                      justify="center"
+                      alignItems="center">
+                    <div className={classes.paper}>
+                        <Box mb={2}>
+                            <Typography variant="h4">
+                                Monence
+                            </Typography>
                         </Box>
-                    </form>
-                </div>
+                        {this.props.needsCalendar ?
+                            <h3>TODO Calendar Form</h3> :
+                            <form className={classes.form} noValidate>
+                                <GoogleButton onClick={(e) => {
+                                    e.preventDefault();
+                                    window.location.href = '/auth/google';
+                                }}/>
+                                <Box mt={5}>
+                                    <Copyright/>
+                                </Box>
+                            </form>}
+                    </div>
+                </Grid>
             </Grid>
-        </Grid>
-    );
+        );
+    }
 }
+
+LoginPage.contextType = UserContext
+
+export default withStyles(useStyles)(LoginPage)
