@@ -74,7 +74,7 @@ class MyCalendar extends React.Component {
     }
 
     handleNewItem = (item, cb) => {
-        axios.post(`/calendar/01/item/${item.recurrency}`, item)
+        axios.post(`/calendar/${this.context.calendarId}/item/${item.recurrency}`, item)
             .then(resp => {
                 this.context.handleNewItem(resp.data)
                 cb()
@@ -85,7 +85,7 @@ class MyCalendar extends React.Component {
     }
 
     handleUpdateItem = (itemId, recurrency, item, cb) => {
-        axios.put(`/calendar/01/item/${recurrency}/${itemId}`, item)
+        axios.put(`/calendar/${this.context.calendarId}/item/${recurrency}/${itemId}`, item)
             .then(resp => {
                 this.context.handleUpdateItem(resp.data)
                 cb()
@@ -97,7 +97,7 @@ class MyCalendar extends React.Component {
     }
 
     handleDeleteItem = (itemId, recurrency, cb) => {
-        axios.delete(`/calendar/01/item/${recurrency}/${itemId}`)
+        axios.delete(`/calendar/${this.context.calendarId}/item/${recurrency}/${itemId}`)
             .then(resp => {
                 this.context.handleDeleteItem(itemId)  //TODO Change to response from id
                 cb()

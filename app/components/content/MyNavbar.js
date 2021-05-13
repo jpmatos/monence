@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
-import {HashRouter, Route} from 'react-router-dom'
+import {HashRouter, Route, Redirect, Switch} from 'react-router-dom'
 import {Link as RouterLink} from 'react-router-dom'
 
 import {withStyles} from '@material-ui/core/styles'
@@ -25,6 +25,8 @@ import EuroIcon from '@material-ui/icons/Euro';
 import MyCalendar from './MyCalendar'
 import PlaceHolder from './PlaceHolder'
 import MyBudget from "./MyBudget";
+import {UserContext} from "../context/UserContext";
+import {CalendarContext} from "../context/CalendarContext";
 
 const drawerWidth = 220
 
@@ -170,24 +172,32 @@ class MyNavbar extends React.Component {
                     <div className={classes.toolbar}/>
                     <Divider/>
                     <List>
-                        <ListItemLink to='/home' primary='Home' icon={<OverViewIcon/>} listClass={classes.list}/>
-                        <ListItemLink to='/calendar' primary='Calendar' icon={<CalendarIcon/>}
+                        <ListItemLink to={`/home?c=${this.context.calendarId}`} primary='Home' icon={<OverViewIcon/>}
                                       listClass={classes.list}/>
-                        <ListItemLink to='/budget' primary='Budget' icon={<EuroIcon/>}
+                        <ListItemLink to={`/calendar?c=${this.context.calendarId}`} primary='Calendar'
+                                      icon={<CalendarIcon/>}
                                       listClass={classes.list}/>
-                        <ListItemLink to='/forecast' primary='Forecast' icon={<ForecastIcon/>}
+                        <ListItemLink to={`/budget?c=${this.context.calendarId}`} primary='Budget' icon={<EuroIcon/>}
+                                      listClass={classes.list}/>
+                        <ListItemLink to={`/forecast?c=${this.context.calendarId}`} primary='Forecast'
+                                      icon={<ForecastIcon/>}
                                       listClass={classes.list}/>
                     </List>
                 </Drawer>
                 <Container maxWidth='lg' className={classes.content}>
-                    <Route path='/home' component={PlaceHolder}/>
-                    <Route path='/calendar' component={MyCalendar}/>
-                    <Route path='/budget' component={MyBudget}/>
-                    <Route path='/forecast' component={PlaceHolder}/>
+                    <Switch>
+                        <Route path='/home*' component={PlaceHolder}/>
+                        <Route path='/calendar*' component={MyCalendar}/>
+                        <Route path='/budget*' component={MyBudget}/>
+                        <Route path='/forecast*' component={PlaceHolder}/>
+                        <Redirect to={`/home?c=${this.context.calendarId}`}/>
+                    </Switch>
                 </Container>
             </HashRouter>
         )
     }
 }
+
+MyNavbar.contextType = CalendarContext
 
 export default withStyles(useStyles)(MyNavbar)

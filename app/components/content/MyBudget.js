@@ -60,7 +60,7 @@ class MyBudget extends React.Component {
     }
 
     handleNewBudget = (budget, cb) => {
-        axios.post(`/calendar/01/budget`, budget)
+        axios.post(`/calendar/${this.context.calendarId}/budget`, budget)
             .then(resp => {
                 this.context.handleNewBudget(resp.data)
                 cb()
@@ -72,7 +72,7 @@ class MyBudget extends React.Component {
     }
 
     handleUpdateBudget = (id, budget, cb) => {
-        axios.put(`/calendar/01/budget/${id}`, budget)
+        axios.put(`/calendar/${this.context.calendarId}/budget/${id}`, budget)
             .then(resp => {
                 this.context.handleUpdateBudget(resp.data)
                 cb()
@@ -84,7 +84,7 @@ class MyBudget extends React.Component {
     }
 
     handleDeleteBudget = (id, period, cb) => {
-        axios.delete(`/calendar/01/budget/${id}`)
+        axios.delete(`/calendar/${this.context.calendarId}/budget/${id}`)
             .then(resp => {
                 this.context.handleDeleteBudget(id, period)   //TODO Change to response from id
                 cb()

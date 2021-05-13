@@ -5,6 +5,7 @@ import './App.css'
 import axios from "axios";
 import moment from "moment";
 import {UserContext} from "./components/context/UserContext";
+import * as qs from "qs";
 
 class App extends React.Component {
     constructor(props) {
@@ -153,9 +154,18 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({calendarId: '01'})  //TODO change to user calendar
+        //Read id from query string
+        let calendarId = new URL(`https://1.com?${window.location.href.split("?")[1]}`).searchParams.get("c")
+
+        //If one wasn't specified, read first calendar in calendars array
+        if(calendarId === undefined || calendarId === null){
+            calendarId = this.context.calendars[0].id
+            // const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?c=${calendarId}`;
+            // window.history.replaceState({path: newUrl}, '', newUrl)
+        }
+
         if (this.state.calendar === null)       //TODO or if Ids don't match
-            axios.get(`/calendar/01`)
+            axios.get(`/calendar/${calendarId}`)
                 .then(res => {
                     const calendar = res.data
 
@@ -168,6 +178,7 @@ class App extends React.Component {
                     })
 
                     this.setState({
+                        calendarId: calendarId,
                         calendar: calendar,
                         items: items
                     })
@@ -189,5 +200,7 @@ class App extends React.Component {
         )
     };
 }
+
+App.contextType = UserContext
 
 export default App;
