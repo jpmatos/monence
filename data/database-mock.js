@@ -8,6 +8,10 @@ class DatabaseMock {
             .then(res => {
                 this.calendars = res
             })
+        DatabaseMock.readFile(path.join(__dirname, '/mock/users.json'))
+            .then(res => {
+                this.users = res
+            })
         return DatabaseMock
     }
 
@@ -101,6 +105,26 @@ class DatabaseMock {
         this.calendars[calendarIdx].budget['year'] = this.calendars[calendarIdx].budget['year'].filter((budget) => budget.id !== budgetId)
 
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
+    }
+
+    static verifyNewUser(userId) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if(userIdx === -1){
+            this.users.push({
+                'userId': userId,
+                'calendars': []
+            })
+            return Promise.resolve('Created new user')
+        }
+        return Promise.resolve('User already exists')
+    }
+
+    static getCalendars(userId) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
+        return Promise.resolve(this.users[userIdx].calendars)
     }
 
     static readFile(filePath) {

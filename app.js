@@ -13,6 +13,7 @@ const session = require('express-session')
 const webpackConfig = require('./webpack.config.js')
 const calendarRoutes = require('./web-api/calendar-web-api')
 const authRoutes = require('./web-api/auth-web-api')
+const userRoutes = require('./web-api/user-web-api')
 
 // Use the GoogleStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
@@ -60,5 +61,6 @@ app.use(passport.session());
 //Routes
 app.use('/calendar', calendarRoutes(express.Router()))
 app.use('/auth', authRoutes(express.Router(), passport))
+app.use('/user', userRoutes(express.Router()))
 
 module.exports = app

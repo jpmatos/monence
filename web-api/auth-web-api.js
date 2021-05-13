@@ -1,3 +1,5 @@
+const authController = require("./controller/auth-controller");
+
 function authWebApi(router, passport) {
 
     router.get('/google',
@@ -10,8 +12,8 @@ function authWebApi(router, passport) {
 
     router.get('/google/callback',
         passport.authenticate('google', {failureRedirect: '/failed'}),
-        function (req, res) {
-            res.redirect('/');
+        (req, res, next) => {
+            authController.verifyNewUser(req, res, next)
         });
 
     router.get('/session', (req, res, next) => {
