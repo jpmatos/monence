@@ -160,8 +160,6 @@ class App extends React.Component {
         //If one wasn't specified, read first calendar in calendars array
         if(calendarId === undefined || calendarId === null){
             calendarId = this.context.calendars[0].id
-            // const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?c=${calendarId}`;
-            // window.history.replaceState({path: newUrl}, '', newUrl)
         }
 
         if (this.state.calendar === null)       //TODO or if Ids don't match

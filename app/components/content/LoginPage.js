@@ -58,6 +58,33 @@ const useStyles = (theme => ({
 
 class LoginPage extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            calendarName: null,
+            validCalendarName: true
+        }
+    }
+
+    handleCalendarNameChange = (event) => {
+        this.setState({
+            calendarName: event.target.value,
+            validCalendarName: event.target.value !== ''
+        })
+    }
+
+    handleCreate = () => {
+        if(!this.state.validCalendarName)
+            return
+
+        if(this.state.calendarName === ''){
+            this.setState({validCalendarName: false})
+            return
+        }
+
+        this.props.handleCreateCalendar(this.state.calendarName)
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -73,9 +100,30 @@ class LoginPage extends React.Component {
                             <Typography variant="h4">
                                 Monence
                             </Typography>
+                            {/*<Typography align='center'>*/}
+                            {/*    <Box fontStyle="italic" mt={2} mb={-1}>*/}
+                            {/*        */}
+                            {/*    </Box>*/}
+                            {/*</Typography>*/}
                         </Box>
                         {this.props.needsCalendar ?
-                            <h3>TODO Calendar Form</h3> :
+                            <React.Fragment>
+                                <TextField
+                                    error={!this.state.validCalendarName}
+                                    id='Calendar Name'
+                                    style={{width: 230}}
+                                    label='Give your first calendar a name'
+                                    placeholder='ex: Personal Calendar'
+                                    value={this.calendarName}
+                                    onChange={this.handleCalendarNameChange}
+                                    type='string'
+                                />
+                                <Box mt={2}>
+                                    <Button onClick={this.handleCreate} color='primary'>
+                                        Start!
+                                    </Button>
+                                </Box>
+                            </React.Fragment> :
                             <form className={classes.form} noValidate>
                                 <GoogleButton onClick={(e) => {
                                     e.preventDefault();

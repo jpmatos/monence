@@ -18,6 +18,18 @@ class UserContextBinder extends React.Component {
         }
     }
 
+    handleCreateCalendar = (calendarName) => {
+        const calendar = {name: calendarName}
+        axios.post('/user/calendars', calendar)
+            .then(res => {
+                const calendars = this.state.calendars
+                calendars.push(res.data)
+                this.setState({
+                    calendars: calendars
+                })
+            })
+    }
+
     componentDidMount() {
         axios.get('/auth/session')
             .then(res => {
@@ -40,7 +52,7 @@ class UserContextBinder extends React.Component {
                         this.state.calendars !== null ?
                             this.state.calendars.length !== 0 ?
                                 <App/> :
-                                <LoginPage needsCalendar={true}/> :
+                                <LoginPage needsCalendar={true} handleCreateCalendar={this.handleCreateCalendar}/> :
                             null :
                         <LoginPage needsCalendar={false}/> :
                     null}
