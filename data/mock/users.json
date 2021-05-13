@@ -1,3 +1,25 @@
 [
-
+  {
+    "id": "116214599289964436618",
+    "name": {
+      "familyName": "Matos",
+      "givenName": "João"
+    },
+    "emails": [
+      {
+        "value": "joao.matos.jm@gmail.com",
+        "verified": true
+      }
+    ],
+    "photos": [
+      {
+        "value": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c"
+      }
+    ],
+    "calendars": [
+      {
+        "id": "987a7d1d-d083-492a-89d9-8c613f7a1301"
+      }
+    ]
+  }
 ]

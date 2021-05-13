@@ -24,7 +24,7 @@ function authWebApi(router, passport) {
                 'name': req.user.displayName,
                 'emails': req.user.emails,
                 'photos': req.user.photos,
-                'provide': req.user.provider
+                'provide': req.user.provide
             }
             res.json(googleUser);
         } else {

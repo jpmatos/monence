@@ -107,11 +107,14 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
     }
 
-    static verifyNewUser(userId) {
+    static verifyNewUser(userId, name, emails, photos) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if(userIdx === -1){
             this.users.push({
-                'userId': userId,
+                'id': userId,
+                'name': name,
+                'emails': emails,
+                'photos': photos,
                 'calendars': []
             })
             return Promise.resolve('Created new user')

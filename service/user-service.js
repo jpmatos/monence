@@ -1,8 +1,8 @@
 const db = require('../data/database-mock')
 
 class UserService {
-    static verifyNewUser(userId) {
-        return db.verifyNewUser(userId)
+    static verifyNewUser(userId, name, emails, photos) {
+        return db.verifyNewUser(userId, name, emails, photos)
     }
 
     static getCalendars(userId) {
