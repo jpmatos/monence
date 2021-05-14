@@ -16,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import OverViewIcon from '@material-ui/icons/Visibility'
+import HomeIcon from '@material-ui/icons/Home';
 import CalendarIcon from '@material-ui/icons/CalendarToday'
 import ForecastIcon from '@material-ui/icons/TrendingUp'
 import Container from '@material-ui/core/Container'
@@ -25,8 +25,8 @@ import EuroIcon from '@material-ui/icons/Euro';
 import MyCalendar from './MyCalendar'
 import PlaceHolder from './PlaceHolder'
 import MyBudget from "./MyBudget";
-import {UserContext} from "../context/UserContext";
 import {CalendarContext} from "../context/CalendarContext";
+import MyHome from "./MyHome";
 
 const drawerWidth = 220
 
@@ -172,7 +172,7 @@ class MyNavbar extends React.Component {
                     <div className={classes.toolbar}/>
                     <Divider/>
                     <List>
-                        <ListItemLink to={`/home?c=${this.context.calendarId}`} primary='Home' icon={<OverViewIcon/>}
+                        <ListItemLink to={`/home?c=${this.context.calendarId}`} primary='Home' icon={<HomeIcon/>}
                                       listClass={classes.list}/>
                         <ListItemLink to={`/calendar?c=${this.context.calendarId}`} primary='Calendar'
                                       icon={<CalendarIcon/>}
@@ -186,7 +186,7 @@ class MyNavbar extends React.Component {
                 </Drawer>
                 <Container maxWidth='lg' className={classes.content}>
                     <Switch>
-                        <Route path='/home*' component={PlaceHolder}/>
+                        <Route path='/home*' component={MyHome}/>
                         <Route path='/calendar*' component={MyCalendar}/>
                         <Route path='/budget*' component={MyBudget}/>
                         <Route path='/forecast*' component={PlaceHolder}/>

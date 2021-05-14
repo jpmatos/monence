@@ -15,6 +15,7 @@ class App extends React.Component {
             calendarId: null,
             calendarDate: null,
             items: null,
+            setCalendarId: this.setCalendarId,
             setCalendarDate: this.setCalendarDate,
             offsetCalendarDate: this.offsetCalendarDate,
             handleNewItem: this.handleNewItem,
@@ -24,6 +25,12 @@ class App extends React.Component {
             handleUpdateBudget: this.handleUpdateBudget,
             handleDeleteBudget: this.handleDeleteBudget
         }
+    }
+
+    setCalendarId = (id) => {
+        this.setState({
+            calendarId: id
+        })
     }
 
     offsetCalendarDate = (offset) => {
@@ -153,17 +160,9 @@ class App extends React.Component {
         return res
     }
 
-    componentDidMount() {
-        //Read id from query string
-        let calendarId = new URL(`https://1.com?${window.location.href.split("?")[1]}`).searchParams.get("c")
-
-        //If one wasn't specified, read first calendar in calendars array
-        if(calendarId === undefined || calendarId === null){
-            calendarId = this.context.calendars[0].id
-        }
-
-        if (this.state.calendar === null)       //TODO or if Ids don't match
-            axios.get(`/calendar/${calendarId}`)
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.calendarId !== this.state.calendarId && prevState.calendarId !== null) {
+            axios.get(`/calendar/${this.state.calendarId}`)
                 .then(res => {
                     const calendar = res.data
 
@@ -176,16 +175,45 @@ class App extends React.Component {
                     })
 
                     this.setState({
-                        calendarId: calendarId,
+                        calendarId: this.state.calendarId,
                         calendar: calendar,
                         items: items
                     })
                 })
                 .catch()    //TODO
-        if (this.state.calendarDate === null)
-            this.setState({
-                calendarDate: moment.now()
+        }
+    }
+
+    componentDidMount() {
+        //Read id from query string
+        let calendarId = new URL(`https://1.com?${window.location.href.split("?")[1]}`).searchParams.get("c")
+
+        //If one wasn't specified, read first calendar in calendars array
+        if (calendarId === undefined || calendarId === null) {
+            calendarId = this.context.calendars[0].id
+        }
+        axios.get(`/calendar/${calendarId}`)
+            .then(res => {
+                const calendar = res.data
+
+                let items = calendar.single.slice().map(item => {
+                    return this.buildSingleItem(item)
+                })
+
+                calendar.recurrent.forEach((item) => {
+                    items = items.concat(this.buildRecurrentItem(item))
+                })
+
+                this.setState({
+                    calendarId: calendarId,
+                    calendar: calendar,
+                    items: items
+                })
             })
+            .catch()    //TODO
+        this.setState({
+            calendarDate: moment.now()
+        })
     }
 
 

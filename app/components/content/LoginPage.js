@@ -82,7 +82,7 @@ class LoginPage extends React.Component {
             return
         }
 
-        this.props.handleCreateCalendar(this.state.calendarName)
+        this.context.handleCreateCalendar(this.state.calendarName)
     }
 
     render() {
@@ -100,11 +100,6 @@ class LoginPage extends React.Component {
                             <Typography variant="h4">
                                 Monence
                             </Typography>
-                            {/*<Typography align='center'>*/}
-                            {/*    <Box fontStyle="italic" mt={2} mb={-1}>*/}
-                            {/*        */}
-                            {/*    </Box>*/}
-                            {/*</Typography>*/}
                         </Box>
                         {this.props.needsCalendar ?
                             <React.Fragment>

@@ -5,6 +5,7 @@ export const CalendarContext = React.createContext({
     calendarId: null,
     calendarDate: null,
     items: null,
+    setCalendarId: () => {},
     setCalendarDate: () => {},
     offsetCalendarDate: () => {},
     handleNewItem: () => {},
