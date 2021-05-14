@@ -21,18 +21,22 @@ import CalendarIcon from '@material-ui/icons/CalendarToday'
 import ForecastIcon from '@material-ui/icons/TrendingUp'
 import Container from '@material-ui/core/Container'
 import EuroIcon from '@material-ui/icons/Euro';
+import SettingsIcon from '@material-ui/icons/Settings';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import MyCalendar from './MyCalendar'
 import PlaceHolder from './PlaceHolder'
 import MyBudget from "./MyBudget";
 import {CalendarContext} from "../context/CalendarContext";
 import MyHome from "./MyHome";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 const drawerWidth = 220
 
 const useStyles = (theme) => ({
     root: {
-        display: 'flex',
+        display: 'flex'
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -56,11 +60,12 @@ const useStyles = (theme) => ({
         display: 'none',
     },
     drawer: {
-        width: drawerWidth,
+        width: '100%',
         flexShrink: 0,
         whiteSpace: 'nowrap',
     },
     drawerOpen: {
+        overflowX: 'hidden',
         width: drawerWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
@@ -90,8 +95,12 @@ const useStyles = (theme) => ({
         paddingLeft: theme.spacing(3)
     },
     content: {
+        justifyContent: 'flex-end',
         paddingTop: theme.spacing(9) + 1
     },
+    bottomPush: {
+        height: '100%'
+    }
 })
 
 function ListItemLink(props) {
@@ -171,18 +180,37 @@ class MyNavbar extends React.Component {
                 >
                     <div className={classes.toolbar}/>
                     <Divider/>
-                    <List>
-                        <ListItemLink to={`/home?c=${this.context.calendarId}`} primary='Home' icon={<HomeIcon/>}
-                                      listClass={classes.list}/>
-                        <ListItemLink to={`/calendar?c=${this.context.calendarId}`} primary='Calendar'
-                                      icon={<CalendarIcon/>}
-                                      listClass={classes.list}/>
-                        <ListItemLink to={`/budget?c=${this.context.calendarId}`} primary='Budget' icon={<EuroIcon/>}
-                                      listClass={classes.list}/>
-                        <ListItemLink to={`/forecast?c=${this.context.calendarId}`} primary='Forecast'
-                                      icon={<ForecastIcon/>}
-                                      listClass={classes.list}/>
-                    </List>
+                    <Grid
+                        container
+                        direction="column"
+                        justify="space-between"
+                        alignItems="flex-start"
+                        style={{
+                            height: '100%',
+                            minHeight: '450px'
+                        }}
+                    >
+                        <List>
+                            <ListItemLink to={`/home?c=${this.context.calendarId}`} primary='Home'
+                                          icon={<HomeIcon/>}
+                                          listClass={classes.list}/>
+                            <ListItemLink to={`/calendar?c=${this.context.calendarId}`} primary='Calendar'
+                                          icon={<CalendarIcon/>}
+                                          listClass={classes.list}/>
+                            <ListItemLink to={`/budget?c=${this.context.calendarId}`} primary='Budget'
+                                          icon={<EuroIcon/>}
+                                          listClass={classes.list}/>
+                            <ListItemLink to={`/forecast?c=${this.context.calendarId}`} primary='Forecast'
+                                          icon={<ForecastIcon/>}
+                                          listClass={classes.list}/>
+                        </List >
+                        <List>
+                            <ListItemLink to={`/settings?c=${this.context.calendarId}`} primary='Settings' icon={<SettingsIcon/>}
+                                          listClass={classes.list}/>
+                            <ListItemLink to={`/logout?c=${this.context.calendarId}`} primary='Logout' icon={<ExitToAppIcon/>}
+                                          listClass={classes.list}/>
+                        </List>
+                    </Grid>
                 </Drawer>
                 <Container maxWidth='lg' className={classes.content}>
                     <Switch>
@@ -190,6 +218,8 @@ class MyNavbar extends React.Component {
                         <Route path='/calendar*' component={MyCalendar}/>
                         <Route path='/budget*' component={MyBudget}/>
                         <Route path='/forecast*' component={PlaceHolder}/>
+                        <Route path='/settings*' component={PlaceHolder}/>
+                        <Route path='/logout*' component={PlaceHolder}/>
                         <Redirect to={`/home?c=${this.context.calendarId}`}/>
                     </Switch>
                 </Container>
