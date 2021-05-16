@@ -31,6 +31,7 @@ import {CalendarContext} from "../context/CalendarContext";
 import MyHome from "./MyHome";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import MySettings from "./MySettings";
 
 const drawerWidth = 220
 
@@ -203,11 +204,10 @@ class MyNavbar extends React.Component {
                             <ListItemLink to={`/forecast?c=${this.context.calendarId}`} primary='Forecast'
                                           icon={<ForecastIcon/>}
                                           listClass={classes.list}/>
-                        </List >
+                        </List>
                         <List>
-                            <ListItemLink to={`/settings?c=${this.context.calendarId}`} primary='Settings' icon={<SettingsIcon/>}
-                                          listClass={classes.list}/>
-                            <ListItemLink to={`/logout?c=${this.context.calendarId}`} primary='Logout' icon={<ExitToAppIcon/>}
+                            <ListItemLink to={`/settings?c=${this.context.calendarId}`} primary='Settings'
+                                          icon={<SettingsIcon/>}
                                           listClass={classes.list}/>
                         </List>
                     </Grid>
@@ -218,8 +218,7 @@ class MyNavbar extends React.Component {
                         <Route path='/calendar*' component={MyCalendar}/>
                         <Route path='/budget*' component={MyBudget}/>
                         <Route path='/forecast*' component={PlaceHolder}/>
-                        <Route path='/settings*' component={PlaceHolder}/>
-                        <Route path='/logout*' component={PlaceHolder}/>
+                        <Route path='/settings*' component={MySettings}/>
                         <Redirect to={`/home?c=${this.context.calendarId}`}/>
                     </Switch>
                 </Container>

@@ -15,7 +15,8 @@ class UserContextBinder extends React.Component {
         this.state = {
             session: null,
             calendars: null,
-            handleCreateCalendar: this.handleCreateCalendar
+            handleCreateCalendar: this.handleCreateCalendar,
+            handleLogout: this.handleLogout
         }
     }
 
@@ -29,6 +30,31 @@ class UserContextBinder extends React.Component {
                     calendars: calendars
                 })
             })
+    }
+
+    handleLogout = () => {
+        axios.get('/auth/logout')
+            .then(() => {
+                this.setState({
+                    sessions: null,
+                    calendars: null
+                })
+            })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.sessions !== null && this.state.sessions === null){
+            window.history.replaceState(null, '', window.location.origin + '/#/')
+            axios.get('/auth/session')
+                .then(res => {
+                    this.setState({session: res.data})
+                    if (res.data.isAuthenticated)
+                        axios.get('/user/calendars')
+                            .then((res) => {
+                                this.setState({calendars: res.data})
+                            })
+                })
+        }
     }
 
     componentDidMount() {

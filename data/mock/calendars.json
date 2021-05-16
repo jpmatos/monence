@@ -1,5 +1,160 @@
 [
   {
+    "name": "My Personal Calendar",
+    "ownerId": "116214599289964436618",
+    "id": "dddfa4e2-03e2-4e90-8c07-b77900d841b4",
+    "single": [
+      {
+        "id": "46aba59b-7daf-4f70-94ba-c39ec62540b4",
+        "title": "Dinner Out",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "type": "expense",
+        "start": "2021-05-14T00:00:00.000Z",
+        "value": "25.00"
+      },
+      {
+        "title": "New Monitor",
+        "start": "2021-05-19T00:00:00.000Z",
+        "value": "150.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "3ee41096-5689-4919-9cc3-357591095a4a"
+      },
+      {
+        "title": "Theater",
+        "start": "2021-05-03T00:00:00.000Z",
+        "value": "7.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "cd45749b-e1bd-43fd-8664-d7d35e3b352f"
+      },
+      {
+        "title": "Groceries",
+        "start": "2021-05-28T00:00:00.000Z",
+        "value": "150.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "32ec6ce4-6818-4a94-9589-3cd6a084ed96"
+      },
+      {
+        "title": "Bonus Check",
+        "start": "2021-05-20T00:00:00.000Z",
+        "value": "200.00",
+        "type": "gain",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "797e2b3c-9970-468c-9e03-3bad776ec123"
+      },
+      {
+        "title": "Gas",
+        "start": "2021-05-20T00:00:00.000Z",
+        "value": "40.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "5a8f69ae-4fac-4920-947a-2b77c92aa68e"
+      },
+      {
+        "title": "New Mouse",
+        "start": "2021-05-16T00:00:00.000Z",
+        "value": "40.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "203bbb70-953f-4971-8dc1-27ebeeb89d75"
+      },
+      {
+        "title": "Lunch Out",
+        "start": "2021-05-05T00:00:00.000Z",
+        "value": "14.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "dda89058-0913-46c6-aa0a-4251502a42ed"
+      },
+      {
+        "title": "Car Repair",
+        "start": "2021-05-26T00:00:00.000Z",
+        "value": "1000.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "dc998ac8-935c-403d-89c5-3110923bee3d"
+      },
+      {
+        "title": "Bills",
+        "start": "2021-05-07T00:00:00.000Z",
+        "value": "150.00",
+        "type": "expense",
+        "recurrency": "single",
+        "recurrencyPeriod": "monthly",
+        "id": "c70d75b4-ebb4-41c8-ae2a-76e2d6c89782"
+      }
+    ],
+    "recurrent": [
+      {
+        "title": "Bus Fare",
+        "start": "2021-05-03T00:00:00.000Z",
+        "value": "2.00",
+        "type": "expense",
+        "recurrency": "recurrent",
+        "recurrencyPeriod": "weekly",
+        "end": "2021-05-31T00:00:00.000Z",
+        "id": "afd561eb-cab0-4a27-87d4-f3c9d71e9ed4"
+      },
+      {
+        "title": "Netflix",
+        "start": "2021-04-29T00:00:00.000Z",
+        "value": "11.00",
+        "type": "expense",
+        "recurrency": "recurrent",
+        "recurrencyPeriod": "monthly",
+        "end": "2021-05-29T00:00:00.000Z",
+        "id": "fd8442b5-3389-4429-a2fa-66899d7e6b11"
+      },
+      {
+        "title": "Paycheck",
+        "start": "2021-04-30T00:00:00.000Z",
+        "value": "1200.00",
+        "type": "gain",
+        "recurrency": "recurrent",
+        "recurrencyPeriod": "monthly",
+        "end": "2021-05-31T00:00:00.000Z",
+        "id": "84abaecb-35c6-43cf-8a98-63891a4b8992"
+      }
+    ],
+    "budget": {
+      "week": [
+        {
+          "id": "addfde46-1a77-4260-9bac-105c09512ee0",
+          "date": "2021-05-10T00:00:00.000Z",
+          "value": "100.00",
+          "period": "week"
+        }
+      ],
+      "month": [
+        {
+          "date": "2021-05-01T00:00:00.000Z",
+          "value": "500.00",
+          "period": "month",
+          "id": "de549aae-5194-46c6-8955-8735da73e5c4"
+        }
+      ],
+      "year": [
+        {
+          "id": "f2800f74-26f1-45d1-a9b9-a9cd061cf3f4",
+          "date": "2021-01-01T00:00:00.000Z",
+          "value": "3000.00",
+          "period": "year"
+        }
+      ]
+    }
+  },
+  {
     "name": "calendar01",
     "ownerId": "116214599289964436618",
     "id": "987a7d1d-d083-492a-89d9-8c613f7a1301",

@@ -17,6 +17,10 @@
       }
     ],
     "calendars": [
+      {
+        "id": "dddfa4e2-03e2-4e90-8c07-b77900d841b4",
+        "name": "My Personal Calendar"
+      }
     ]
   }
 ]

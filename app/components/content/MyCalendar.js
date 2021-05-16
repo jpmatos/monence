@@ -129,7 +129,7 @@ class MyCalendar extends React.Component {
                 borderRadius: '0px',
                 opacity: 0.8,
                 border: '0px',
-                display: 'block'
+                display: 'block',
             }
         };
     }
@@ -145,6 +145,19 @@ class MyCalendar extends React.Component {
                     date={moment(this.context.calendarDate).toDate()}
                     events={this.context.items}
                     startAccessor='start'
+                    components={{
+                        event: (event) => (
+                            <div>
+                                <strong>{event.event.title}</strong>
+                                <span style={{
+                                    float: 'right'
+                                }}>
+                                    {event.event.value}€
+                                </span>
+                            </div>
+                        )
+                    }}
+                    views={['month']}
                     endAccessor='end'
                     onSelectEvent={this.onClickItem}
                     eventPropGetter={this.eventStyleGetter}

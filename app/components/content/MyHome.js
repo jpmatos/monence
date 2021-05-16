@@ -24,6 +24,9 @@ const useStyles = (theme => ({
     },
     calendar: {
         minWidth: 250
+    },
+    logout: {
+        height: '100vh'
     }
 }));
 
@@ -75,6 +78,10 @@ class MyHome extends React.Component {
 
     }
 
+    handleLogout = () => {
+        this.context.handleLogout()
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -84,14 +91,23 @@ class MyHome extends React.Component {
                         <Grid container
                               direction="column"
                               justify="center"
-                              alignItems="center">
+                              alignItems="center"
+                              style={{
+                                  height: '100%'
+                              }}>
                             <Avatar alt="Current User" src={this.context.session.photos[0].value}
                                     className={classes.large}/>
-                            <Box mt={2} mb={3}>
+                            <Box mt={3}>
                                 <Typography variant='h4'>
                                     {this.context.session.name}
                                 </Typography>
                             </Box>
+                            <Box mb={4}>
+                                <Button color="secondary" onClick={this.handleLogout}>
+                                    Log-Out
+                                </Button>
+                            </Box>
+
                             <FormControl className={classes.formControl}>
                                 <InputLabel htmlFor="uncontrolled-native">Current Calendar</InputLabel>
                                 <NativeSelect
@@ -112,10 +128,7 @@ class MyHome extends React.Component {
                                     <Button onClick={this.clickCreateNewCalendar} color='primary'>
                                         Create New Calendar
                                     </Button> :
-                                    <Grid container
-                                          direction="column"
-                                          justify="center"
-                                          alignItems="center">
+                                    <React.Fragment>
                                         <TextField
                                             error={!this.state.validCalendarName}
                                             id='calendarName'
@@ -131,10 +144,11 @@ class MyHome extends React.Component {
                                                 Create
                                             </Button>
                                         </Box>
-                                    </Grid>
+                                    </React.Fragment>
                                 }
                             </Box>
                         </Grid>
+
                     </Grid>
                 )}
             </CalendarContext.Consumer>
