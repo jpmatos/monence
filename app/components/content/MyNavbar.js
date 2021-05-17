@@ -32,6 +32,7 @@ import MyHome from "./MyHome";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MySettings from "./MySettings";
+import MyForecast from "./MyForecast";
 
 const drawerWidth = 220
 
@@ -217,7 +218,7 @@ class MyNavbar extends React.Component {
                         <Route path='/home*' component={MyHome}/>
                         <Route path='/calendar*' component={MyCalendar}/>
                         <Route path='/budget*' component={MyBudget}/>
-                        <Route path='/forecast*' component={PlaceHolder}/>
+                        <Route path='/forecast*' component={MyForecast}/>
                         <Route path='/settings*' component={MySettings}/>
                         <Redirect to={`/home?c=${this.context.calendarId}`}/>
                     </Switch>
