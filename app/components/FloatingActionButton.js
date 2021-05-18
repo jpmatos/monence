@@ -33,7 +33,7 @@ const useStyles = (theme) => ({
 const SecondaryButton = (props) => {
     return (
         <Box mb='11px' mr='7px'>
-            <Fab color='extended' aria-label='up' size='small' onClick={props.handleOnClick}>
+            <Fab color='secondary' aria-label='up' size='small' onClick={props.handleOnClick}>
                 {props.icon}
             </Fab>
         </Box>

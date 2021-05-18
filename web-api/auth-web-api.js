@@ -1,5 +1,6 @@
 const authController = require("./controller/auth-controller");
 
+// /auth/...
 function authWebApi(router, passport) {
 
     router.get('/google',

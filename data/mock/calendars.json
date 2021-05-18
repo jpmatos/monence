@@ -16,7 +16,7 @@
       {
         "title": "New Monitor",
         "start": "2021-05-19T00:00:00.000Z",
-        "value": "150.00",
+        "value": "110.00",
         "type": "expense",
         "recurrency": "single",
         "recurrencyPeriod": "monthly",
@@ -34,7 +34,7 @@
       {
         "title": "Groceries",
         "start": "2021-05-28T00:00:00.000Z",
-        "value": "150.00",
+        "value": "90.00",
         "type": "expense",
         "recurrency": "single",
         "recurrencyPeriod": "monthly",
@@ -43,7 +43,7 @@
       {
         "title": "Bonus Check",
         "start": "2021-05-20T00:00:00.000Z",
-        "value": "200.00",
+        "value": "120.00",
         "type": "gain",
         "recurrency": "single",
         "recurrencyPeriod": "monthly",
@@ -79,7 +79,7 @@
       {
         "title": "Car Repair",
         "start": "2021-05-26T00:00:00.000Z",
-        "value": "1000.00",
+        "value": "110.00",
         "type": "expense",
         "recurrency": "single",
         "recurrencyPeriod": "monthly",
@@ -88,7 +88,7 @@
       {
         "title": "Bills",
         "start": "2021-05-07T00:00:00.000Z",
-        "value": "150.00",
+        "value": "100.00",
         "type": "expense",
         "recurrency": "single",
         "recurrencyPeriod": "monthly",
@@ -115,16 +115,6 @@
         "recurrencyPeriod": "monthly",
         "end": "2021-05-29T00:00:00.000Z",
         "id": "fd8442b5-3389-4429-a2fa-66899d7e6b11"
-      },
-      {
-        "title": "Paycheck",
-        "start": "2021-04-30T00:00:00.000Z",
-        "value": "1200.00",
-        "type": "gain",
-        "recurrency": "recurrent",
-        "recurrencyPeriod": "monthly",
-        "end": "2021-05-31T00:00:00.000Z",
-        "id": "84abaecb-35c6-43cf-8a98-63891a4b8992"
       }
     ],
     "budget": {
@@ -139,7 +129,7 @@
       "month": [
         {
           "date": "2021-05-01T00:00:00.000Z",
-          "value": "500.00",
+          "value": "200.00",
           "period": "month",
           "id": "de549aae-5194-46c6-8955-8735da73e5c4"
         }
@@ -148,7 +138,7 @@
         {
           "id": "f2800f74-26f1-45d1-a9b9-a9cd061cf3f4",
           "date": "2021-01-01T00:00:00.000Z",
-          "value": "3000.00",
+          "value": "100.00",
           "period": "year"
         }
       ]

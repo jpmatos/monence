@@ -1,43 +1,14 @@
 import React from 'react';
-import createTrend from 'trendline';
 
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    CartesianGrid,
-    Area,
-    AreaChart
-} from 'recharts';
+import {ResponsiveContainer} from 'recharts';
 import {CalendarContext} from "../context/CalendarContext";
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
 import FloatingActionButton from "../FloatingActionButton";
-
-const CustomTooltip = ({active, payload, label}) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="custom-tooltip" style={{
-                backgroundColor: 'rgba(255, 255, 255, 255)',
-                lineHeight: '5px',
-                border: '10px solid rgba(255, 255, 255, 255)',
-                borderBottom: '1px solid rgba(255, 255, 255, 255)'
-            }}>
-                <p className="label">{`Day ${label}`}</p>
-                <p className="label">{`Value : ${payload[0].value.toString().replace('-', '+')} €`}</p>
-                {/*<p className="intro">{getIntroOfPage(label)}</p>*/}
-                {/*<p className="desc">Anything you want can be displayed here.</p>*/}
-            </div>
-        );
-    }
-
-    return null;
-};
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import CustomAreaChart from "../CustomAreaChart";
+import {FormControl, FormControlLabel, Switch} from "@material-ui/core";
 
 class MyForecast extends React.Component {
 
@@ -46,100 +17,112 @@ class MyForecast extends React.Component {
         this.state = {
             data: [],
             sumData: [],
-            off: 0,
-            sumDataOff: 0
+            yearData: [],
+            yearDataSum: [],
+            gainsSwitch: true
         }
     }
 
     handleAdvanceMonth = (event) => {
-        this.context.offsetCalendarDate(1)
+        const currDate = this.context.calendarDate
+        const calendarDate = this.context.offsetCalendarDate(1)
+        this.updateStateValues(calendarDate)
+        if (moment(currDate).year() !== moment(calendarDate).year())
+            this.updateStateYearValues(calendarDate)
     }
 
     handleRecedeMonth = (event) => {
-        this.context.offsetCalendarDate(-1)
+        const currDate = this.context.calendarDate
+        const calendarDate = this.context.offsetCalendarDate(-1)
+        this.updateStateValues(calendarDate)
+        if (moment(currDate).year() !== moment(calendarDate).year())
+            this.updateStateYearValues(calendarDate)
     }
 
     handleDateChange = (event) => {
-        this.context.setCalendarDate(event)
+        const currDate = this.context.calendarDate
+        const calendarDate = this.context.setCalendarDate(event)
+        this.updateStateValues(calendarDate)
+        if (moment(currDate).year() !== moment(calendarDate).year())
+            this.updateStateYearValues(calendarDate)
     }
 
-    updateData() {
+    handleSwitchGainsChane = (event) => {
+        this.setState({gainsSwitch: event.target.checked})
+        this.updateStateValues(this.context.calendarDate, event.target.checked)
+        this.updateStateYearValues(this.context.calendarDate, event.target.checked)
+    }
+
+    calculateData(calendarDate, times, unitOfTime, gainsSwitch) {
         let data = []
-        const start = moment(this.context.calendarDate).startOf('month')
-        const end = moment(this.context.calendarDate).endOf('month')
-        const days = moment(this.context.calendarDate).daysInMonth()
-        for (let i = 1; i <= days; i++) {
-            data.push({value: 0, day: i})
+        const start = moment(calendarDate).startOf(unitOfTime)
+        const end = moment(calendarDate).endOf(unitOfTime)
+        for (let i = 1; i <= times; i++) {
+            data.push({value: 0, time: i})
         }
         this.context.items
             .filter(item => {
                 return moment(item.start).isBefore(end) && moment(item.end).isAfter(start)
             })
             .map(item => {
-                const day = moment.utc(item.start).date() - 1
+                let time = 0
+                if (unitOfTime === 'month')
+                    time = moment.utc(item.start).date() - 1
+                if (unitOfTime === 'year')
+                    time = moment.utc(item.start).month() - 1
                 switch (item.type) {
                     case 'expense':
-                        data[day].value += parseFloat(item.value)
+                        data[time].value += parseFloat(item.value)
                         break
                     case 'gain':
-                        data[day].value -= parseFloat(item.value)
+                        if (gainsSwitch)
+                            data[time].value -= parseFloat(item.value)
+                        break
                 }
             })
-        this.setState({
-            data: data
-        })
         return data
     }
 
-    updateSumData(data) {
+    calculateSumData(data) {
         let sumData = []
         data.reduce((currentValue, item, index) => {
             currentValue += parseFloat(item.value)
-            sumData[index] = {day: item.day, value: currentValue}
+            sumData[index] = {time: item.time, value: currentValue}
             return currentValue
         }, 0)
         return sumData
     }
 
-    xRange(data) {
-        const days = data.map((data) => data.day)
-        return [Math.min(...days), Math.max(...days)]
-    }
-
-    yRange(data) {
-        const values = data.map((data) => data.value)
-        return [Math.min(...values), Math.max(...values)]
-    }
-
-    gradientOffset(data) {
-        const dataMax = Math.max(...data.map((i) => i.value));
-        const dataMin = Math.min(...data.map((i) => i.value));
-        let off
-        if (dataMax <= 0) {
-            off = 0;
-        } else if (dataMin >= 0) {
-            off = 1;
-        } else
-            off = dataMax / (dataMax - dataMin);
-        return off
-    };
-
-    componentDidMount() {
-        const data = this.updateData()
-        const off = this.gradientOffset(data)
-        const sumData = this.updateSumData(data)
-        const sumDataOff = this.gradientOffset(sumData)
+    updateStateValues(calendarDate, gainsSwitch = this.state.gainsSwitch) {
+        const data = this.calculateData(calendarDate, moment(calendarDate).daysInMonth(), 'month', gainsSwitch)
+        const sumData = this.calculateSumData(data)
         this.setState({
             data: data,
-            sumData: sumData,
-            off: off,
-            sumDataOff: sumDataOff
+            sumData: sumData
         })
+    }
+
+    updateStateYearValues(calendarDate, gainsSwitch = this.state.gainsSwitch) {
+        const yearData = this.calculateData(calendarDate, 12, 'year', gainsSwitch)
+        const yearDataSum = this.calculateSumData(yearData)
+        this.setState({
+            yearData: yearData,
+            yearDataSum: yearDataSum
+        })
+    }
+
+
+    componentDidMount() {
+        this.updateStateValues(this.context.calendarDate)
+        this.updateStateYearValues(this.context.calendarDate)
     }
 
     render() {
         return (
             <React.Fragment>
+                <Typography variant='h4' align='center'>
+                    {moment(this.context.calendarDate).format("MMMM YYYY")}
+                </Typography>
                 <ResponsiveContainer>
                     <Grid
                         container
@@ -153,66 +136,58 @@ class MyForecast extends React.Component {
                             justify="center"
                             alignItems="center"
                         >
-                            <AreaChart
-                                width={600}
-                                height={400}
-                                data={this.state.data}
-                                margin={{top: 5, right: 30, bottom: 5, left: -20}}
-
-                            >
-                                <Tooltip content={<CustomTooltip/>}/>
-                                <CartesianGrid strokeDasharray="3 3"/>
-                                {/*<Legend />*/}
-                                <XAxis
-                                    name="Day"
-                                    type="number"
-                                    dataKey="day"
-                                    domain={this.xRange(this.state.data)}
-                                />
-                                <YAxis
-                                    name="Value"
-                                    type="number"
-                                    dataKey="value"
-                                    domain={this.yRange(this.state.data)}
-                                />
-                                <defs>
-                                    <linearGradient id="splitColor" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset={this.state.off} stopColor="red" stopOpacity={1}/>
-                                        <stop offset={this.state.off} stopColor="green" stopOpacity={1}/>
-                                    </linearGradient>
-                                </defs>
-                                <Area type="monotone" dataKey="value" stroke="#000" fill="url(#splitColor)"/>
-                            </AreaChart>
-                            <AreaChart
-                                width={600}
-                                height={400}
-                                data={this.state.sumData}
-                                margin={{top: 5, right: 30, bottom: 5, left: -20}}
-
-                            >
-                                <Tooltip content={<CustomTooltip/>}/>
-                                <CartesianGrid strokeDasharray="3 3"/>
-                                {/*<Legend />*/}
-                                <XAxis
-                                    name="Day"
-                                    type="number"
-                                    dataKey="day"
-                                    domain={this.xRange(this.state.sumData)}
-                                />
-                                <YAxis
-                                    name="Value"
-                                    type="number"
-                                    dataKey="value"
-                                    domain={this.yRange(this.state.sumData)}
-                                />
-                                <defs>
-                                    <linearGradient id="splitColorSumData" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset={this.state.sumDataOff} stopColor="red" stopOpacity={1}/>
-                                        <stop offset={this.state.sumDataOff} stopColor="green" stopOpacity={1}/>
-                                    </linearGradient>
-                                </defs>
-                                <Area type="monotone" dataKey="value" stroke="#000" fill="url(#splitColorSumData)"/>
-                            </AreaChart>
+                            <Box>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="space-around"
+                                    alignItems="center"
+                                >
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={this.state.gainsSwitch}
+                                                onChange={this.handleSwitchGainsChane}
+                                                label='Gains'
+                                                color="primary"
+                                                name="checkedB"
+                                                inputProps={{'aria-label': 'primary checkbox'}}
+                                            />}
+                                        label={'Gains'}
+                                    />
+                                    <Typography variant='h5' align='center'>
+                                        Expenses
+                                    </Typography>
+                                    <Box ml={13}/>
+                                </Grid>
+                                <CustomAreaChart data={this.state.data} id='splitColor' labelName='Day'/>
+                            </Box>
+                            <Box>
+                                <Typography variant='h5' align='center'>
+                                    Cumulative Expenses
+                                </Typography>
+                                <CustomAreaChart data={this.state.sumData} id='splitColorSum' labelName='Day'/>
+                            </Box>
+                        </Grid>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center"
+                        >
+                            <Box>
+                                <Typography variant='h5' align='center'>
+                                    Year Expenses
+                                </Typography>
+                                <CustomAreaChart data={this.state.yearData} id='splitColorYear' labelName='Month'/>
+                            </Box>
+                            <Box>
+                                <Typography variant='h5' align='center'>
+                                    Cumulative Year Expenses
+                                </Typography>
+                                <CustomAreaChart data={this.state.yearDataSum} id='splitColorYearSum'
+                                                 labelName='Month'/>
+                            </Box>
                         </Grid>
                     </Grid>
                 </ResponsiveContainer>

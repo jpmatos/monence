@@ -206,7 +206,7 @@ class MyBudget extends React.Component {
                 </Typography>
                 {this.state.periods.map(period => (
                     <Box mb={3} key={period.name}>
-                        <h4>{period.name}</h4>
+                        <Typography variant='h5'>{period.name}</Typography>
                         <TableContainer component={Paper}>
                             <Table aria-label="collapsible table">
                                 <TableHead>
