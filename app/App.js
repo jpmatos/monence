@@ -40,7 +40,9 @@ class App extends React.Component {
     }
 
     setCalendarDate = (date) => {
-        this.setState({calendarDate: moment(date)})
+        const calendarDate = moment(date)
+        this.setState({calendarDate: calendarDate})
+        return calendarDate
     }
 
     handleNewItem = (item) => {

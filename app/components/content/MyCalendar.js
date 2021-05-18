@@ -37,20 +37,15 @@ class MyCalendar extends React.Component {
     }
 
     handleAdvanceMonth = (event) => {
-        event.stopPropagation()
         this.context.offsetCalendarDate(1)
-        this.forceUpdate()
     }
 
     handleRecedeMonth = (event) => {
-        event.stopPropagation()
         this.context.offsetCalendarDate(-1)
-        // this.forceUpdate()
     }
 
     handleDateChange = (event) => {
         this.context.setCalendarDate(event)
-        // this.forceUpdate()
     }
 
     onClickItem = (item) => {

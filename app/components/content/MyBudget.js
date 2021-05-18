@@ -33,22 +33,18 @@ class MyBudget extends React.Component {
     }
 
     handleAdvanceMonth = (event) => {
-        event.stopPropagation()
         const calendarDate = this.context.offsetCalendarDate(1)
-        // this.forceUpdate()
         this.updatePeriods(calendarDate)
     }
 
     handleRecedeMonth = (event) => {
-        event.stopPropagation()
         const calendarDate = this.context.offsetCalendarDate(-1)
-        // this.forceUpdate()
         this.updatePeriods(calendarDate)
     }
 
     handleDateChange = (event) => {
-        this.context.setCalendarDate(event)
-        this.updatePeriods(this.context.calendarDate)
+        const calendarDate = this.context.setCalendarDate(event)
+        this.updatePeriods(calendarDate)
     }
 
     setNewBudgetFD = (event) => {
@@ -110,7 +106,7 @@ class MyBudget extends React.Component {
             .filter(week => {
                 return moment(week.date).isSame(moment(calendarDate), 'month')
             })
-            .sort((first, second) => moment(first.date).isAfter(second.date))
+            .sort((first, second) => moment(first.date).isAfter(second.date) ? 1 : -1)
             .map(week => {
                 const id = week.id
                 const period = week.period

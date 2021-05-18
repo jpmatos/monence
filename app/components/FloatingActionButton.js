@@ -8,6 +8,9 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {SpeedDial, SpeedDialAction} from "@material-ui/lab";
 import {DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
+import {Fab} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 
 const useStyles = (theme) => ({
     root: {
@@ -15,13 +18,27 @@ const useStyles = (theme) => ({
         transform: 'translateZ(0px)',
         flexGrow: 1,
     },
-    fab: {
+    add: {
         position: 'fixed',
         right: '5%',
         bottom: '5%',
         zIndex: 1050
+    },
+    others: {
+        marginLeft: '20px',
+        zIndex: 1050
     }
 })
+
+const SecondaryButton = (props) => {
+    return (
+        <Box mb='11px' mr='7px'>
+            <Fab color='extended' aria-label='up' size='small' onClick={props.handleOnClick}>
+                {props.icon}
+            </Fab>
+        </Box>
+    )
+}
 
 class FloatingActionButton extends React.Component {
     constructor(props) {
@@ -40,15 +57,21 @@ class FloatingActionButton extends React.Component {
         const {classes} = this.props;
         return (
             <React.Fragment>
-                <SpeedDial ariaLabel={'SpeedDial'} open={true} className={classes.fab} icon={<AddIcon/>}
-                           onClick={this.props.handleOnClickFAB}>
-                    <SpeedDialAction key='Retreat Month' title='-1 Month' icon={<KeyboardArrowDownIcon/>}
-                                     onClick={this.props.handleRecedeMonth}/>
-                    <SpeedDialAction key='Advance Month' title='+1 Month' icon={<KeyboardArrowUpIcon/>}
-                                     onClick={this.props.handleAdvanceMonth}/>
-                    <SpeedDialAction key='Pick Date' title={'Set Date'} icon={<CalendarTodayIcon/>}
-                                     onClick={this.handleDatePicker.bind(this)}/>
-                </SpeedDial>
+                <Grid
+                    container
+                    direction="column-reverse"
+                    justify="center"
+                    alignItems="flex-end"
+                    className={classes.add}
+                >
+                    <Fab color='primary' aria-label='add' onClick={this.props.handleOnClickFAB}
+                         style={{visibility: this.props.hideCreate ? 'hidden' : 'visible'}}>
+                        <AddIcon/>
+                    </Fab>
+                    <SecondaryButton handleOnClick={this.props.handleRecedeMonth} icon={<KeyboardArrowDownIcon/>}/>
+                    <SecondaryButton handleOnClick={this.props.handleAdvanceMonth} icon={<KeyboardArrowUpIcon/>}/>
+                    <SecondaryButton handleOnClick={this.handleDatePicker.bind(this)} icon={<CalendarTodayIcon/>}/>
+                </Grid>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DatePicker
                         disableToolbar
@@ -66,5 +89,9 @@ class FloatingActionButton extends React.Component {
     }
 
 }
+
+FloatingActionButton.defaultProps = {
+    hideCreate: false
+};
 
 export default withStyles(useStyles)(FloatingActionButton)
