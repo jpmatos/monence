@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const fs = require('fs')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const webpack = require('webpack')
@@ -8,6 +9,14 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const session = require('express-session')
+
+//Load env variables
+if(!fs.existsSync('./env.json')){
+    console.log('Set up env.json!')
+    return null
+}
+const env = require('./env.json')
+Object.assign(process.env, env)
 
 //Local Files
 const webpackConfig = require('./webpack.config.js')
@@ -26,10 +35,10 @@ passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
 passport.use(new GoogleStrategy({
-        clientID: '425596241932-rlnlaheqfbteimvf5akoohgvmt65bdqt.apps.googleusercontent.com',
-        clientSecret: '-a-p3zJDyUM9bABAxL_WtgzA',
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
         callbackURL: 'http://localhost:3000/auth/google/callback'
-        // callbackURL: 'http://148.71.61.134.nip.io:42181/auth/google/callback'
+        // callbackURL: env.CALLBACK_URL
     },
     function(accessToken, refreshToken, profile, done) {
         // User.findOrCreate({ googleId: profile.id }, function (err, user) {
@@ -52,7 +61,7 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(webpackMiddleware(webpack(webpackConfig)))
 app.use(session({
-    secret: 'keyboard cat',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));

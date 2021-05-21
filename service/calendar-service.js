@@ -1,6 +1,6 @@
 const moment = require('moment')
 const db = require('../data/database-mock')
-const dbExchanges = require('../data/database-exchanges-mock')
+const dbExchanges = require('../data/database-exchanges')
 
 class CalendarService {
 
