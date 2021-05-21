@@ -5,13 +5,16 @@ export const CalendarContext = React.createContext({
     calendarId: null,
     calendarDate: null,
     items: null,
+    currency: null,
     setCalendarId: () => {},
     setCalendarDate: () => {},
+    setCurrency: () => {},
     offsetCalendarDate: () => {},
     handleNewItem: () => {},
     handleUpdateItem: () => {},
     handleDeleteItem: () => {},
     handleNewBudget: () => {},
     handleUpdateBudget: () => {},
-    handleDeleteBudget: () => {}
+    handleDeleteBudget: () => {},
+    buildDisplayValue: () => {}
 });

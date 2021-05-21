@@ -5,11 +5,13 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import AddIcon from '@material-ui/icons/Add'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import {DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import {Fab} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import CurrencyPickerFormDialog from "./forms/CurrencyPickerFormDialog";
 
 const useStyles = (theme) => ({
     root: {
@@ -44,13 +46,23 @@ class FloatingActionButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isDatePickerOpen: false
+            isDatePickerOpen: false,
+            isCurrencyOpen: false
         }
     }
 
-    handleDatePicker(event) {
+    handleDatePicker = (event) => {
         event.stopPropagation()
         this.setState({isDatePickerOpen: true})
+    }
+
+    handleCurrency = (event) => {
+        event.stopPropagation()
+        this.setState({isCurrencyOpen: true})
+    }
+
+    setCurrencyFD = (event) => {
+        this.setState({isCurrencyOpen: event})
     }
 
     render() {
@@ -70,7 +82,8 @@ class FloatingActionButton extends React.Component {
                     </Fab>
                     <SecondaryButton handleOnClick={this.props.handleRecedeMonth} icon={<KeyboardArrowDownIcon/>}/>
                     <SecondaryButton handleOnClick={this.props.handleAdvanceMonth} icon={<KeyboardArrowUpIcon/>}/>
-                    <SecondaryButton handleOnClick={this.handleDatePicker.bind(this)} icon={<CalendarTodayIcon/>}/>
+                    <SecondaryButton handleOnClick={this.handleDatePicker} icon={<CalendarTodayIcon/>}/>
+                    <SecondaryButton handleOnClick={this.handleCurrency} icon={<AccountBalanceIcon/>}/>
                 </Grid>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DatePicker
@@ -84,6 +97,7 @@ class FloatingActionButton extends React.Component {
                         TextFieldComponent={() => null}
                     />
                 </MuiPickersUtilsProvider>
+                <CurrencyPickerFormDialog isOpen={this.state.isCurrencyOpen} setOpen={this.setCurrencyFD} onChange={this.props.handleCurrencyChange}/>
             </React.Fragment>
         )
     }

@@ -102,7 +102,7 @@ class CreateItemFormDialog extends React.Component {
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
-            'value': this.state.value.replaceAll(',', ''),
+            'value': parseFloat(this.state.value.replaceAll(',', '')),
             'type': this.state.type,                            //expense/gain
             'recurrency': this.state.recurrency,                //single/recurrent
             'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly

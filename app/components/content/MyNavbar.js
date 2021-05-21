@@ -20,17 +20,14 @@ import HomeIcon from '@material-ui/icons/Home';
 import CalendarIcon from '@material-ui/icons/CalendarToday'
 import ForecastIcon from '@material-ui/icons/TrendingUp'
 import Container from '@material-ui/core/Container'
-import EuroIcon from '@material-ui/icons/Euro';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import SettingsIcon from '@material-ui/icons/Settings';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import MyCalendar from './MyCalendar'
-import PlaceHolder from './PlaceHolder'
 import MyBudget from "./MyBudget";
 import {CalendarContext} from "../context/CalendarContext";
 import MyHome from "./MyHome";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import MySettings from "./MySettings";
 import MyForecast from "./MyForecast";
 
@@ -200,7 +197,7 @@ class MyNavbar extends React.Component {
                                           icon={<CalendarIcon/>}
                                           listClass={classes.list}/>
                             <ListItemLink to={`/budget?c=${this.context.calendarId}`} primary='Budget'
-                                          icon={<EuroIcon/>}
+                                          icon={<AccountBalanceWalletIcon/>}
                                           listClass={classes.list}/>
                             <ListItemLink to={`/forecast?c=${this.context.calendarId}`} primary='Forecast'
                                           icon={<ForecastIcon/>}

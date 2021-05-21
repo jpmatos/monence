@@ -60,7 +60,7 @@ class ViewItemFormDialog extends React.Component {
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
-            'value': this.state.value.replaceAll(',', '')
+            'value': parseFloat(this.state.value.replaceAll(',', ''))
         }
 
         if (this.props.currentlyOpenItem.recurrency === 'recurrent')

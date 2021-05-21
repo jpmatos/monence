@@ -47,6 +47,20 @@ class MyBudget extends React.Component {
         this.updatePeriods(calendarDate)
     }
 
+    handleCurrencyChange = (currency) => {
+        const periods = this.state.periods.map(period => {
+            period.items = period.items.map(item => {
+                item.displayBudget = this.context.buildDisplayValue(item.budget, currency)
+                item.displayExpenses = this.context.buildDisplayValue(item.expenses, currency)
+                item.displayGains = this.context.buildDisplayValue(item.gains, currency)
+                item.displayTotal = this.context.buildDisplayValue(item.total, currency)
+                return item
+            })
+            return period
+        })
+        this.setState({periods: periods})
+    }
+
     setNewBudgetFD = (event) => {
         this.setState({isNewBudgetFDOpen: event})
     }
@@ -113,7 +127,7 @@ class MyBudget extends React.Component {
                 const start = moment(week.date).startOf('isoWeek')
                 const end = start.clone().add(7, 'day')
                 const date = `${start.format('MMM DD')} - ${end.clone().subtract(1, 'day').format('MMM DD')}`
-                const budget = parseFloat(week.value)
+                const budget = week.value
                 weekRows.push(this.buildRow(id, period, start, end, date, budget))
             })
 
@@ -128,7 +142,7 @@ class MyBudget extends React.Component {
                 const start = moment(month.date).startOf('month')
                 const end = start.clone().endOf('month')
                 const date = `${start.format('MMMM')}`
-                const budget = parseFloat(month.value)
+                const budget = month.value
                 monthRows.push(this.buildRow(id, period, start, end, date, budget))
             })
 
@@ -143,7 +157,7 @@ class MyBudget extends React.Component {
                 const start = moment(year.date).startOf('year')
                 const end = start.clone().endOf('year')
                 const date = `${start.format('YYYY')}`
-                const budget = parseFloat(year.value)
+                const budget = year.value
                 yearRows.push(this.buildRow(id, period, start, end, date, budget))
             })
 
@@ -174,12 +188,12 @@ class MyBudget extends React.Component {
         let total = budget
         items.forEach(item => {
             if (item.type === 'expense') {
-                total -= parseFloat(item.value)
-                expenses += parseFloat(item.value)
+                total -= item.value
+                expenses += item.value
             }
             if (item.type === 'gain') {
-                total += parseFloat(item.value)
-                gains += parseFloat(item.value)
+                total += item.value
+                gains += item.value
             }
         })
         return {
@@ -190,6 +204,10 @@ class MyBudget extends React.Component {
             "expenses": expenses,
             "gains": gains,
             "total": total,
+            "displayBudget": this.context.buildDisplayValue(budget),
+            "displayExpenses": this.context.buildDisplayValue(expenses),
+            "displayGains": this.context.buildDisplayValue(gains),
+            "displayTotal": this.context.buildDisplayValue(total),
             "items": items
         }
     }
@@ -238,7 +256,8 @@ class MyBudget extends React.Component {
                                       handleOnClickFAB={this.handleClickOpen}
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}
-                                      handleRecedeMonth={this.handleRecedeMonth}/>
+                                      handleRecedeMonth={this.handleRecedeMonth}
+                                      handleCurrencyChange={this.handleCurrencyChange}/>
             </Container>
         );
     }

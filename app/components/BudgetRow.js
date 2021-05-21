@@ -36,10 +36,10 @@ export default class BudgetRow extends React.Component {
                     <TableCell component="th" scope="row" onClick={this.onClick}>
                         {this.props.row.name}
                     </TableCell>
-                    <TableCell align="right" onClick={this.onClick}>{this.props.row.budget}</TableCell>
-                    <TableCell align="right" onClick={this.onClick}>{this.props.row.expenses}</TableCell>
-                    <TableCell align="right" onClick={this.onClick}>{this.props.row.gains}</TableCell>
-                    <TableCell align="right" onClick={this.onClick}>{this.props.row.total}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.displayBudget}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.displayExpenses}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.displayGains}</TableCell>
+                    <TableCell align="right" onClick={this.onClick}>{this.props.row.displayTotal}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
@@ -68,7 +68,7 @@ export default class BudgetRow extends React.Component {
                                                 <TableCell>{item.type}</TableCell>
                                                 <TableCell>{item.recurrency}</TableCell>
                                                 <TableCell align="right">
-                                                    {item.value}
+                                                    {item.displayValue}
                                                 </TableCell>
                                             </TableRow>
                                         ))}

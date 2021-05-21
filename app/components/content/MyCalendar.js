@@ -102,6 +102,10 @@ class MyCalendar extends React.Component {
             })
     }
 
+    handleCurrencyChange = () => {
+
+    }
+
     eventStyleGetter(event, start, end, isSelected) {
         let backgroundColor = '#' + event.hexColor;
         switch (event.type + ' ' + event.recurrency) {
@@ -147,7 +151,7 @@ class MyCalendar extends React.Component {
                                 <span style={{
                                     float: 'right'
                                 }}>
-                                    {event.event.value}€
+                                    {event.event.displayValue}
                                 </span>
                             </div>
                         )
@@ -164,7 +168,8 @@ class MyCalendar extends React.Component {
                                       handleOnClickFAB={this.handleClickOpen}
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}
-                                      handleRecedeMonth={this.handleRecedeMonth}/>
+                                      handleRecedeMonth={this.handleRecedeMonth}
+                                      handleCurrencyChange={this.handleCurrencyChange}/>
                 <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}
                                       handleNewItem={this.handleNewItem}/>
                 <ViewItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}

@@ -15,21 +15,35 @@ class App extends React.Component {
             calendarId: null,
             calendarDate: null,
             items: null,
+            currency: null,
             setCalendarId: this.setCalendarId,
             setCalendarDate: this.setCalendarDate,
+            setCurrency: this.setCurrency,
             offsetCalendarDate: this.offsetCalendarDate,
             handleNewItem: this.handleNewItem,
             handleUpdateItem: this.handleUpdateItem,
             handleDeleteItem: this.handleDeleteItem,
             handleNewBudget: this.handleNewBudget,
             handleUpdateBudget: this.handleUpdateBudget,
-            handleDeleteBudget: this.handleDeleteBudget
+            handleDeleteBudget: this.handleDeleteBudget,
+            buildDisplayValue: this.buildDisplayValue
         }
     }
 
     setCalendarId = (id) => {
         this.setState({
             calendarId: id
+        })
+    }
+
+    setCurrency = (currency) => {
+        const items = this.state.items.map(item => {
+            item.displayValue = this.buildDisplayValue(item.value, currency)
+            return item
+        })
+        this.setState({
+            items: items,
+            currency: currency
         })
     }
 
@@ -122,29 +136,21 @@ class App extends React.Component {
         })
     }
 
-    buildSingleItem(item) {
+    buildSingleItem(item, currency) {
+        currency = currency ?? this.state.currency
         let current = Object.assign({}, item)
         current.allDay = true
         current.start = moment(item.start)
         current.end = moment(item.start)
+        current.displayValue = this.buildDisplayValue(current.value, currency)
         return current
     }
 
-    buildRecurrentItem(item) {
+    buildRecurrentItem(item, currency) {
+        currency = currency ?? this.state.currency
         let res = []
         let current = Object.assign({}, item)
         let period = current.recurrencyPeriod
-        // switch (current.recurrencyPeriod) {
-        //     case 'weekly':
-        //         period = 'week'
-        //         break
-        //     case 'monthly':
-        //         period = 'month'
-        //         break
-        //     case 'yearly':
-        //         period = 'year'
-        //         break
-        // }
 
         current.allDay = true
         let newDate = moment(current.start)
@@ -152,10 +158,29 @@ class App extends React.Component {
         do {
             current.start = newDate.clone()
             current.end = newDate.clone()
+            current.displayValue = this.buildDisplayValue(current.value, currency)
             res.push(Object.assign({}, current))
             newDate = newDate.add(1, period)
         } while (newDate.isBefore(endDate))
         return res
+    }
+
+    buildDisplayValue = (value, currency) => {
+        currency = currency ?? this.state.currency
+
+        if(this.state.calendar !== null && currency !== this.state.calendar.currency){
+            const rate = this.state.calendar.exchanges.find(exc => exc.base === this.state.calendar.currency).rates[currency]
+            value = value * rate
+        }
+
+        switch (currency) {
+            case 'EUR':
+                return `${value.toFixed(2)}€`
+            case 'USD':
+                return `$${value.toFixed(2)}`
+            default:
+                return `${value}`
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -165,17 +190,18 @@ class App extends React.Component {
                     const calendar = res.data
 
                     let items = calendar.single.slice().map(item => {
-                        return this.buildSingleItem(item)
+                        return this.buildSingleItem(item, calendar.currency)
                     })
 
                     calendar.recurrent.forEach((item) => {
-                        items = items.concat(this.buildRecurrentItem(item))
+                        items = items.concat(this.buildRecurrentItem(item, calendar.currency))
                     })
 
                     this.setState({
                         calendarId: this.state.calendarId,
                         calendar: calendar,
-                        items: items
+                        items: items,
+                        currency: calendar.currency
                     })
                 })
                 .catch()    //TODO
@@ -195,17 +221,18 @@ class App extends React.Component {
                 const calendar = res.data
 
                 let items = calendar.single.slice().map(item => {
-                    return this.buildSingleItem(item)
+                    return this.buildSingleItem(item, calendar.currency)
                 })
 
                 calendar.recurrent.forEach((item) => {
-                    items = items.concat(this.buildRecurrentItem(item))
+                    items = items.concat(this.buildRecurrentItem(item, calendar.currency))
                 })
 
                 this.setState({
                     calendarId: calendarId,
                     calendar: calendar,
-                    items: items
+                    items: items,
+                    currency: calendar.currency
                 })
             })
             .catch()    //TODO

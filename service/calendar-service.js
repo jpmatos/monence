@@ -1,10 +1,17 @@
 const moment = require('moment')
 const db = require('../data/database-mock')
+const dbExchanges = require('../data/database-exchanges-mock')
 
 class CalendarService {
 
     static getCalendar(calendarId) {
-        return db.getCalendar(calendarId)
+        return Promise.all([db.getCalendar(calendarId), dbExchanges.getExchanges()])
+            .then(res => {
+                const calendar = res[0]
+                const exchanges = res[1]
+                calendar.exchanges = exchanges
+                return calendar
+            })
     }
 
     static postItem(calendarId, item) {
