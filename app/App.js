@@ -92,12 +92,8 @@ class App extends React.Component {
             calendar: calendar
         })
 
-        let items = this.state.items
-        const itemIdx = items.findIndex(i => i.id === id)
-        if (itemIdx !== -1) {
-            items.splice(itemIdx, 1)
-            this.setState({items: items})
-        }
+        let items = this.state.items.filter(it => it.id !== id)
+        this.setState({items: items})
     }
 
     handleNewBudget = (budget) => {
@@ -137,18 +133,18 @@ class App extends React.Component {
     buildRecurrentItem(item) {
         let res = []
         let current = Object.assign({}, item)
-        let period = 'month'
-        switch (current.recurrencyPeriod) {
-            case 'weekly':
-                period = 'week'
-                break
-            case 'monthly':
-                period = 'month'
-                break
-            case 'yearly':
-                period = 'year'
-                break
-        }
+        let period = current.recurrencyPeriod
+        // switch (current.recurrencyPeriod) {
+        //     case 'weekly':
+        //         period = 'week'
+        //         break
+        //     case 'monthly':
+        //         period = 'month'
+        //         break
+        //     case 'yearly':
+        //         period = 'year'
+        //         break
+        // }
 
         current.allDay = true
         let newDate = moment(current.start)

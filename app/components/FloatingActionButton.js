@@ -5,7 +5,6 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import AddIcon from '@material-ui/icons/Add'
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import {SpeedDial, SpeedDialAction} from "@material-ui/lab";
 import {DatePicker, KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import {Fab} from "@material-ui/core";
@@ -22,7 +21,8 @@ const useStyles = (theme) => ({
         position: 'fixed',
         right: '5%',
         bottom: '5%',
-        zIndex: 1050
+        zIndex: 1050,
+        width: 'auto',
     },
     others: {
         marginLeft: '20px',

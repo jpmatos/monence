@@ -27,7 +27,7 @@ class CreateItemFormDialog extends React.Component {
             validValue: true,
             type: 'expense',
             recurrency: 'single',
-            recurrencyPeriod: 'monthly'
+            recurrencyPeriod: 'month'
         }
     }
 
@@ -43,7 +43,7 @@ class CreateItemFormDialog extends React.Component {
                 validValue: true,
                 type: 'expense',
                 recurrency: 'single',
-                recurrencyPeriod: 'monthly'
+                recurrencyPeriod: 'month'
             })
         }, 1000)
     }
@@ -108,8 +108,10 @@ class CreateItemFormDialog extends React.Component {
             'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
         }
 
-        if(this.state.recurrency === "recurrent")
+        if(this.state.recurrency === "recurrent") {
+            item.recurrencyPeriod = this.state.recurrencyPeriod
             item.end = this.state.selectedEndDate
+        }
 
         this.props.handleNewItem(item, this.handleClose)
     }
@@ -191,13 +193,13 @@ class CreateItemFormDialog extends React.Component {
                                         onChange={this.handleRecurrencyPeriodChange}
                                         aria-label="recurrency selection"
                                     >
-                                        <ToggleButton value="weekly" aria-label="Week selection">
+                                        <ToggleButton value="week" aria-label="Week selection">
                                             Week
                                         </ToggleButton>
-                                        <ToggleButton value="monthly" aria-label="monthly selection">
+                                        <ToggleButton value="month" aria-label="monthly selection">
                                             Month
                                         </ToggleButton>
-                                        <ToggleButton value="yearly" aria-label="yearly selection">
+                                        <ToggleButton value="year" aria-label="yearly selection">
                                             Year
                                         </ToggleButton>
                                     </ToggleButtonGroup>

@@ -228,17 +228,17 @@ class MyBudget extends React.Component {
                         </TableContainer>
                     </Box>
                 ))}
-                <FloatingActionButton date={this.context.calendarDate}
-                                      handleOnClickFAB={this.handleClickOpen}
-                                      handleDateChange={this.handleDateChange}
-                                      handleAdvanceMonth={this.handleAdvanceMonth}
-                                      handleRecedeMonth={this.handleRecedeMonth}/>
                 <CreateBudgetFormDialog isOpen={this.state.isNewBudgetFDOpen} setOpen={this.setNewBudgetFD}
                                         handleNewBudget={this.handleNewBudget}/>
                 <ViewBudgetFormDialog isOpen={this.state.isBudgetFDOpen} setOpen={this.setBudgetFD}
                                       currentlyOpenBudget={this.state.currentlyOpenBudget}
                                       handleUpdateBudget={this.handleUpdateBudget}
                                       handleDeleteBudget={this.handleDeleteBudget}/>
+                <FloatingActionButton date={this.context.calendarDate}
+                                      handleOnClickFAB={this.handleClickOpen}
+                                      handleDateChange={this.handleDateChange}
+                                      handleAdvanceMonth={this.handleAdvanceMonth}
+                                      handleRecedeMonth={this.handleRecedeMonth}/>
             </Container>
         );
     }

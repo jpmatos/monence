@@ -8,7 +8,6 @@
         "id": "46aba59b-7daf-4f70-94ba-c39ec62540b4",
         "title": "Dinner Out",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "type": "expense",
         "start": "2021-05-14T00:00:00.000Z",
         "value": "25.00"
@@ -19,7 +18,6 @@
         "value": "110.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "3ee41096-5689-4919-9cc3-357591095a4a"
       },
       {
@@ -28,7 +26,6 @@
         "value": "7.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "cd45749b-e1bd-43fd-8664-d7d35e3b352f"
       },
       {
@@ -37,7 +34,6 @@
         "value": "90.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "32ec6ce4-6818-4a94-9589-3cd6a084ed96"
       },
       {
@@ -46,7 +42,6 @@
         "value": "120.00",
         "type": "gain",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "797e2b3c-9970-468c-9e03-3bad776ec123"
       },
       {
@@ -55,7 +50,6 @@
         "value": "40.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "5a8f69ae-4fac-4920-947a-2b77c92aa68e"
       },
       {
@@ -64,7 +58,6 @@
         "value": "40.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "203bbb70-953f-4971-8dc1-27ebeeb89d75"
       },
       {
@@ -73,7 +66,6 @@
         "value": "14.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "dda89058-0913-46c6-aa0a-4251502a42ed"
       },
       {
@@ -82,7 +74,6 @@
         "value": "110.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "dc998ac8-935c-403d-89c5-3110923bee3d"
       },
       {
@@ -91,7 +82,6 @@
         "value": "100.00",
         "type": "expense",
         "recurrency": "single",
-        "recurrencyPeriod": "monthly",
         "id": "c70d75b4-ebb4-41c8-ae2a-76e2d6c89782"
       }
     ],
@@ -102,7 +92,7 @@
         "value": "2.00",
         "type": "expense",
         "recurrency": "recurrent",
-        "recurrencyPeriod": "weekly",
+        "recurrencyPeriod": "week",
         "end": "2021-05-31T00:00:00.000Z",
         "id": "afd561eb-cab0-4a27-87d4-f3c9d71e9ed4"
       },
@@ -112,7 +102,7 @@
         "value": "11.00",
         "type": "expense",
         "recurrency": "recurrent",
-        "recurrencyPeriod": "monthly",
+        "recurrencyPeriod": "month",
         "end": "2021-05-29T00:00:00.000Z",
         "id": "fd8442b5-3389-4429-a2fa-66899d7e6b11"
       }
