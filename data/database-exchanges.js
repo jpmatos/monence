@@ -3,7 +3,7 @@ const axios = require('axios')
 
 const currencies = ['USD', 'EUR', 'GBP']
 
-class DatabaseExchangesMock {
+class DatabaseExchanges {
     static init() {
         axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.OER_ID}`)
             .then(res => {
@@ -45,4 +45,4 @@ class DatabaseExchangesMock {
     }
 }
 
-module.exports = DatabaseExchangesMock.init()
+module.exports = DatabaseExchanges.init()
