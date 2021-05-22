@@ -1,6 +1,7 @@
 const fs = require('fs').promises
 const path = require('path')
-const {v4: uuid} = require('uuid')
+const uuid = require('short-uuid')
+const error = require('../object/error')
 
 class DatabaseMock {
     static init() {
@@ -18,16 +19,14 @@ class DatabaseMock {
     static getCalendar(calendarId) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+            return Promise.reject(error(404, 'Calendar Not Found'))
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
     static postItem(calendarId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        item.id = uuid()
+            return Promise.reject(error(404, 'Calendar Not Found'))
 
         this.calendars[calendarIdx][arrayName].push(item)
         return Promise.resolve(item)
@@ -69,8 +68,6 @@ class DatabaseMock {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        budget.id = uuid()
 
         this.calendars[calendarIdx].budget[budget.period].push(budget)
 
@@ -135,7 +132,7 @@ class DatabaseMock {
         if (userIdx === -1)
             return Promise.resolve({'message': `Could not find user ${userIdx}`})
 
-        calendar.id = uuid()
+        calendar.id = uuid.generate()
 
         this.users[userIdx].calendars.push(calendar)
         this.calendars.push({

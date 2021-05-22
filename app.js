@@ -72,5 +72,12 @@ app.use(passport.session());
 app.use('/calendar', calendarRoutes(express.Router()))
 app.use('/auth', authRoutes(express.Router(), passport))
 app.use('/user', userRoutes(express.Router()))
+app.use((err, req, res, next) => {
+    res.status(err.status)
+        .json({
+            'success': false,
+            'message': err.message
+        })
+})
 
 module.exports = app

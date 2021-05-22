@@ -87,12 +87,16 @@ class CreateItemFormDialog extends React.Component {
         if (!this.state.validTitle || !this.state.validValue)
             return;
 
+        let value = this.state.value
+        if(typeof(value) === 'string')
+            value = parseFloat(value.replaceAll(',', ''))
+
         let fail = false
         if (this.state.itemTitle === null || this.state.itemTitle === '') {
             fail = true
             this.setState({validTitle: false})
         }
-        if (this.state.value === null || this.state.value == 0) {
+        if (value === null || value === 0) {
             fail = true
             this.setState({validValue: false})
         }
@@ -102,7 +106,7 @@ class CreateItemFormDialog extends React.Component {
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,
-            'value': parseFloat(this.state.value.replaceAll(',', '')),
+            'value': value,
             'type': this.state.type,                            //expense/gain
             'recurrency': this.state.recurrency,                //single/recurrent
             'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
