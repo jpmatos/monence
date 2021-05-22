@@ -69,44 +69,32 @@ class MyBudget extends React.Component {
         this.setState({isBudgetFDOpen: event})
     }
 
-    handleNewBudget = (budget, cb) => {
-        axios.post(`/calendar/${this.context.calendarId}/budget`, budget)
+    handleNewBudget = (budget) => {
+        return axios.post(`/calendar/${this.context.calendarId}/budget`, budget)
             .then(resp => {
                 this.context.handleNewBudget(resp.data)
-                cb()
                 this.updatePeriods(this.context.calendarDate)
-            })
-            .catch(err => {
-                cb()
             })
     }
 
-    handleUpdateBudget = (id, budget, cb) => {
-        axios.put(`/calendar/${this.context.calendarId}/budget/${id}`, budget)
+    handleUpdateBudget = (id, budget) => {
+        return axios.put(`/calendar/${this.context.calendarId}/budget/${id}`, budget)
             .then(resp => {
                 this.context.handleUpdateBudget(resp.data)
-                cb()
                 this.updatePeriods(this.context.calendarDate)
-            })
-            .catch(err => {
-                cb()
             })
     }
 
-    handleDeleteBudget = (id, period, cb) => {
-        axios.delete(`/calendar/${this.context.calendarId}/budget/${id}`)
+    handleDeleteBudget = (id) => {
+        return axios.delete(`/calendar/${this.context.calendarId}/budget/${id}`)
             .then(resp => {
-                this.context.handleDeleteBudget(id, period)   //TODO Change to response from id
-                cb()
+                this.context.handleDeleteBudget(id)   //TODO Change to response from id
                 this.updatePeriods(this.context.calendarDate)
-            })
-            .catch(err => {
-                cb()
             })
     }
 
-    onClickBudget = (id, period) => {
-        const budget = this.context.calendar.budget[period].find(budget => budget.id === id)
+    onClickBudget = (id) => {
+        const budget = this.context.calendar.budget.find(budget => budget.id === id)
         this.setState({
             currentlyOpenBudget: budget,
             isBudgetFDOpen: true
@@ -116,9 +104,9 @@ class MyBudget extends React.Component {
     updatePeriods = (calendarDate) => {
         const calendar = this.context.calendar
         let weekRows = []
-        calendar.budget.week
-            .filter(week => {
-                return moment(week.date).isSame(moment(calendarDate), 'month')
+        calendar.budget
+            .filter(budget => {
+                return moment(budget.date).isSame(moment(calendarDate), 'month') && budget.period === 'week'
             })
             .sort((first, second) => moment(first.date).isAfter(second.date) ? 1 : -1)
             .map(week => {
@@ -132,9 +120,9 @@ class MyBudget extends React.Component {
             })
 
         let monthRows = []
-        calendar.budget.month
-            .filter(month => {
-                return moment(month.date).isSame(moment(calendarDate), 'month')
+        calendar.budget
+            .filter(budget => {
+                return moment(budget.date).isSame(moment(calendarDate), 'month') && budget.period === 'month'
             })
             .map(month => {
                 const id = month.id
@@ -147,9 +135,9 @@ class MyBudget extends React.Component {
             })
 
         let yearRows = []
-        calendar.budget.year
-            .filter(month => {
-                return moment(month.date).isSame(moment(calendarDate), 'year')
+        calendar.budget
+            .filter(budget => {
+                return moment(budget.date).isSame(moment(calendarDate), 'year') && budget.period === 'year'
             })
             .map(year => {
                 const id = year.id

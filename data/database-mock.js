@@ -69,7 +69,7 @@ class DatabaseMock {
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        this.calendars[calendarIdx].budget[budget.period].push(budget)
+        this.calendars[calendarIdx].budget.push(budget)
 
         return Promise.resolve(budget)
     }
@@ -79,17 +79,17 @@ class DatabaseMock {
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const budgetIdx = this.calendars[calendarIdx].budget[budget.period].findIndex(i => i.id === budgetId)
-        const currBudget = this.calendars[calendarIdx].budget[budget.period][budgetIdx]
+        const budgetIdx = this.calendars[calendarIdx].budget.findIndex(i => i.id === budgetId)
+        const currBudget = this.calendars[calendarIdx].budget[budgetIdx]
 
-        this.calendars[calendarIdx].budget[budget.period][budgetIdx] = {
+        this.calendars[calendarIdx].budget[budgetIdx] = {
             'id': currBudget.id,
             'date': budget.date,
             'value': budget.value,
             'period': currBudget.period
         }
 
-        return Promise.resolve(this.calendars[calendarIdx].budget[budget.period][budgetIdx])
+        return Promise.resolve(this.calendars[calendarIdx].budget[budgetIdx])
     }
 
     static deleteBudget(calendarId, budgetId) {
@@ -97,9 +97,7 @@ class DatabaseMock {
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        this.calendars[calendarIdx].budget['week'] = this.calendars[calendarIdx].budget['week'].filter((budget) => budget.id !== budgetId)
-        this.calendars[calendarIdx].budget['month'] = this.calendars[calendarIdx].budget['month'].filter((budget) => budget.id !== budgetId)
-        this.calendars[calendarIdx].budget['year'] = this.calendars[calendarIdx].budget['year'].filter((budget) => budget.id !== budgetId)
+        this.calendars[calendarIdx].budget = this.calendars[calendarIdx].budget.filter((budget) => budget.id !== budgetId)
 
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
     }

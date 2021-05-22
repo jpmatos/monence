@@ -11,7 +11,7 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const session = require('express-session')
 
 //Load env variables
-if(!fs.existsSync('./env.json')){
+if (!fs.existsSync('./env.json')) {
     console.log('Set up env.json!')
     return null
 }
@@ -28,10 +28,10 @@ const userRoutes = require('./web-api/user-web-api')
 //   Strategies in Passport require a `verify` function, which accept
 //   credentials (in this case, an accessToken, refreshToken, and Google
 //   profile), and invoke a callback with a user object.
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, user);
 });
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) {
     done(null, obj);
 });
 passport.use(new GoogleStrategy({
@@ -40,11 +40,11 @@ passport.use(new GoogleStrategy({
         callbackURL: 'http://localhost:3000/auth/google/callback'
         // callbackURL: process.env.CALLBACK_URL
     },
-    function(accessToken, refreshToken, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
         // User.findOrCreate({ googleId: profile.id }, function (err, user) {
         //     return done(err, user)
         // })
-        process.nextTick(function() {
+        process.nextTick(function () {
             return done(null, profile)
         })
     }
@@ -55,7 +55,7 @@ const app = express()
 //Middleware
 app.use(logger('dev'))
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
@@ -73,11 +73,15 @@ app.use('/calendar', calendarRoutes(express.Router()))
 app.use('/auth', authRoutes(express.Router(), passport))
 app.use('/user', userRoutes(express.Router()))
 app.use((err, req, res, next) => {
-    res.status(err.status)
-        .json({
-            'success': false,
-            'message': err.message
-        })
+    if (err !== undefined) {
+        if (err.stack !== undefined)
+            console.error(err.stack)
+        res.status(err.status)
+            .json({
+                'success': false,
+                'message': err.message
+            })
+    }
 })
 
 module.exports = app

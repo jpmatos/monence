@@ -44,24 +44,31 @@ class ViewBudgetFormDialog extends React.Component {
         if (!this.state.validValue)
             return;
 
+        let value = this.state.value
+        if(typeof(value) === 'string')
+            value = parseFloat(value.replaceAll(',', ''))
         const budget = {
             'date': moment.utc(this.state.selectedDate)
                 .startOf(this.props.currentlyOpenBudget.period === 'week' ? 'isoWeek' : this.props.currentlyOpenBudget.period)
                 .toDate(),
-            'value': this.state.value.replaceAll(',', ''),
+            'value': value,
             'period': this.props.currentlyOpenBudget.period
         }
 
-        if (budget.value === null || budget.value == 0) {
+        if (budget.value === null || value === 0) {
             this.setState({validValue: false})
             return;
         }
 
-        this.props.handleUpdateBudget(this.props.currentlyOpenBudget.id, budget, this.handleClose)
+        this.props.handleUpdateBudget(this.props.currentlyOpenBudget.id, budget)
+            .then(() => this.handleClose())
+            .catch(() => this.handleClose())
     }
 
     handleDelete = () => {
-        this.props.handleDeleteBudget(this.props.currentlyOpenBudget.id, this.props.currentlyOpenBudget.period, this.handleClose)
+        this.props.handleDeleteBudget(this.props.currentlyOpenBudget.id)
+            .then(() => this.handleClose())
+            .catch(() => this.handleClose())
     }
 
     printTitle() {

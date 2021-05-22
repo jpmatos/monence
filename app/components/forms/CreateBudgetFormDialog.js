@@ -54,7 +54,11 @@ class CreateBudgetFormDialog extends React.Component {
         if (!this.state.validValue)
             return;
 
-        if (this.state.value === null || this.state.value == 0) {
+        let value = this.state.value
+        if(typeof(value) === 'string')
+            value = parseFloat(value.replaceAll(',', ''))
+
+        if (this.state.value === null || value === 0) {
             this.setState({validValue: false})
             return
         }
@@ -63,11 +67,13 @@ class CreateBudgetFormDialog extends React.Component {
             'date': moment.utc(this.state.selectedDate)
                 .startOf(this.state.period === 'week' ? 'isoWeek' : this.state.period)
                 .toDate(),
-            'value': this.state.value.replaceAll(',', ''),
+            'value': value,
             'period': this.state.period     //week/month/year
         }
 
-        this.props.handleNewBudget(budget, this.handleClose)
+        this.props.handleNewBudget(budget)
+            .then(() => this.handleClose())
+            .catch(() => this.handleClose())
     }
 
     render() {

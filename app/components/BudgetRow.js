@@ -20,7 +20,7 @@ export default class BudgetRow extends React.Component {
     }
 
     onClick = () => {
-        this.props.onClick(this.props.row.id, this.props.row.period)
+        this.props.onClick(this.props.row.id)
     }
 
     render() {

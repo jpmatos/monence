@@ -112,7 +112,7 @@ class App extends React.Component {
 
     handleNewBudget = (budget) => {
         let calendar = this.state.calendar
-        calendar.budget[budget.period].push(budget)
+        calendar.budget.push(budget)
         this.setState({
             calendar: calendar
         })
@@ -120,17 +120,17 @@ class App extends React.Component {
 
     handleUpdateBudget = (budget) => {
         let calendar = this.state.calendar
-        const idx = calendar.budget[budget.period].findIndex(i => i.id === budget.id)
-        calendar.budget[budget.period][idx] = budget
+        const idx = calendar.budget.findIndex(i => i.id === budget.id)
+        calendar.budget[idx] = budget
         this.setState({
             calendar: calendar
         })
     }
 
-    handleDeleteBudget = (id, period) => {
+    handleDeleteBudget = (id) => {
         let calendar = this.state.calendar
-        const idx = calendar.budget[period].findIndex(i => i.id === id)
-        calendar.budget[period].splice(idx, 1)
+        const idx = calendar.budget.findIndex(i => i.id === id)
+        calendar.budget.splice(idx, 1)
         this.setState({
             calendar: calendar
         })

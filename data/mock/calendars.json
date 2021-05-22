@@ -108,32 +108,26 @@
         "id": "b7rBTzLi3Dbvpb6uZ8HTdP"
       }
     ],
-    "budget": {
-      "week": [
-        {
-          "id": "uMV3mrLdhdMuA5FhqZ7GQQ",
-          "date": "2021-05-10T00:00:00.000Z",
-          "value": 100.00,
-          "period": "week"
-        }
-      ],
-      "month": [
-        {
-          "date": "2021-05-01T00:00:00.000Z",
-          "value": 200.00,
-          "period": "month",
-          "id": "nu9ibxZXmvRT2pwvRcBqTN"
-        }
-      ],
-      "year": [
-        {
-          "id": "g9JqvBLjyxf7FGrQoKT6oE",
-          "date": "2021-01-01T00:00:00.000Z",
-          "value": 100.00,
-          "period": "year"
-        }
-      ]
-    }
+    "budget": [
+      {
+        "id": "uMV3mrLdhdMuA5FhqZ7GQQ",
+        "date": "2021-05-10T00:00:00.000Z",
+        "value": 100.00,
+        "period": "week"
+      },
+      {
+        "id": "nu9ibxZXmvRT2pwvRcBqTN",
+        "date": "2021-05-01T00:00:00.000Z",
+        "value": 200.00,
+        "period": "month"
+      },
+      {
+        "id": "g9JqvBLjyxf7FGrQoKT6oE",
+        "date": "2021-01-01T00:00:00.000Z",
+        "value": 100.00,
+        "period": "year"
+      }
+    ]
   },
   {
     "name": "calendar01",
