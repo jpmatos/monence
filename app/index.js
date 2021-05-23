@@ -25,10 +25,15 @@ class UserContextBinder extends React.Component {
         return axios.post('/user/calendars', calendar)
             .then(res => {
                 const calendars = this.state.calendars
-                calendars.push(res.data)
+                calendars.push(res.data.body)
                 this.setState({
                     calendars: calendars
                 })
+            })
+            .catch(err => {
+                if(err.stack)
+                    console.debug(err.stack)
+                return Promise.reject(err)
             })
     }
 
@@ -47,11 +52,11 @@ class UserContextBinder extends React.Component {
             window.history.replaceState(null, '', window.location.origin + '/#/')
             axios.get('/auth/session')
                 .then(res => {
-                    this.setState({session: res.data})
-                    if (res.data.isAuthenticated)
+                    this.setState({session: res.data.body})
+                    if (res.data.body.isAuthenticated)
                         axios.get('/user/calendars')
                             .then((res) => {
-                                this.setState({calendars: res.data})
+                                this.setState({calendars: res.data.body})
                             })
                 })
         }
@@ -60,11 +65,11 @@ class UserContextBinder extends React.Component {
     componentDidMount() {
         axios.get('/auth/session')
             .then(res => {
-                this.setState({session: res.data})
-                if (res.data.isAuthenticated)
+                this.setState({session: res.data.body})
+                if (res.data.body.isAuthenticated)
                     axios.get('/user/calendars')
                         .then((res) => {
-                            this.setState({calendars: res.data})
+                            this.setState({calendars: res.data.body})
                         })
             })
     }

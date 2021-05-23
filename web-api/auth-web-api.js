@@ -1,4 +1,5 @@
 const authController = require("./controller/auth-controller");
+const success = require("../object/success");
 
 // /auth/...
 function authWebApi(router, passport) {
@@ -8,13 +9,14 @@ function authWebApi(router, passport) {
             scope: [
                 'https://www.googleapis.com/auth/userinfo.email',
                 'https://www.googleapis.com/auth/userinfo.profile',
-                'openid']
+                'openid',
+                'https://www.googleapis.com/auth/calendar.events']
         }))
 
     router.get('/google/callback',
         passport.authenticate('google', {failureRedirect: '/failed'}),
         (req, res, next) => {
-            authController.verifyNewUser(req, res, next)
+            return authController.verifyNewUser(req, res, next)
         });
 
     router.get('/session', (req, res, next) => {
@@ -27,9 +29,9 @@ function authWebApi(router, passport) {
                 'photos': req.user.photos,
                 'provide': req.user.provide
             }
-            res.json(googleUser);
+            res.json(success(googleUser));
         } else {
-            res.json({'isAuthenticated': false});
+            res.json(success({'isAuthenticated': false}));
         }
     })
 

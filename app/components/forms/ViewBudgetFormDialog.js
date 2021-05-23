@@ -51,8 +51,7 @@ class ViewBudgetFormDialog extends React.Component {
             'date': moment.utc(this.state.selectedDate)
                 .startOf(this.props.currentlyOpenBudget.period === 'week' ? 'isoWeek' : this.props.currentlyOpenBudget.period)
                 .toDate(),
-            'value': value,
-            'period': this.props.currentlyOpenBudget.period
+            'value': value
         }
 
         if (budget.value === null || value === 0) {
@@ -61,14 +60,12 @@ class ViewBudgetFormDialog extends React.Component {
         }
 
         this.props.handleUpdateBudget(this.props.currentlyOpenBudget.id, budget)
-            .then(() => this.handleClose())
-            .catch(() => this.handleClose())
+        this.handleClose()
     }
 
     handleDelete = () => {
         this.props.handleDeleteBudget(this.props.currentlyOpenBudget.id)
-            .then(() => this.handleClose())
-            .catch(() => this.handleClose())
+        this.handleClose()
     }
 
     printTitle() {

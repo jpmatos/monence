@@ -4,7 +4,6 @@ const db = require(Boolean(process.env.MOCK_DB === 'true') ? '../data/database-m
 const dbExchanges = require(process.env.MOCK_EXCHANGE_DB === 'true' ? '../data/database-exchanges-mock' : '../data/database-exchanges')
 const error = require('../object/error')
 const uuidSchema = require('./joi-schemas/id-schemas').uuidSchema
-const userIdSchema = require('./joi-schemas/id-schemas').userIdSchema
 const postItemSingleSchema = require('./joi-schemas/item-schemas').postItemSingleSchema
 const postItemRecurrentSchema = require('./joi-schemas/item-schemas').postItemRecurrentSchema
 const putItemSingleSchema = require('./joi-schemas/item-schemas').putItemSingleSchema
@@ -31,15 +30,12 @@ class CalendarService {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         if (item.start !== undefined)
             item.start = moment.utc(item.start).startOf('day').toISOString()
 
         const result = postItemSingleSchema.validate(item, {stripUnknown: true})
         if (result.error)
-            return Promise.reject(error(400, result.error))
+            return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
         return db.getCalendar(calendarId)
@@ -61,9 +57,6 @@ class CalendarService {
         if (uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         if (Object.keys(item).length === 0)
             return Promise.reject(error(400, 'Item Is Empty'))
 
@@ -72,7 +65,7 @@ class CalendarService {
 
         const result = putItemSingleSchema.validate(item, {stripUnknown: true})
         if (result.error)
-            return Promise.reject(error(400, result.error))
+            return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
         return db.getCalendar(calendarId)
@@ -91,9 +84,6 @@ class CalendarService {
         if (uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         return db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
@@ -107,9 +97,6 @@ class CalendarService {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         if (item.start !== undefined)
             item.start = moment.utc(item.start).startOf('day').toISOString()
 
@@ -118,7 +105,7 @@ class CalendarService {
 
         const result = postItemRecurrentSchema.validate(item, {stripUnknown: true})
         if (result.error)
-            return Promise.reject(error(400, result.error))
+            return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
         return db.getCalendar(calendarId)
@@ -140,9 +127,6 @@ class CalendarService {
         if (uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         if (Object.keys(item).length === 0)
             return Promise.reject(error(400, 'Item Is Empty'))
 
@@ -153,7 +137,7 @@ class CalendarService {
 
         const result = putItemRecurrentSchema.validate(item, {stripUnknown: true})
         if (result.error)
-            return Promise.reject(error(400, result.error))
+            return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
         return db.getCalendar(calendarId)
@@ -172,9 +156,6 @@ class CalendarService {
         if (uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         return db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
@@ -189,15 +170,12 @@ class CalendarService {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         if (budget.date !== undefined)
             budget.date = moment.utc(budget.date).startOf('day').toISOString()
 
         const result = postBudgetSchema.validate(budget, {stripUnknown: true})
         if (result.error)
-            return Promise.reject(error(400, result.error))
+            return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
         return db.getCalendar(calendarId)
@@ -218,9 +196,6 @@ class CalendarService {
         if (uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
-
         if (Object.keys(budget).length === 0)
             return Promise.reject(error(400, 'Item Is Empty'))
 
@@ -229,7 +204,7 @@ class CalendarService {
 
         const result = putBudgetSchema.validate(budget, {stripUnknown: true})
         if (result.error)
-            return Promise.reject(error(400, result.error))
+            return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
         return db.getCalendar(calendarId)
@@ -247,9 +222,6 @@ class CalendarService {
 
         if (uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
-
-        if (userIdSchema.validate(userId).error)
-            return Promise.reject(error(400, 'Invalid User Id'))
 
         return db.getCalendar(calendarId)
             .then(calendar => {

@@ -71,25 +71,40 @@ class MyBudget extends React.Component {
 
     handleNewBudget = (budget) => {
         return axios.post(`/calendar/${this.context.calendarId}/budget`, budget)
-            .then(resp => {
-                this.context.handleNewBudget(resp.data)
+            .then(res => {
+                this.context.handleNewBudget(res.data.body)
                 this.updatePeriods(this.context.calendarDate)
+                this.props.sendSuccessSnack('Created budget!')
+            })
+            .catch(err=> {
+                this.props.sendErrorSnack('Failed to create budget!', err)
+                console.debug(err.stack)
             })
     }
 
     handleUpdateBudget = (id, budget) => {
         return axios.put(`/calendar/${this.context.calendarId}/budget/${id}`, budget)
-            .then(resp => {
-                this.context.handleUpdateBudget(resp.data)
+            .then(res => {
+                this.context.handleUpdateBudget(res.data.body)
                 this.updatePeriods(this.context.calendarDate)
+                this.props.sendSuccessSnack('Updated budget!')
+            })
+            .catch(err=> {
+                this.props.sendErrorSnack('Failed to update budget!', err)
+                console.debug(err.stack)
             })
     }
 
     handleDeleteBudget = (id) => {
         return axios.delete(`/calendar/${this.context.calendarId}/budget/${id}`)
-            .then(resp => {
+            .then(res => {
                 this.context.handleDeleteBudget(id)   //TODO Change to response from id
                 this.updatePeriods(this.context.calendarDate)
+                this.props.sendSuccessSnack('Deleted budget!')
+            })
+            .catch(err=> {
+                this.props.sendErrorSnack('Failed to delete budget!', err)
+                console.debug(err.stack)
             })
     }
 

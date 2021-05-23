@@ -68,42 +68,41 @@ class MyCalendar extends React.Component {
         return {start: res.start, end: res.end}
     }
 
-    handleNewItem = (item, cb) => {
-        axios.post(`/calendar/${this.context.calendarId}/item/${item.recurrency}`, item)
-            .then(resp => {
-                this.context.handleNewItem(resp.data)
-                cb()
+    handleNewItem = (item) => {
+        return axios.post(`/calendar/${this.context.calendarId}/item/${item.recurrency}`, item)
+            .then(res => {
+                this.context.handleNewItem(res.data.body)
+                this.props.sendSuccessSnack(`Created item '${res.data.body.title}'!`)
             })
             .catch(err => {
-                cb()
+                this.props.sendErrorSnack('Failed to create item!', err)
+                console.debug(err.stack)
             })
     }
 
-    handleUpdateItem = (itemId, recurrency, item, cb) => {
-        axios.put(`/calendar/${this.context.calendarId}/item/${recurrency}/${itemId}`, item)
-            .then(resp => {
-                this.context.handleUpdateItem(resp.data)
-                cb()
+    handleUpdateItem = (itemId, recurrency, item) => {
+        return axios.put(`/calendar/${this.context.calendarId}/item/${recurrency}/${itemId}`, item)
+            .then(res => {
+                this.context.handleUpdateItem(res.data.body)
+                this.props.sendSuccessSnack(`Updated item '${res.data.body.title}'!`)
             })
             .catch(err => {
-                cb()
+                this.props.sendErrorSnack('Failed to update item!', err)
+                console.debug(err.stack)
             })
 
     }
 
-    handleDeleteItem = (itemId, recurrency, cb) => {
+    handleDeleteItem = (itemId, recurrency) => {
         axios.delete(`/calendar/${this.context.calendarId}/item/${recurrency}/${itemId}`)
-            .then(resp => {
+            .then(res => {
                 this.context.handleDeleteItem(itemId)  //TODO Change to response from id
-                cb()
+                this.props.sendSuccessSnack(`Deleted item!`)
             })
             .catch(err => {
-                cb()
+                this.props.sendErrorSnack('Failed to delete item!', err)
+                console.debug(err.stack)
             })
-    }
-
-    handleCurrencyChange = () => {
-
     }
 
     eventStyleGetter(event, start, end, isSelected) {
@@ -154,9 +153,12 @@ class MyCalendar extends React.Component {
                                     {event.event.displayValue}
                                 </span>
                             </div>
-                        )
+                        ),
+                        month: {
+                            dateHeader: (event) => (<div>{event.label}</div>)
+                        }
                     }}
-                    views={['month']}
+                    views={['month', 'day']}
                     endAccessor='end'
                     onSelectEvent={this.onClickItem}
                     eventPropGetter={this.eventStyleGetter}
@@ -169,7 +171,8 @@ class MyCalendar extends React.Component {
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}
                                       handleRecedeMonth={this.handleRecedeMonth}
-                                      handleCurrencyChange={this.handleCurrencyChange}/>
+                                      handleCurrencyChange={() => {
+                                      }}/>
                 <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}
                                       handleNewItem={this.handleNewItem}/>
                 <ViewItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}

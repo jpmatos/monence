@@ -66,10 +66,15 @@ class MyHome extends React.Component {
 
         this.context.handleCreateCalendar(this.state.calendarName)
             .then(() => {
-                this.setState({
-                    clickedCreate: false
-                })
+                this.props.sendSuccessSnack('Created calendar!')
             })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to create calendar!', err)
+                console.debug(err.stack)
+            })
+        this.setState({
+            clickedCreate: false
+        })
     }
 
     handleOnCalendarChange = (event, calendarContext) => {

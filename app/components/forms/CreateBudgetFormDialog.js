@@ -72,8 +72,7 @@ class CreateBudgetFormDialog extends React.Component {
         }
 
         this.props.handleNewBudget(budget)
-            .then(() => this.handleClose())
-            .catch(() => this.handleClose())
+        this.handleClose()
     }
 
     render() {

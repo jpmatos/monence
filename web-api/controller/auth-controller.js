@@ -10,6 +10,7 @@ class AuthController{
             .then(() => {
                 res.redirect('/');
             })
+            .catch(next)
     }
 }
 

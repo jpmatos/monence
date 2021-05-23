@@ -6,6 +6,8 @@ import axios from "axios";
 import moment from "moment";
 import {UserContext} from "./components/context/UserContext";
 import * as qs from "qs";
+import {Slide, Snackbar} from "@material-ui/core";
+import {Alert} from "@material-ui/lab";
 
 class App extends React.Component {
     constructor(props) {
@@ -168,7 +170,7 @@ class App extends React.Component {
     buildDisplayValue = (value, currency) => {
         currency = currency ?? this.state.currency
 
-        if(this.state.calendar !== null && currency !== this.state.calendar.currency){
+        if (this.state.calendar !== null && currency !== this.state.calendar.currency) {
             const rate = this.state.calendar.exchanges.find(exc => exc.base === this.state.calendar.currency).rates[currency]
             value = value * rate
         }
@@ -187,7 +189,7 @@ class App extends React.Component {
         if (prevState.calendarId !== this.state.calendarId && prevState.calendarId !== null) {
             axios.get(`/calendar/${this.state.calendarId}`)
                 .then(res => {
-                    const calendar = res.data
+                    const calendar = res.data.body
 
                     let items = calendar.single.slice().map(item => {
                         return this.buildSingleItem(item, calendar.currency)
@@ -218,7 +220,7 @@ class App extends React.Component {
         }
         axios.get(`/calendar/${calendarId}`)
             .then(res => {
-                const calendar = res.data
+                const calendar = res.data.body
 
                 let items = calendar.single.slice().map(item => {
                     return this.buildSingleItem(item, calendar.currency)

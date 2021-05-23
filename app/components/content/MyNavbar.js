@@ -30,6 +30,8 @@ import MyHome from "./MyHome";
 import Grid from "@material-ui/core/Grid";
 import MySettings from "./MySettings";
 import MyForecast from "./MyForecast";
+import {Slide, Snackbar} from "@material-ui/core";
+import {Alert} from "@material-ui/lab";
 
 const drawerWidth = 220
 
@@ -124,7 +126,10 @@ class MyNavbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: false
+            open: false,
+            isSnackOpen: false,
+            snackMessage: null,
+            snackSeverity: 'success'
         }
     }
 
@@ -136,6 +141,35 @@ class MyNavbar extends React.Component {
     }
     handleDrawerClose = () => {
         this.setState({open: false})
+    }
+
+    handleCloseSnack = () => {
+        this.setState({isSnackOpen: false})
+    }
+
+    sendSuccessSnack = (message) => {
+        this.sendSnack(message, 'success')
+    }
+
+    sendErrorSnack = (message, err) => {
+        let msg
+        if (err.response) {
+            msg = err.response.data.message
+        } else if (err.request) {
+            msg = err.request
+        } else {
+            msg = 'UNKNOWN ERROR'
+        }
+        this.sendSnack(`${message} Server Response: ${msg}`, 'error')
+    }
+
+    sendSnack(msg, severity) {
+        severity = severity ?? 'info'
+        this.setState({
+            snackMessage: msg,
+            isSnackOpen: true,
+            snackSeverity: severity
+        })
     }
 
     render() {
@@ -212,14 +246,35 @@ class MyNavbar extends React.Component {
                 </Drawer>
                 <Container maxWidth='lg' className={classes.content}>
                     <Switch>
-                        <Route path='/home*' component={MyHome}/>
-                        <Route path='/calendar*' component={MyCalendar}/>
-                        <Route path='/budget*' component={MyBudget}/>
-                        <Route path='/forecast*' component={MyForecast}/>
-                        <Route path='/settings*' component={MySettings}/>
+                        <Route path='/home*'>
+                            <MyHome sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                        </Route>
+                        <Route path='/calendar*'>
+                            <MyCalendar sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                        </Route>
+                        <Route path='/budget*'>
+                            <MyBudget sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                        </Route>
+                        <Route path='/forecast*' component={MyForecast} sendSnack={this.sendSnack}/>
+                        <Route path='/settings*' component={MySettings} sendSnack={this.sendSnack}/>
                         <Redirect to={`/home?c=${this.context.calendarId}`}/>
                     </Switch>
                 </Container>
+                <Snackbar
+                    open={this.state.isSnackOpen}
+                    onClose={this.handleCloseSnack}
+                    TransitionComponent={(props) => (
+                        <Slide {...props} direction="up"/>
+                    )
+                    }
+                    key={'TransitionUp'}
+                    autoHideDuration={5000}
+                >
+                    <Alert onClose={this.handleCloseSnack} elevation={6} variant="filled"
+                           severity={this.state.snackSeverity}>
+                        {this.state.snackMessage}
+                    </Alert>
+                </Snackbar>
             </HashRouter>
         )
     }

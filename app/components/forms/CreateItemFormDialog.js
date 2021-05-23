@@ -88,7 +88,7 @@ class CreateItemFormDialog extends React.Component {
             return;
 
         let value = this.state.value
-        if(typeof(value) === 'string')
+        if (typeof (value) === 'string')
             value = parseFloat(value.replaceAll(',', ''))
 
         let fail = false
@@ -112,12 +112,13 @@ class CreateItemFormDialog extends React.Component {
             'recurrencyPeriod': this.state.recurrencyPeriod     //weekly/monthly/yearly
         }
 
-        if(this.state.recurrency === "recurrent") {
+        if (this.state.recurrency === "recurrent") {
             item.recurrencyPeriod = this.state.recurrencyPeriod
             item.end = this.state.selectedEndDate
         }
 
-        this.props.handleNewItem(item, this.handleClose)
+        this.props.handleNewItem(item)
+        this.handleClose()
     }
 
     render() {

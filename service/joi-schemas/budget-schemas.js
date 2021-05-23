@@ -8,8 +8,7 @@ const postBudgetSchema = Joi.object({
 
 const putBudgetSchema = Joi.object({
     date: Joi.date().iso().optional(),
-    value: Joi.number().precision(2).positive().max(1000000).optional(),
-    period: Joi.string().pattern(/^week$|^month$|^year$/).required()
+    value: Joi.number().precision(2).positive().max(1000000).optional()
 })
 
 module.exports = {postBudgetSchema, putBudgetSchema}

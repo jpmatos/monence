@@ -58,7 +58,7 @@ class ViewItemFormDialog extends React.Component {
             return;
 
         let value = this.state.value
-        if(typeof(value) === 'string')
+        if (typeof (value) === 'string')
             value = parseFloat(value.replaceAll(',', ''))
         const item = {
             'title': this.state.itemTitle,
@@ -74,18 +74,20 @@ class ViewItemFormDialog extends React.Component {
             fail = true
             this.setState({validTitle: false})
         }
-        if (item.value === null || item.value == 0) {
+        if (item.value === null || value === 0) {
             fail = true
             this.setState({validValue: false})
         }
         if (fail)
             return
 
-        this.props.handleUpdateItem(this.props.currentlyOpenItem.id, this.props.currentlyOpenItem.recurrency, item, this.handleClose)
+        this.props.handleUpdateItem(this.props.currentlyOpenItem.id, this.props.currentlyOpenItem.recurrency, item)
+        this.handleClose()
     }
 
     handleDelete = () => {
-        this.props.handleDeleteItem(this.props.currentlyOpenItem.id, this.props.currentlyOpenItem.recurrency, this.handleClose)
+        this.props.handleDeleteItem(this.props.currentlyOpenItem.id, this.props.currentlyOpenItem.recurrency)
+        this.handleClose()
     }
 
     capitalizeWord() {
