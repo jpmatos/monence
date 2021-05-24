@@ -20,8 +20,7 @@ class UserContextBinder extends React.Component {
         }
     }
 
-    handleCreateCalendar = (calendarName) => {
-        const calendar = {name: calendarName}
+    handleCreateCalendar = (calendar) => {
         return axios.post('/user/calendars', calendar)
             .then(res => {
                 const calendars = this.state.calendars

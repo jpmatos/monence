@@ -1,6 +1,8 @@
 const db = require(Boolean(process.env.MOCK_DB === 'true') ? '../data/database-mock' : '../data/database-mongo')
+const dbExchanges = require(process.env.MOCK_EXCHANGE_DB === 'true' ? '../data/database-exchanges-mock' : '../data/database-exchanges')
 const error = require("../object/error");
 const postCalendarSchema = require('./joi-schemas/calendar-schemas').postCalendarSchema
+
 
 class UserService {
     static verifyNewUser(userId, name, emails, photos) {
@@ -18,7 +20,15 @@ class UserService {
             return Promise.reject(error(400, result.error.details[0].message))
         calendar = Object.assign({}, result.value)
 
-        return db.postCalendar(userId, calendar)
+        calendar.ownerId = userId
+
+        return Promise.all([db.postCalendar(userId, calendar), dbExchanges.getExchanges()])
+            .then(res => {
+                const calendar = res[0]
+                const exchanges = res[1]
+                calendar.exchanges = exchanges
+                return calendar
+            })
     }
 }
 

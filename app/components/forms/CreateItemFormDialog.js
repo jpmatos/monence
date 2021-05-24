@@ -161,7 +161,7 @@ class CreateItemFormDialog extends React.Component {
                             label='Amount'
                             variant='standard'
                             value={this.state.value}
-                            currencySymbol='€'
+                            currencySymbol='€'      //TODO
                             //minimumValue='0'
                             outputFormat='string'
                             decimalCharacter='.'

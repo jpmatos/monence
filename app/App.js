@@ -138,17 +138,17 @@ class App extends React.Component {
         })
     }
 
-    buildSingleItem(item, currency) {
+    buildSingleItem(item, currency, ignoreExchange) {
         currency = currency ?? this.state.currency
         let current = Object.assign({}, item)
         current.allDay = true
         current.start = moment(item.start)
         current.end = moment(item.start)
-        current.displayValue = this.buildDisplayValue(current.value, currency)
+        current.displayValue = this.buildDisplayValue(current.value, currency, ignoreExchange)
         return current
     }
 
-    buildRecurrentItem(item, currency) {
+    buildRecurrentItem(item, currency, ignoreExchange) {
         currency = currency ?? this.state.currency
         let res = []
         let current = Object.assign({}, item)
@@ -160,17 +160,16 @@ class App extends React.Component {
         do {
             current.start = newDate.clone()
             current.end = newDate.clone()
-            current.displayValue = this.buildDisplayValue(current.value, currency)
+            current.displayValue = this.buildDisplayValue(current.value, currency, ignoreExchange)
             res.push(Object.assign({}, current))
             newDate = newDate.add(1, period)
         } while (newDate.isBefore(endDate))
         return res
     }
 
-    buildDisplayValue = (value, currency) => {
-        currency = currency ?? this.state.currency
+    buildDisplayValue = (value, currency = this.state.currency, ignoreExchange = false) => {
 
-        if (this.state.calendar !== null && currency !== this.state.calendar.currency) {
+        if (this.state.calendar !== null && currency !== this.state.calendar.currency && !ignoreExchange) {
             const rate = this.state.calendar.exchanges.find(exc => exc.base === this.state.calendar.currency).rates[currency]
             value = value * rate
         }
@@ -192,11 +191,11 @@ class App extends React.Component {
                     const calendar = res.data.body
 
                     let items = calendar.single.slice().map(item => {
-                        return this.buildSingleItem(item, calendar.currency)
+                        return this.buildSingleItem(item, calendar.currency, true)
                     })
 
                     calendar.recurrent.forEach((item) => {
-                        items = items.concat(this.buildRecurrentItem(item, calendar.currency))
+                        items = items.concat(this.buildRecurrentItem(item, calendar.currency, true))
                     })
 
                     this.setState({

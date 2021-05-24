@@ -244,7 +244,7 @@ class MyNavbar extends React.Component {
                         </List>
                     </Grid>
                 </Drawer>
-                <Container maxWidth='lg' className={classes.content}>
+                <Container maxWidth='lg' className={classes.content} fixed>
                     <Switch>
                         <Route path='/home*'>
                             <MyHome sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
