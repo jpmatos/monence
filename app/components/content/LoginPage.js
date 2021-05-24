@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
 import GoogleButton from "react-google-button";
 import {UserContext} from "../context/UserContext";
+import {FormControl, NativeSelect} from "@material-ui/core";
 
 function Copyright() {
     return (
@@ -62,7 +63,8 @@ class LoginPage extends React.Component {
         super(props);
         this.state = {
             calendarName: null,
-            validCalendarName: true
+            validCalendarName: true,
+            currency: 'EUR'
         }
     }
 
@@ -74,15 +76,24 @@ class LoginPage extends React.Component {
     }
 
     handleCreate = () => {
-        if(!this.state.validCalendarName)
+        if (!this.state.validCalendarName)
             return
 
-        if(this.state.calendarName === ''){
+        if (this.state.calendarName === '') {
             this.setState({validCalendarName: false})
             return
         }
 
-        this.context.handleCreateCalendar(this.state.calendarName)
+        const calendar = {
+            name: this.state.calendarName,
+            currency: this.state.currency
+        }
+
+        this.context.handleCreateCalendar(calendar)
+    }
+
+    handleCurrencyChange = (event) => {
+        this.setState({currency: event.target.value})
     }
 
     render() {
@@ -103,21 +114,39 @@ class LoginPage extends React.Component {
                         </Box>
                         {this.props.needsCalendar ?
                             <React.Fragment>
-                                <TextField
-                                    error={!this.state.validCalendarName}
-                                    id='Calendar Name'
-                                    style={{width: 230}}
-                                    label='Give your first calendar a name'
-                                    placeholder='ex: Personal Calendar'
-                                    value={this.calendarName}
-                                    onChange={this.handleCalendarNameChange}
-                                    type='string'
-                                />
-                                <Box mt={2}>
+                                <Box mb={2}>
+                                    <TextField
+                                        error={!this.state.validCalendarName}
+                                        id='Calendar Name'
+                                        style={{width: 230}}
+                                        label='Give your first calendar a name'
+                                        placeholder='ex: Personal Calendar'
+                                        value={this.calendarName}
+                                        onChange={this.handleCalendarNameChange}
+                                        type='string'
+                                    />
+                                </Box>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="center"
+                                    alignItems="center"
+                                >
+                                    <NativeSelect
+                                        defaultValue={this.state.currency}
+                                        inputProps={{
+                                            name: 'currency-select',
+                                            id: 'currency-select',
+                                        }}
+                                        onChange={this.handleCurrencyChange}
+                                    >
+                                        <option key="EUR" value="EUR">€ - Euro</option>
+                                        <option key="USD" value="USD">$ - US Dollar</option>
+                                    </NativeSelect>
                                     <Button onClick={this.handleCreate} color='primary'>
                                         Start!
                                     </Button>
-                                </Box>
+                                </Grid>
                             </React.Fragment> :
                             <form className={classes.form} noValidate>
                                 <GoogleButton onClick={(e) => {
