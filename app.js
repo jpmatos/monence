@@ -18,11 +18,18 @@ if (!fs.existsSync('./env.json')) {
 const env = require('./env.json')
 Object.assign(process.env, env)
 
-//Local Files
-const webpackConfig = require('./webpack.config.js')
+//Project Files
+const db = require(process.env.MOCK_DB === 'true' ? './data/database-mock' : './data/database-mongo').init()
+const dbExchanges = require(process.env.MOCK_EXCHANGE_DB === 'true' ? './data/database-exchanges-mock' : './data/database-exchanges').init()
+const calendarService = require('./service/calendar-service').init(db, dbExchanges)
+const userService = require('./service/user-service').init(db, dbExchanges)
+const calendarController = require('./web-api/controller/calendar-controller').init(calendarService)
+const userController = require('./web-api/controller/user-controller').init(userService)
+const authController = require('./web-api/controller/auth-controller').init(userService)
 const calendarRoutes = require('./web-api/calendar-web-api')
 const authRoutes = require('./web-api/auth-web-api')
 const userRoutes = require('./web-api/user-web-api')
+const webpackConfig = require('./webpack.config.js')
 
 // Use the GoogleStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
@@ -69,9 +76,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Routes
-app.use('/calendar', calendarRoutes(express.Router()))
-app.use('/auth', authRoutes(express.Router(), passport))
-app.use('/user', userRoutes(express.Router()))
+app.use('/calendar', calendarRoutes(express.Router(), calendarController))
+app.use('/auth', authRoutes(express.Router(), authController, passport))
+app.use('/user', userRoutes(express.Router(), userController))
 app.use((err, req, res, next) => {
     if (err !== undefined) {
         if (err.stack !== undefined)

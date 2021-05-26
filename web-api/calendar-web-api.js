@@ -1,7 +1,6 @@
-const calendarController = require('./controller/calendar-controller')
 const checkAuth = require('../middleware/check-auth')
 
-function calendarWebApi(router){
+function calendarWebApi(router, calendarController){
     /* GET hello. */
     router.get('/hello', (req, res, next) => {
         return calendarController.hello(req, res, next)

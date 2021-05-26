@@ -4,26 +4,29 @@ const uuid = require('short-uuid')
 const error = require('../object/error')
 
 class DatabaseMock {
-    static init() {
-        DatabaseMock.readFile(path.join(__dirname, '/mock/calendars.json'))
+    constructor() {
+        this.readFile(path.join(__dirname, '/mock/calendars.json'))
             .then(res => {
                 this.calendars = res
             })
-        DatabaseMock.readFile(path.join(__dirname, '/mock/users.json'))
+        this.readFile(path.join(__dirname, '/mock/users.json'))
             .then(res => {
                 this.users = res
             })
-        return DatabaseMock
     }
 
-    static getCalendar(calendarId) {
+    static init(){
+        return new DatabaseMock()
+    }
+
+    getCalendar(calendarId) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.reject(error(404, 'Calendar Not Found'))
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
-    static putCalendar(calendarId, calendar) {
+    putCalendar(calendarId, calendar) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.reject(`Calendar Not Found`)
@@ -33,7 +36,7 @@ class DatabaseMock {
         return Promise.resolve(calendar)
     }
 
-    static postItem(calendarId, item, arrayName) {
+    postItem(calendarId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.reject(error(404, 'Calendar Not Found'))
@@ -42,7 +45,7 @@ class DatabaseMock {
         return Promise.resolve(item)
     }
 
-    static deleteItem(calendarId, itemId, arrayName) {
+    deleteItem(calendarId, itemId, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -52,7 +55,7 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${itemId}`})
     }
 
-    static putItem(calendarId, itemId, item, arrayName) {
+    putItem(calendarId, itemId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -74,7 +77,7 @@ class DatabaseMock {
         return Promise.resolve(this.calendars[calendarIdx][arrayName][itemIdx])
     }
 
-    static postBudget(calendarId, budget) {
+    postBudget(calendarId, budget) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -84,7 +87,7 @@ class DatabaseMock {
         return Promise.resolve(budget)
     }
 
-    static putBudget(calendarId, budgetId, budget) {
+    putBudget(calendarId, budgetId, budget) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -102,7 +105,7 @@ class DatabaseMock {
         return Promise.resolve(this.calendars[calendarIdx].budget[budgetIdx])
     }
 
-    static deleteBudget(calendarId, budgetId) {
+    deleteBudget(calendarId, budgetId) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -112,7 +115,7 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
     }
 
-    static verifyNewUser(user) {
+    verifyNewUser(user) {
         const userIdx = this.users.findIndex(usr => usr.id === user.userId)
         if(userIdx === -1){
             this.users.push(user)
@@ -124,7 +127,7 @@ class DatabaseMock {
 
     //Users Index
 
-    static getCalendars(userId) {
+    getCalendars(userId) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
             return Promise.resolve({'message': `Could not find user ${userIdx}`})
@@ -132,7 +135,7 @@ class DatabaseMock {
         return Promise.resolve(this.users[userIdx].calendars)
     }
 
-    static postCalendar(userId, calendar) {
+    postCalendar(userId, calendar) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
             return Promise.resolve({'message': `Could not find user ${userIdx}`})
@@ -153,25 +156,15 @@ class DatabaseMock {
         return Promise.resolve(calendar)
     }
 
-    static getUserByEmail(email) {
-        const userIdx = this.users.findIndex(user => user.emails.find(e => e.value === email) !== undefined)
+    getUserByEmail(email) {
+        const userIdx = this.users.findIndex(user => user.email === email)
         if (userIdx === -1)
             return Promise.resolve({'error': `Could not find user ${email}`})
 
         return this.users[userIdx]
     }
 
-    // static putUserInvite(userId, userInvite) {
-    //     const userIdx = this.users.findIndex(user => user.id === userId)
-    //     if (userIdx === -1)
-    //         return Promise.resolve({'message': `Could not find user ${userIdx}`})
-    //
-    //     this.users[userIdx].invites.push(userInvite)
-    //
-    //     return Promise.resolve({'message': 'Set invite on user'})
-    // }
-
-    static putInvite(calendarId, invite, userId, userInvite) {
+    putInvite(calendarId, invite, userId, userInvite) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
@@ -187,21 +180,21 @@ class DatabaseMock {
         return Promise.resolve(invite)
     }
 
-    static deleteInvite(calendarId, inviteId, email){
+    deleteInvite(calendarId, inviteId, email){
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
         this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
 
-        const userIdx = this.users.findIndex(user => user.emails.find(e => e.value === email) !== undefined)
+        const userIdx = this.users.findIndex(user => user.email === email)
         if (userIdx !== -1)
             this.users[userIdx].invites = this.users[userIdx].invites.filter(inv => inv.id !== inviteId)
 
         return Promise.resolve({'message': 'Deleted invite'})
     }
 
-    static readFile(filePath) {
+    readFile(filePath) {
         return fs
             .readFile(filePath)
             .then(rawData => {
@@ -217,4 +210,4 @@ class DatabaseMock {
     }
 }
 
-module.exports = DatabaseMock.init()
+module.exports = DatabaseMock

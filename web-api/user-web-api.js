@@ -1,6 +1,5 @@
-const userController = require("./controller/user-controller");
 
-function userWebApi(router) {
+function userWebApi(router, userController) {
     router.get('/calendars', (req, res, next) => {
         return userController.getCalendars(req, res, next)
     })

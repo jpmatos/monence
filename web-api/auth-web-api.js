@@ -1,8 +1,7 @@
-const authController = require("./controller/auth-controller");
 const success = require("../object/success");
 
 // /auth/...
-function authWebApi(router, passport) {
+function authWebApi(router, authController, passport) {
 
     router.get('/google',
         passport.authenticate('google', {

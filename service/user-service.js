@@ -1,11 +1,18 @@
-const db = require(Boolean(process.env.MOCK_DB === 'true') ? '../data/database-mock' : '../data/database-mongo')
-const dbExchanges = require(process.env.MOCK_EXCHANGE_DB === 'true' ? '../data/database-exchanges-mock' : '../data/database-exchanges')
 const error = require("../object/error");
 const postCalendarSchema = require('./joi-schemas/calendar-schemas').postCalendarSchema
 
 
 class UserService {
-    static verifyNewUser(userId, name, emails, photos) {
+    constructor(db, dbExchanges) {
+        this.db = db
+        this.dbExchanges = dbExchanges
+    }
+
+    static init(db, dbExchanges){
+        return new UserService(db, dbExchanges)
+    }
+
+    verifyNewUser(userId, name, emails, photos) {
         const user =
             {
                 'id': userId,
@@ -15,14 +22,14 @@ class UserService {
                 'calendars': [],
                 'invites': []
             }
-        return db.verifyNewUser(user)
+        return this.db.verifyNewUser(user)
     }
 
-    static getCalendars(userId) {
-        return db.getCalendars(userId)
+    getCalendars(userId) {
+        return this.db.getCalendars(userId)
     }
 
-    static postCalendar(userId, calendar) {
+    postCalendar(userId, calendar) {
 
         const result = postCalendarSchema.validate(calendar, {stripUnknown: true})
         if (result.error)
@@ -31,7 +38,7 @@ class UserService {
 
         calendar.ownerId = userId
 
-        return Promise.all([db.postCalendar(userId, calendar), dbExchanges.getExchanges()])
+        return Promise.all([this.db.postCalendar(userId, calendar), this.dbExchanges.getExchanges()])
             .then(res => {
                 const calendar = res[0]
                 const exchanges = res[1]

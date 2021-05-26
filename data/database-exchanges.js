@@ -4,7 +4,7 @@ const axios = require('axios')
 const currencies = ['USD', 'EUR', 'GBP']
 
 class DatabaseExchanges {
-    static init() {
+    constructor() {
         axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.OER_ID}`)
             .then(res => {
                 res = res.data
@@ -22,14 +22,17 @@ class DatabaseExchanges {
                     this.exchanges.push({base: currency, rates: rates})
                 });
             })
-        return DatabaseExchangesMock
     }
 
-    static getExchanges() {
+    static init(){
+        return new DatabaseExchanges()
+    }
+
+    getExchanges() {
         return Promise.resolve(this.exchanges)
     }
 
-    static readFile(filePath) {
+    readFile(filePath) {
         return fs
             .readFile(filePath)
             .then(rawData => {
@@ -45,4 +48,4 @@ class DatabaseExchanges {
     }
 }
 
-module.exports = DatabaseExchanges.init()
+module.exports = DatabaseExchanges

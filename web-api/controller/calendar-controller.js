@@ -1,8 +1,15 @@
-const calendarService = require('./../../service/calendar-service')
 const success = require("../../object/success");
 
 class CalendarController {
-    static hello(req, res, next) {
+    constructor(calendarService) {
+        this.calendarService = calendarService
+    }
+
+    static init(calendarService) {
+        return new CalendarController(calendarService)
+    }
+
+    hello(req, res, next) {
         return Promise.resolve()
             .then(() => {
                 res.status(200).json({message: 'Hello'})
@@ -10,135 +17,135 @@ class CalendarController {
             .catch(next)
     }
 
-    static getCalendar(req, res, next) {
+    getCalendar(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
-        return calendarService
+        return this.calendarService
             .getCalendar(calendarId, userId)
             .then(calendar => res.status(200).json(success(calendar)))
             .catch(next)
     }
 
-    static putShare(req, res, next) {
+    putShare(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
-        return calendarService
+        return this.calendarService
             .putShare(calendarId, userId)
             .then(msg => res.status(201).json(success(msg)))
             .catch(next)
     }
 
-    static postItem(req, res, next) {
+    postItem(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const item = req.body
-        return calendarService
+        return this.calendarService
             .postItem(calendarId, item, userId)
             .then(item => res.status(201).json(success(item)))
             .catch(next)
     }
 
-    static deleteItem(req, res, next) {
+    deleteItem(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const itemId = req.params.itemId
-        return calendarService
+        return this.calendarService
             .deleteItem(calendarId, itemId, userId)
             .then(msg => res.status(201).json(success(msg)))
             .catch(next)
     }
 
-    static putItem(req, res, next) {
+    putItem(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const itemId = req.params.itemId
         const item = req.body
-        return calendarService
+        return this.calendarService
             .putItem(calendarId, itemId, item, userId)
             .then(item => res.status(201).json(success(item)))
             .catch(next)
     }
 
     //Recurrent
-    static postItemRecurrent(req, res, next) {
+    postItemRecurrent(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const item = req.body
-        return calendarService
+        return this.calendarService
             .postItemRecurrent(calendarId, item, userId)
             .then(item => res.status(201).json(success(item)))
             .catch(next)
     }
 
-    static deleteItemRecurrent(req, res, next) {
+    deleteItemRecurrent(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const itemId = req.params.itemId
-        return calendarService
+        return this.calendarService
             .deleteItemRecurrent(calendarId, itemId, userId)
             .then(msg => res.status(201).json(success(msg)))
             .catch(next)
     }
 
-    static putItemRecurrent(req, res, next) {
+    putItemRecurrent(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const itemId = req.params.itemId
         const item = req.body
-        return calendarService
+        return this.calendarService
             .putItemRecurrent(calendarId, itemId, item, userId)
             .then(item => res.status(201).json(success(item)))
             .catch(next)
     }
 
     //Budget
-    static postBudget(req, res, next) {
+    postBudget(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const budget = req.body
-        return calendarService
+        return this.calendarService
             .postBudget(calendarId, budget, userId)
             .then(budget => res.status(201).json(success(budget)))
             .catch(next)
     }
 
-    static putBudget(req, res, next) {
+    putBudget(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const budgetId = req.params.budgetId
         const budget = req.body
-        return calendarService
+        return this.calendarService
             .putBudget(calendarId, budgetId, budget, userId)
             .then(budget => res.status(201).json(success(budget)))
             .catch(next)
     }
 
-    static deleteBudget(req, res, next) {
+    deleteBudget(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const budgetId = req.params.budgetId
-        return calendarService
+        return this.calendarService
             .deleteBudget(calendarId, budgetId, userId)
             .then(msg => res.status(201).json(success(msg)))
             .catch(next)
     }
 
     //Invites
-    static postInvite(req, res, next) {
+    postInvite(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const invite = req.body
-        return calendarService
+        return this.calendarService
             .postInvite(calendarId, invite, userId)
             .then(invite => res.status(201).json(success(invite)))
             .catch(next)
     }
 
-    static deleteInvite(req, res, next) {
+    deleteInvite(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         const inviteId = req.params.inviteId
-        return calendarService
+        return this.calendarService
             .deleteInvite(calendarId, inviteId, userId)
             .then(msg => res.status(201).json(success(msg)))
             .catch(next)

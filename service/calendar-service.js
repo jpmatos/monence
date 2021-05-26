@@ -1,7 +1,5 @@
 const moment = require('moment')
 const uuid = require('short-uuid')
-const db = require(Boolean(process.env.MOCK_DB === 'true') ? '../data/database-mock' : '../data/database-mongo')
-const dbExchanges = require(process.env.MOCK_EXCHANGE_DB === 'true' ? '../data/database-exchanges-mock' : '../data/database-exchanges')
 const error = require('../object/error')
 const uuidSchema = require('./joi-schemas/id-schemas').uuidSchema
 const postItemSingleSchema = require('./joi-schemas/item-schemas').postItemSingleSchema
@@ -12,9 +10,17 @@ const postBudgetSchema = require('./joi-schemas/budget-schemas').postBudgetSchem
 const putBudgetSchema = require('./joi-schemas/budget-schemas').putBudgetSchema
 
 class CalendarService {
+    constructor(db, dbExchanges) {
+        this.db = db
+        this.dbExchanges = dbExchanges
+    }
 
-    static getCalendar(calendarId, userId) {
-        return Promise.all([db.getCalendar(calendarId), dbExchanges.getExchanges()])
+    static init(db, dbExchanges){
+        return new CalendarService(db, dbExchanges)
+    }
+
+    getCalendar(calendarId, userId) {
+        return Promise.all([this.db.getCalendar(calendarId), this.dbExchanges.getExchanges()])
             .then(res => {
                 const calendar = res[0]
                 if (calendar.ownerId !== userId)
@@ -26,8 +32,8 @@ class CalendarService {
             })
     }
 
-    static putShare(calendarId, userId){
-        return db.getCalendar(calendarId)
+    putShare(calendarId, userId){
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
@@ -36,11 +42,11 @@ class CalendarService {
                 calendar.invites = []
                 calendar.invitees = []
 
-                return db.putCalendar(calendarId, calendar)
+                return this.db.putCalendar(calendarId, calendar)
             })
     }
 
-    static postItem(calendarId, item, userId) {
+    postItem(calendarId, item, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
@@ -52,7 +58,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
@@ -60,11 +66,11 @@ class CalendarService {
                 item.recurrency = 'single'
                 item.id = uuid.generate()
 
-                return db.postItem(calendarId, item, 'single')
+                return this.db.postItem(calendarId, item, 'single')
             })
     }
 
-    static putItem(calendarId, itemId, item, userId) {
+    putItem(calendarId, itemId, item, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
@@ -82,32 +88,32 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return db.putItem(calendarId, itemId, item, 'single')
+                return this.db.putItem(calendarId, itemId, item, 'single')
             })
     }
 
-    static deleteItem(calendarId, itemId, userId) {
+    deleteItem(calendarId, itemId, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
         if (uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return db.deleteItem(calendarId, itemId, 'single')
+                return this.db.deleteItem(calendarId, itemId, 'single')
             })
     }
 
-    static postItemRecurrent(calendarId, item, userId) {
+    postItemRecurrent(calendarId, item, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
@@ -122,7 +128,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
@@ -130,11 +136,11 @@ class CalendarService {
                 item.recurrency = 'recurrent'
                 item.id = uuid.generate()
 
-                return db.postItem(calendarId, item, 'recurrent')
+                return this.db.postItem(calendarId, item, 'recurrent')
             })
     }
 
-    static putItemRecurrent(calendarId, itemId, item, userId) {
+    putItemRecurrent(calendarId, itemId, item, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
@@ -154,33 +160,33 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return db.putItem(calendarId, itemId, item, 'recurrent')
+                return this.db.putItem(calendarId, itemId, item, 'recurrent')
             })
     }
 
-    static deleteItemRecurrent(calendarId, itemId, userId) {
+    deleteItemRecurrent(calendarId, itemId, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
         if (uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return db.deleteItem(calendarId, itemId, 'recurrent')
+                return this.db.deleteItem(calendarId, itemId, 'recurrent')
             })
     }
 
     //Budget
-    static postBudget(calendarId, budget, userId) {
+    postBudget(calendarId, budget, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
@@ -192,18 +198,18 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 budget.id = uuid.generate()
 
-                return db.postBudget(calendarId, budget)
+                return this.db.postBudget(calendarId, budget)
             })
     }
 
-    static putBudget(calendarId, budgetId, budget, userId) {
+    putBudget(calendarId, budgetId, budget, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
@@ -221,34 +227,34 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return db.putBudget(calendarId, budgetId, budget)
+                return this.db.putBudget(calendarId, budgetId, budget)
             })
     }
 
-    static deleteBudget(calendarId, budgetId, userId) {
+    deleteBudget(calendarId, budgetId, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
 
         if (uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return db.getCalendar(calendarId)
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return db.deleteBudget(calendarId, budgetId)
+                return this.db.deleteBudget(calendarId, budgetId)
             })
     }
 
     //Invites
-    static postInvite(calendarId, invite, userId) {
-        return Promise.all([db.getUserByEmail(invite.email), db.getCalendar(calendarId)])
+    postInvite(calendarId, invite, userId) {
+        return Promise.all([this.db.getUserByEmail(invite.email), this.db.getCalendar(calendarId)])
             .then(res => {
                 const user = res[0]
                 const calendar = res[1]
@@ -272,19 +278,19 @@ class CalendarService {
 
                 invite.id = id
 
-                return db.putInvite(calendarId, invite, user.id, userInvite)
+                return this.db.putInvite(calendarId, invite, user.id, userInvite)
             })
     }
 
-    static deleteInvite(calendarId, inviteId, userId) {
-        return db.getCalendar(calendarId)
+    deleteInvite(calendarId, inviteId, userId) {
+        return this.db.getCalendar(calendarId)
             .then(calendar => {
                 if (calendar.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 const email = calendar.invites.find(inv => inv.id === inviteId).email
 
-                return db.deleteInvite(calendarId, inviteId, email)
+                return this.db.deleteInvite(calendarId, inviteId, email)
             })
     }
 }
