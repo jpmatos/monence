@@ -30,7 +30,8 @@ class App extends React.Component {
             handleDeleteBudget: this.handleDeleteBudget,
             buildDisplayValue: this.buildDisplayValue,
             setCalendarShare: this.setCalendarShare,
-            handleNewInvite: this.handleNewInvite
+            handleNewInvite: this.handleNewInvite,
+            handleDeleteInvite: this.handleDeleteInvite
         }
     }
 
@@ -75,6 +76,14 @@ class App extends React.Component {
     handleNewInvite = (invite) => {
         const calendar = this.state.calendar
         calendar.invites.push(invite)
+        this.setState({
+            calendar: calendar
+        })
+    }
+
+    handleDeleteInvite = (inviteId) => {
+        const calendar = this.state.calendar
+        calendar.invites = calendar.invites.filter(inv => inv.id !== inviteId)
         this.setState({
             calendar: calendar
         })

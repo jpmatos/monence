@@ -133,6 +133,16 @@ class CalendarController {
             .then(invite => res.status(201).json(success(invite)))
             .catch(next)
     }
+
+    static deleteInvite(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        const inviteId = req.params.inviteId
+        return calendarService
+            .deleteInvite(calendarId, inviteId, userId)
+            .then(msg => res.status(201).json(success(msg)))
+            .catch(next)
+    }
 }
 
 module.exports = CalendarController

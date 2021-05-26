@@ -84,7 +84,7 @@ class MyShare extends React.Component {
                 this.props.sendSuccessSnack(`Invited user ${res.data.body.email}`)
             })
             .catch(err => {
-                this.props.sendErrorSnack('Failed to Invite!', err)
+                this.props.sendErrorSnack('Failed to invite!', err)
                 console.debug(err)
             })
 
@@ -94,8 +94,16 @@ class MyShare extends React.Component {
         })
     }
 
-    handleDeleteInvite = () => {
-
+    handleDeleteInvite = (inviteId) => {
+        axios.delete(`/calendar/${this.context.calendar.id}/invite/${inviteId}`)
+            .then(res => {
+                this.context.handleDeleteInvite(inviteId)
+                this.props.sendSuccessSnack(`Deleted invite`)
+            })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to delete invite!', err)
+                console.debug(err)
+            })
     }
 
     render() {
@@ -142,7 +150,7 @@ class MyShare extends React.Component {
                                                     {invite.email}
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
-                                                    <Button variant="outlined" color="secondary" onClick={() => this.handleDeleteInvite(invite.email)}>
+                                                    <Button variant="outlined" color="secondary" onClick={() => this.handleDeleteInvite(invite.id)}>
                                                         Delete Invite
                                                     </Button>
                                                 </TableCell>

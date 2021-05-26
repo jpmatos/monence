@@ -262,15 +262,29 @@ class CalendarService {
                 if(user.invites.findIndex(inv => inv.calendarId === calendarId) !== -1)
                     return Promise.reject(error(400, 'User Already Invited!'))
 
+                const id = uuid.generate()
+
                 const userInvite = {
+                    id: id,
                     calendarId: calendarId,
                     calendarName: calendar.name
                 }
 
-                return Promise.all([db.putUserInvite(user.id, userInvite), db.putCalendarInvite(calendarId, invite)])
+                invite.id = id
+
+                return db.putInvite(calendarId, invite, user.id, userInvite)
             })
-            .then(res => {
-                return res[1]
+    }
+
+    static deleteInvite(calendarId, inviteId, userId) {
+        return db.getCalendar(calendarId)
+            .then(calendar => {
+                if (calendar.ownerId !== userId)
+                    return Promise.reject(error(404, 'Calendar Not Found'))
+
+                const email = calendar.invites.find(inv => inv.id === inviteId).email
+
+                return db.deleteInvite(calendarId, inviteId, email)
             })
     }
 }

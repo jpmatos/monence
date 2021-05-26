@@ -17,5 +17,6 @@ export const CalendarContext = React.createContext({
     handleUpdateBudget: () => {},
     handleDeleteBudget: () => {},
     buildDisplayValue: () => {},
-    handleNewInvite: () => {}
+    handleNewInvite: () => {},
+    handleDeleteInvite: () => {}
 });

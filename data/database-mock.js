@@ -167,24 +167,44 @@ class DatabaseMock {
         return this.users[userIdx]
     }
 
-    static putUserInvite(userId, userInvite) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+    // static putUserInvite(userId, userInvite) {
+    //     const userIdx = this.users.findIndex(user => user.id === userId)
+    //     if (userIdx === -1)
+    //         return Promise.resolve({'message': `Could not find user ${userIdx}`})
+    //
+    //     this.users[userIdx].invites.push(userInvite)
+    //
+    //     return Promise.resolve({'message': 'Set invite on user'})
+    // }
 
-        this.users[userIdx].invites.push(userInvite)
-
-        return Promise.resolve({'message': 'Set invite on user'})
-    }
-
-    static putCalendarInvite(calendarId, invite) {
+    static putInvite(calendarId, invite, userId, userInvite) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
+
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
         this.calendars[calendarIdx].invites.push(invite)
+        this.users[userIdx].invites.push(userInvite)
 
         return Promise.resolve(invite)
+    }
+
+    static deleteInvite(calendarId, inviteId, email){
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
+
+        const userIdx = this.users.findIndex(user => user.emails.find(e => e.value === email) !== undefined)
+        if (userIdx !== -1)
+            this.users[userIdx].invites = this.users[userIdx].invites.filter(inv => inv.id !== inviteId)
+
+        return Promise.resolve({'message': 'Deleted invite'})
     }
 
     static readFile(filePath) {
