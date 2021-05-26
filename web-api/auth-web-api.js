@@ -21,15 +21,14 @@ function authWebApi(router, passport) {
 
     router.get('/session', (req, res, next) => {
         if (req.isAuthenticated()) {
-            const googleUser = {
+            const user = {
                 'isAuthenticated': true,
                 'id': req.user.id,
                 'name': req.user.displayName,
-                'emails': req.user.emails,
-                'photos': req.user.photos,
-                'provide': req.user.provide
+                'email': req.user.emails[0].value,
+                'photo': req.user.photos[0].value
             }
-            res.json(success(googleUser));
+            res.json(success(user));
         } else {
             res.json(success({'isAuthenticated': false}));
         }

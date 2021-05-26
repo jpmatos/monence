@@ -112,16 +112,10 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
     }
 
-    static verifyNewUser(userId, name, emails, photos) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
+    static verifyNewUser(user) {
+        const userIdx = this.users.findIndex(usr => usr.id === user.userId)
         if(userIdx === -1){
-            this.users.push({
-                'id': userId,
-                'name': name,
-                'emails': emails,
-                'photos': photos,
-                'calendars': []
-            })
+            this.users.push(user)
             return Promise.resolve('Created new user')
         }
         return Promise.resolve('User already exists')

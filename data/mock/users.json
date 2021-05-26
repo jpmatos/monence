@@ -1,21 +1,9 @@
 [
   {
     "id": "116214599289964436618",
-    "name": {
-      "familyName": "Matos",
-      "givenName": "João"
-    },
-    "emails": [
-      {
-        "value": "joao.matos.jm@gmail.com",
-        "verified": true
-      }
-    ],
-    "photos": [
-      {
-        "value": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c"
-      }
-    ],
+    "name": "João Matos",
+    "email": "joao.matos.jm@gmail.com",
+    "photo": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c",
     "calendars": [
       {
         "id": "d8Pbdm7mopwwCmLCYsTUZw",
@@ -23,30 +11,16 @@
       }
     ],
     "invites": [
-
     ]
   },
   {
     "id": "116214599289964436619",
-    "name": {
-      "familyName": "Cameira",
-      "givenName": "hugo"
-    },
-    "emails": [
-      {
-        "value": "hugo.cameira96@gmail.com",
-        "verified": true
-      }
-    ],
-    "photos": [
-      {
-        "value": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c"
-      }
-    ],
+    "name": "Hugo Cameira",
+    "email": "hugo.cameira96@gmail.com",
+    "photo": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c",
     "calendars": [
     ],
     "invites": [
-
     ]
   }
 ]

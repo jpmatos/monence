@@ -104,7 +104,7 @@ class MyHome extends React.Component {
                           direction="column"
                           justify="center"
                           alignItems="center">
-                        <Avatar alt="Current User" src={this.context.session.photos[0].value}
+                        <Avatar alt="Current User" src={this.context.session.photo}
                                 className={classes.large}/>
                         <Box mt={3}>
                             <Typography variant='h4'>

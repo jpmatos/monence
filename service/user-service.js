@@ -6,7 +6,16 @@ const postCalendarSchema = require('./joi-schemas/calendar-schemas').postCalenda
 
 class UserService {
     static verifyNewUser(userId, name, emails, photos) {
-        return db.verifyNewUser(userId, name, emails, photos)
+        const user =
+            {
+                'id': userId,
+                'name': name,
+                'emails': emails,
+                'photos': photos,
+                'calendars': [],
+                'invites': []
+            }
+        return db.verifyNewUser(user)
     }
 
     static getCalendars(userId) {
