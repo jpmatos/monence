@@ -26,6 +26,20 @@ class CalendarService {
             })
     }
 
+    static putShare(calendarId, userId){
+        return db.getCalendar(calendarId)
+            .then(calendar => {
+                if (calendar.ownerId !== userId)
+                    return Promise.reject(error(404, 'Calendar Not Found'))
+
+                calendar.share = 'Shared'
+                calendar.invites = []
+                calendar.invitees = []
+
+                return db.putCalendar(calendarId, calendar)
+            })
+    }
+
     static postItem(calendarId, item, userId) {
         if (uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))
@@ -229,6 +243,34 @@ class CalendarService {
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return db.deleteBudget(calendarId, budgetId)
+            })
+    }
+
+    //Invites
+    static postInvite(calendarId, invite, userId) {
+        return Promise.all([db.getUserByEmail(invite.email), db.getCalendar(calendarId)])
+            .then(res => {
+                const user = res[0]
+                const calendar = res[1]
+
+                if(user.error !== undefined)
+                    return Promise.reject(error(404, 'Could Not Find User'))
+
+                if (calendar.ownerId !== userId)
+                    return Promise.reject(error(404, 'Calendar Not Found'))
+
+                if(user.invites.findIndex(inv => inv.calendarId === calendarId) !== -1)
+                    return Promise.reject(error(400, 'User Already Invited!'))
+
+                const userInvite = {
+                    calendarId: calendarId,
+                    calendarName: calendar.name
+                }
+
+                return Promise.all([db.putUserInvite(user.id, userInvite), db.putCalendarInvite(calendarId, invite)])
+            })
+            .then(res => {
+                return res[1]
             })
     }
 }

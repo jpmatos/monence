@@ -23,6 +23,16 @@ class DatabaseMock {
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
+    static putCalendar(calendarId, calendar) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.reject(`Calendar Not Found`)
+
+        this.calendars[calendarIdx] = calendar
+
+        return Promise.resolve(calendar)
+    }
+
     static postItem(calendarId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
@@ -117,6 +127,9 @@ class DatabaseMock {
         return Promise.resolve('User already exists')
     }
 
+
+    //Users Index
+
     static getCalendars(userId) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
@@ -144,6 +157,34 @@ class DatabaseMock {
         })
 
         return Promise.resolve(calendar)
+    }
+
+    static getUserByEmail(email) {
+        const userIdx = this.users.findIndex(user => user.emails.find(e => e.value === email) !== undefined)
+        if (userIdx === -1)
+            return Promise.resolve({'error': `Could not find user ${email}`})
+
+        return this.users[userIdx]
+    }
+
+    static putUserInvite(userId, userInvite) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
+        this.users[userIdx].invites.push(userInvite)
+
+        return Promise.resolve({'message': 'Set invite on user'})
+    }
+
+    static putCalendarInvite(calendarId, invite) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        this.calendars[calendarIdx].invites.push(invite)
+
+        return Promise.resolve(invite)
     }
 
     static readFile(filePath) {

@@ -16,22 +16,25 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import HomeIcon from '@material-ui/icons/Home';
+import HomeIcon from '@material-ui/icons/Home'
 import CalendarIcon from '@material-ui/icons/CalendarToday'
 import ForecastIcon from '@material-ui/icons/TrendingUp'
+import GroupIcon from '@material-ui/icons/Group'
 import Container from '@material-ui/core/Container'
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import SettingsIcon from '@material-ui/icons/Settings';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
+import SettingsIcon from '@material-ui/icons/Settings'
 
 import MyCalendar from './MyCalendar'
-import MyBudget from "./MyBudget";
-import {CalendarContext} from "../context/CalendarContext";
-import MyHome from "./MyHome";
-import Grid from "@material-ui/core/Grid";
-import MySettings from "./MySettings";
-import MyForecast from "./MyForecast";
-import {Slide, Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
+import MyBudget from "./MyBudget"
+import {CalendarContext} from "../context/CalendarContext"
+import MyHome from "./MyHome"
+import Grid from "@material-ui/core/Grid"
+import MySettings from "./MySettings"
+import MyForecast from "./MyForecast"
+import {Slide, Snackbar} from "@material-ui/core"
+import {Alert} from "@material-ui/lab"
+import PlaceHolder from "./PlaceHolder";
+import MyShare from "./MyShare";
 
 const drawerWidth = 220
 
@@ -124,7 +127,7 @@ function ListItemLink(props) {
 
 class MyNavbar extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             open: false,
             isSnackOpen: false,
@@ -173,7 +176,7 @@ class MyNavbar extends React.Component {
     }
 
     render() {
-        const {classes} = this.props;
+        const {classes} = this.props
         return (
             <HashRouter>
                 <CssBaseline/>
@@ -238,6 +241,9 @@ class MyNavbar extends React.Component {
                                           listClass={classes.list}/>
                         </List>
                         <List>
+                            <ListItemLink to={`/share?c=${this.context.calendarId}`} primary='Share'
+                                          icon={<GroupIcon/>}
+                                          listClass={classes.list}/>
                             <ListItemLink to={`/settings?c=${this.context.calendarId}`} primary='Settings'
                                           icon={<SettingsIcon/>}
                                           listClass={classes.list}/>
@@ -255,8 +261,15 @@ class MyNavbar extends React.Component {
                         <Route path='/budget*'>
                             <MyBudget sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
-                        <Route path='/forecast*' component={MyForecast} sendSnack={this.sendSnack}/>
-                        <Route path='/settings*' component={MySettings} sendSnack={this.sendSnack}/>
+                        <Route path='/forecast*'>
+                            <MyForecast sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                        </Route>
+                        <Route path='/share*'>
+                            <MyShare sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                        </Route>
+                        <Route path='/settings*'>
+                            <PlaceHolder sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                        </Route>
                         <Redirect to={`/home?c=${this.context.calendarId}`}/>
                     </Switch>
                 </Container>

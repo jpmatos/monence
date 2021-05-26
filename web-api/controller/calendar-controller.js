@@ -1,7 +1,7 @@
 const calendarService = require('./../../service/calendar-service')
 const success = require("../../object/success");
 
-class CalendarController{
+class CalendarController {
     static hello(req, res, next) {
         return Promise.resolve()
             .then(() => {
@@ -10,12 +10,21 @@ class CalendarController{
             .catch(next)
     }
 
-    static getCalendar(req, res, next){
+    static getCalendar(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
         return calendarService
             .getCalendar(calendarId, userId)
             .then(calendar => res.status(200).json(success(calendar)))
+            .catch(next)
+    }
+
+    static putShare(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        return calendarService
+            .putShare(calendarId, userId)
+            .then(msg => res.status(201).json(success(msg)))
             .catch(next)
     }
 
@@ -111,6 +120,17 @@ class CalendarController{
         return calendarService
             .deleteBudget(calendarId, budgetId, userId)
             .then(msg => res.status(201).json(success(msg)))
+            .catch(next)
+    }
+
+    //Invites
+    static postInvite(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        const invite = req.body
+        return calendarService
+            .postInvite(calendarId, invite, userId)
+            .then(invite => res.status(201).json(success(invite)))
             .catch(next)
     }
 }

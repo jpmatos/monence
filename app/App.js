@@ -28,7 +28,9 @@ class App extends React.Component {
             handleNewBudget: this.handleNewBudget,
             handleUpdateBudget: this.handleUpdateBudget,
             handleDeleteBudget: this.handleDeleteBudget,
-            buildDisplayValue: this.buildDisplayValue
+            buildDisplayValue: this.buildDisplayValue,
+            setCalendarShare: this.setCalendarShare,
+            handleNewInvite: this.handleNewInvite
         }
     }
 
@@ -59,6 +61,23 @@ class App extends React.Component {
         const calendarDate = moment(date)
         this.setState({calendarDate: calendarDate})
         return calendarDate
+    }
+
+    setCalendarShare = () => {
+        const calendar = this.state.calendar
+        calendar.share = 'Shared'
+        calendar.invitees = []
+        this.setState({
+            calendar: calendar
+        })
+    }
+
+    handleNewInvite = (invite) => {
+        const calendar = this.state.calendar
+        calendar.invites.push(invite)
+        this.setState({
+            calendar: calendar
+        })
     }
 
     handleNewItem = (item) => {

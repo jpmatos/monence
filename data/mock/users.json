@@ -17,6 +17,36 @@
       }
     ],
     "calendars": [
+      {
+        "id": "d8Pbdm7mopwwCmLCYsTUZw",
+        "name": "My Personal Calendar"
+      }
+    ],
+    "invites": [
+
+    ]
+  },
+  {
+    "id": "116214599289964436619",
+    "name": {
+      "familyName": "Cameira",
+      "givenName": "hugo"
+    },
+    "emails": [
+      {
+        "value": "hugo.cameira96@gmail.com",
+        "verified": true
+      }
+    ],
+    "photos": [
+      {
+        "value": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c"
+      }
+    ],
+    "calendars": [
+    ],
+    "invites": [
+
     ]
   }
 ]

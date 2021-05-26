@@ -121,7 +121,7 @@ class LoginPage extends React.Component {
                                         style={{width: 230}}
                                         label='Give your first calendar a name'
                                         placeholder='ex: Personal Calendar'
-                                        value={this.calendarName}
+                                        value={this.state.calendarName}
                                         onChange={this.handleCalendarNameChange}
                                         type='string'
                                     />

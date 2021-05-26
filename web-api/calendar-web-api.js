@@ -10,6 +10,10 @@ function calendarWebApi(router){
         return calendarController.getCalendar(req, res, next)
     })
 
+    router.put('/:calendarId/share', checkAuth, ((req, res, next) => {
+        return calendarController.putShare(req, res, next)
+    }))
+
     //Single
     router.post('/:calendarId/item/single', checkAuth, (req, res, next) => {
         calendarController.postItem(req, res, next)
@@ -48,6 +52,11 @@ function calendarWebApi(router){
     router.delete('/:calendarId/budget/:budgetId', checkAuth, ((req, res, next) => {
         calendarController.deleteBudget(req, res, next)
     }))
+
+    //Invites
+    router.post('/:calendarId/invite', checkAuth, (req, res, next) => {
+        calendarController.postInvite(req, res, next)
+    })
 
     return router
 }
