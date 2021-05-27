@@ -200,6 +200,16 @@ class DatabaseMock {
         return Promise.resolve(invite)
     }
 
+    deleteCalendarInvite(inviteId, calendarId) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
+
+        return Promise.resolve({'message': 'Deleted invite'})
+    }
+
     acceptCalendarInvite(inviteId, calendarId, invitee) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)

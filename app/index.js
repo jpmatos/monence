@@ -17,7 +17,8 @@ class UserContextBinder extends React.Component {
             user: null,
             handleCreateCalendar: this.handleCreateCalendar,
             handleLogout: this.handleLogout,
-            handleAcceptInvite: this.handleAcceptInvite
+            handleAcceptInvite: this.handleAcceptInvite,
+            handleDeclineInvite: this.handleDeclineInvite
         }
     }
 
@@ -53,6 +54,17 @@ class UserContextBinder extends React.Component {
                 const invitedCalendar = res.data.body
                 const user = this.state.user
                 user.invitedCalendars.push(invitedCalendar)
+                user.invites = user.invites.filter(inv => inv.id !== inviteId)
+                this.setState({
+                    user: user
+                })
+            })
+    }
+
+    handleDeclineInvite = (inviteId) => {
+        return axios.put(`/user/invite/${inviteId}/decline`)
+            .then(() => {
+                const user = this.state.user
                 user.invites = user.invites.filter(inv => inv.id !== inviteId)
                 this.setState({
                     user: user

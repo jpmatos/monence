@@ -31,6 +31,14 @@ class UserController {
             .then(invitedCalendar => res.status(201).json(success(invitedCalendar)))
             .catch(next)
     }
+
+    declineInvite(req, res, next) {
+        const userId = req.user.id
+        const inviteId = req.params.inviteId
+        return this.userService.declineInvite(userId, inviteId)
+            .then(msg => res.status(201).json(success(msg)))
+            .catch(next)
+    }
 }
 
 module.exports = UserController

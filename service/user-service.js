@@ -8,16 +8,16 @@ class UserService {
         this.dbExchanges = dbExchanges
     }
 
-    static init(db, dbExchanges){
+    static init(db, dbExchanges) {
         return new UserService(db, dbExchanges)
     }
 
-    verifyNewUser(userId, name, emails, photos) {
+    verifyNewUser(userId, name, email, photos) {
         const user =
             {
                 'id': userId,
                 'name': name,
-                'emails': emails,
+                'email': email,
                 'photos': photos,
                 'calendars': [],
                 'invites': [],
@@ -74,6 +74,13 @@ class UserService {
                 return this.db.postUserInvitedCalendar(userId, accept)
             })
     }
+
+    declineInvite(userId, inviteId) {
+        return this.db.deleteUserInvite(userId, inviteId)
+            .then(invite => {
+                return this.db.deleteCalendarInvite(invite.id, invite.calendarId)
+            })
+    }
 }
 
-module.exports =  UserService
+module.exports = UserService

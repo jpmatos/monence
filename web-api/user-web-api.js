@@ -12,6 +12,10 @@ function userWebApi(router, userController) {
         return userController.acceptInvite(req, res, next)
     })
 
+    router.put('/invite/:inviteId/decline', (req, res, next) => {
+        return userController.declineInvite(req, res, next)
+    })
+
     return router
 }
 

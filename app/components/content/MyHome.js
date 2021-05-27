@@ -121,8 +121,15 @@ class MyHome extends React.Component {
             })
     }
 
-    handleDeclineInvite = () => {
-
+    handleDeclineInvite = (inviteId) => {
+        this.context.handleDeclineInvite(inviteId)
+            .then(() => {
+                this.props.sendSuccessSnack('Declined invite!')
+            })
+            .catch((err) => {
+                this.props.sendErrorSnack('Failed to decline invite!', err)
+                console.debug(err)
+            })
     }
 
     render() {
