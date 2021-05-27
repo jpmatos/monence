@@ -25,8 +25,8 @@ class UserService {
         return this.db.verifyNewUser(user)
     }
 
-    getCalendars(userId) {
-        return this.db.getCalendars(userId)
+    getUser(userId) {
+        return this.db.getUser(userId)
     }
 
     postCalendar(userId, calendar) {
@@ -44,6 +44,25 @@ class UserService {
                 const exchanges = res[1]
                 calendar.exchanges = exchanges
                 return calendar
+            })
+    }
+
+    acceptInvite(userId, inviteId) {
+        return Promise.all([this.db.getUser(userId), this.db.deleteUserInvite(userId, inviteId)])
+            .then(res => {
+                const user = res[0]
+                const invite = res[1]
+
+                const invitee = {
+                    "id": user.id,
+                    "name": user.name,
+                    "email": user.email
+                }
+
+                return this.db.acceptCalendarInvite(invite.id, invite.calendarId, invitee)
+            })
+            .then(accept => {
+                return this.db.postUserInvitedCalendar(userId, accept)
             })
     }
 }

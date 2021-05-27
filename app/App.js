@@ -243,7 +243,7 @@ class App extends React.Component {
 
         //If one wasn't specified, read first calendar in calendars array
         if (calendarId === undefined || calendarId === null) {
-            calendarId = this.context.calendars[0].id
+            calendarId = this.context.user.calendars[0].id
         }
         axios.get(`/calendar/${calendarId}`)
             .then(res => {

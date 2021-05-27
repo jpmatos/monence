@@ -11,6 +11,14 @@
       }
     ],
     "invites": [
+      {
+        "id": "2vfYbkLd1jzTUnebkuzkVp",
+        "calendarId": "jrGfASxuqjhbAmQBkJouX1",
+        "inviter": "Hugo Cameira",
+        "calendarName": "My Other Calendar"
+      }
+    ],
+    "invitedCalendars": [
     ]
   },
   {
@@ -21,6 +29,8 @@
     "calendars": [
     ],
     "invites": [
+    ],
+    "invitedCalendars": [
     ]
   }
 ]

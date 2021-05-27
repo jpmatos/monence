@@ -14,19 +14,20 @@ class UserContextBinder extends React.Component {
         super(props);
         this.state = {
             session: null,
-            calendars: null,
+            user: null,
             handleCreateCalendar: this.handleCreateCalendar,
-            handleLogout: this.handleLogout
+            handleLogout: this.handleLogout,
+            handleAcceptInvite: this.handleAcceptInvite
         }
     }
 
     handleCreateCalendar = (calendar) => {
         return axios.post('/user/calendars', calendar)
             .then(res => {
-                const calendars = this.state.calendars
-                calendars.push(res.data.body)
+                const user = this.state.user
+                user.calendars.push(res.data.body)
                 this.setState({
-                    calendars: calendars
+                    user: user
                 })
             })
             .catch(err => {
@@ -40,8 +41,21 @@ class UserContextBinder extends React.Component {
         axios.get('/auth/logout')
             .then(() => {
                 this.setState({
-                    sessions: null,
-                    calendars: null
+                    session: null,
+                    user: null
+                })
+            })
+    }
+
+    handleAcceptInvite = (inviteId) => {
+        return axios.put(`/user/invite/${inviteId}/accept`)
+            .then(res => {
+                const invitedCalendar = res.data.body
+                const user = this.state.user
+                user.invitedCalendars.push(invitedCalendar)
+                user.invites = user.invites.filter(inv => inv.id !== inviteId)
+                this.setState({
+                    user: user
                 })
             })
     }
@@ -53,9 +67,9 @@ class UserContextBinder extends React.Component {
                 .then(res => {
                     this.setState({session: res.data.body})
                     if (res.data.body.isAuthenticated)
-                        axios.get('/user/calendars')
+                        axios.get('/user')
                             .then((res) => {
-                                this.setState({calendars: res.data.body})
+                                this.setState({user: res.data.body})
                             })
                 })
         }
@@ -66,9 +80,9 @@ class UserContextBinder extends React.Component {
             .then(res => {
                 this.setState({session: res.data.body})
                 if (res.data.body.isAuthenticated)
-                    axios.get('/user/calendars')
+                    axios.get('/user')
                         .then((res) => {
-                            this.setState({calendars: res.data.body})
+                            this.setState({user: res.data.body})
                         })
             })
     }
@@ -80,8 +94,8 @@ class UserContextBinder extends React.Component {
             <UserContext.Provider value={this.state}>
                 {this.state.session !== null ?
                     this.state.session.isAuthenticated ?
-                        this.state.calendars !== null ?
-                            this.state.calendars.length !== 0 ?
+                        this.state.user !== null ?
+                            this.state.user.calendars.length !== 0 ?
                                 <App/> :
                                 <LoginPage needsCalendar={true}/> :
                             null :

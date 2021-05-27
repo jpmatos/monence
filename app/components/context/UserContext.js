@@ -2,7 +2,8 @@ import React from 'react';
 
 export const UserContext = React.createContext({
     session: null,
-    calendars: null,
+    user: null,
     handleCreateCalendar: () => {},
-    handleLogout: () => {}
+    handleLogout: () => {},
+    handleAcceptInvite: () => {}
 })

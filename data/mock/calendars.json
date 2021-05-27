@@ -6,6 +6,7 @@
     "currency": "EUR",
     "share": "Personal",
     "invites": [],
+    "invitees": [],
     "single": [
       {
         "title": "Dinner Out",
@@ -132,10 +133,18 @@
     ]
   },
   {
-    "name": "calendar01",
-    "ownerId": "gjzHMgm2kJaCnf8vxb9Hn4",
-    "id": "987a7d1d-d083-492a-89d9-8c613f7a1301",
+    "name": "My Other Calendar",
+    "ownerId": "116214599289964436619",
+    "id": "jrGfASxuqjhbAmQBkJouX1",
     "currency": "USD",
+    "share": "Shared",
+    "invites": [
+      {
+        "email": "joao.matos.jm@gmail.com",
+        "id": "2vfYbkLd1jzTUnebkuzkVp"
+      }
+    ],
+    "invitees": [],
     "single": [
       {
         "id": "wwpZu2TvvBD4Topn9MZCKZ",
@@ -151,50 +160,38 @@
         "id": "pVX87Dud4agXzwipziHxrj",
         "type": "expense",
         "recurrency": "recurrent",
-        "recurrencyPeriod": "weekly",
+        "recurrencyPeriod": "week",
         "title": "Recurrent Expenses",
         "start": "2021-05-05T00:00:00.000Z",
         "end": "2021-05-23T00:00:00.000Z",
         "value": 20.00
       }
     ],
-    "budget": {
-      "week": [
-        {
-          "id": "rfz61sU4F6iFKFLmbzSfFL",
-          "date": "2021-05-03T00:00:00.000Z",
-          "value": 500.00,
-          "period": "week"
-        },
-        {
-          "id": "6WBkaVASSQoqJFuoAeYYE9",
-          "date": "2021-05-17T00:00:00.000Z",
-          "value": 500.00,
-          "period": "week"
-        },
-        {
-          "id": "jrGfASxuqjhbAmQBkJouX1",
-          "date": "2021-05-10T00:00:00.000Z",
-          "value": 500.00,
-          "period": "week"
-        }
-      ],
-      "month": [
-        {
-          "id": "fDWUSPi4nmzV9uFHrSe93D",
-          "date": "2021-05-01T00:00:00.000Z",
-          "value": 500.00,
-          "period": "month"
-        }
-      ],
-      "year": [
-        {
-          "id": "dCj4LBFfqTQi88ASkN4TjN",
-          "date": "2021-01-01T00:00:00.000Z",
-          "value": 1000.0,
-          "period": "year"
-        }
-      ]
-    }
+    "budget": [
+      {
+        "id": "rfz61sU4F6iFKFLmbzSfFL",
+        "date": "2021-05-03T00:00:00.000Z",
+        "value": 500.00,
+        "period": "week"
+      },
+      {
+        "id": "6WBkaVASSQoqJFuoAeYYE9",
+        "date": "2021-05-17T00:00:00.000Z",
+        "value": 500.00,
+        "period": "week"
+      },
+      {
+        "id": "fDWUSPi4nmzV9uFHrSe93D",
+        "date": "2021-05-01T00:00:00.000Z",
+        "value": 500.00,
+        "period": "month"
+      },
+      {
+        "id": "dCj4LBFfqTQi88ASkN4TjN",
+        "date": "2021-01-01T00:00:00.000Z",
+        "value": 1000.0,
+        "period": "year"
+      }
+    ]
   }
 ]

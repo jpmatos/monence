@@ -7,8 +7,13 @@ import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import {CalendarContext} from "../context/CalendarContext";
-import {FormControl, FormHelperText, InputLabel, NativeSelect, TextField} from "@material-ui/core";
+import {FormControl, FormHelperText, InputLabel, NativeSelect, TableCell, TextField} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
 
 const useStyles = (theme => ({
     large: {
@@ -25,6 +30,16 @@ const useStyles = (theme => ({
     },
     logout: {
         height: '100vh'
+    },
+    table: {
+        marginTop: theme.spacing(3),
+        minWidth: 300,
+        maxWidth: 800
+    },
+    title: {
+        paddingLeft: theme.spacing(2),
+        paddingBottom: theme.spacing(1),
+        paddingTop: theme.spacing(1)
     }
 }));
 
@@ -95,6 +110,21 @@ class MyHome extends React.Component {
         this.context.handleLogout()
     }
 
+    handleAcceptInvite = (inviteId) => {
+        this.context.handleAcceptInvite(inviteId)
+            .then(() => {
+                this.props.sendSuccessSnack('Accepted invite!')
+            })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to accept invite!', err)
+                console.debug(err)
+            })
+    }
+
+    handleDeclineInvite = () => {
+
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -127,9 +157,20 @@ class MyHome extends React.Component {
                                 }}
                                 onChange={(event) => this.handleOnCalendarChange(event, calendarContext)}
                             >
-                                {this.context.calendars.map(calendar => (
-                                    <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
-                                ))}
+                                <optgroup label="My Calendars">
+                                    {this.context.user.calendars.map(calendar => (
+                                        <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
+                                    ))}
+                                </optgroup>
+                                {this.context.user.invitedCalendars.length !== 0 ?
+                                    (<React.Fragment>
+                                        <optgroup label="Shared With Me">
+                                            {this.context.user.invitedCalendars.map(calendar => (
+                                                <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
+                                            ))}
+                                        </optgroup>
+                                    </React.Fragment>)
+                                    : null}
                             </NativeSelect>
                         </FormControl>
                         <Box mt={2}>
@@ -176,6 +217,42 @@ class MyHome extends React.Component {
                                 </React.Fragment>
                             }
                         </Box>
+                        <TableContainer component={Paper} className={classes.table}>
+                            <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+                                Invites
+                            </Typography>
+                            <Table aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left">Calendar</TableCell>
+                                        <TableCell align="left">Inviter</TableCell>
+                                        <TableCell align="left">Actions</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {this.context.user.invites.map((invite) => (
+                                        <TableRow key={invite.calendarName}>
+                                            <TableCell component="th" scope="row">
+                                                {invite.calendarName}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {invite.inviter}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                <Button variant="outlined" color="secondary"
+                                                        onClick={() => this.handleDeclineInvite(invite.id)}>
+                                                    Decline
+                                                </Button>
+                                                <Button variant="outlined" color="primary"
+                                                        onClick={() => this.handleAcceptInvite(invite.id)}>
+                                                    Accept
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Grid>
                 )}
             </CalendarContext.Consumer>

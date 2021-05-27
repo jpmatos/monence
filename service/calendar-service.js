@@ -23,7 +23,7 @@ class CalendarService {
         return Promise.all([this.db.getCalendar(calendarId), this.dbExchanges.getExchanges()])
             .then(res => {
                 const calendar = res[0]
-                if (calendar.ownerId !== userId)
+                if (calendar.ownerId !== userId && (calendar.invitees.find(invitee => invitee.id === userId) === undefined))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 const exchanges = res[1]
@@ -253,7 +253,7 @@ class CalendarService {
     }
 
     //Invites
-    postInvite(calendarId, invite, userId) {
+    postInvite(calendarId, invite, username, userId) {
         return Promise.all([this.db.getUserByEmail(invite.email), this.db.getCalendar(calendarId)])
             .then(res => {
                 const user = res[0]
@@ -273,12 +273,13 @@ class CalendarService {
                 const userInvite = {
                     id: id,
                     calendarId: calendarId,
+                    inviter: username,
                     calendarName: calendar.name
                 }
 
                 invite.id = id
 
-                return this.db.putInvite(calendarId, invite, user.id, userInvite)
+                return this.db.postInvite(calendarId, invite, user.id, userInvite)
             })
     }
 

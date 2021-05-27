@@ -5,22 +5,30 @@ class UserController {
         this.userService = userService
     }
 
-    static init(userService){
+    static init(userService) {
         return new UserController(userService)
     }
 
-    getCalendars(req, res, next){
+    getUser(req, res, next) {
         const userId = req.user.id
-        return this.userService.getCalendars(userId)
-            .then(calendars => res.status(200).json(success(calendars)))
+        return this.userService.getUser(userId)
+            .then(user => res.status(200).json(success(user)))
             .catch(next)
     }
 
-    postCalendar(req, res, next){
+    postCalendar(req, res, next) {
         const userId = req.user.id
         const calendar = req.body
         return this.userService.postCalendar(userId, calendar)
             .then(calendar => res.status(201).json(success(calendar)))
+            .catch(next)
+    }
+
+    acceptInvite(req, res, next) {
+        const userId = req.user.id
+        const inviteId = req.params.inviteId
+        return this.userService.acceptInvite(userId, inviteId)
+            .then(invitedCalendar => res.status(201).json(success(invitedCalendar)))
             .catch(next)
     }
 }

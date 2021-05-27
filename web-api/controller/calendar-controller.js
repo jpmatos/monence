@@ -133,10 +133,11 @@ class CalendarController {
     //Invites
     postInvite(req, res, next) {
         const userId = req.user.id
+        const username = req.user.displayName
         const calendarId = req.params.calendarId
         const invite = req.body
         return this.calendarService
-            .postInvite(calendarId, invite, userId)
+            .postInvite(calendarId, invite, username, userId)
             .then(invite => res.status(201).json(success(invite)))
             .catch(next)
     }
