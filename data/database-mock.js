@@ -143,15 +143,7 @@ class DatabaseMock {
         calendar.id = uuid.generate()
 
         this.users[userIdx].calendars.push(calendar)
-        this.calendars.push({
-            "name": calendar.name,
-            "ownerId": calendar.ownerId,
-            "id": calendar.id,
-            "currency": calendar.currency,
-            "single": [],
-            "recurrent": [],
-            "budget": []
-        })
+        this.calendars.push(calendar)
 
         return Promise.resolve(calendar)
     }

@@ -20,7 +20,8 @@ class UserService {
                 'emails': emails,
                 'photos': photos,
                 'calendars': [],
-                'invites': []
+                'invites': [],
+                'invitedCalendars': []
             }
         return this.db.verifyNewUser(user)
     }
@@ -37,13 +38,21 @@ class UserService {
         calendar = Object.assign({}, result.value)
 
         calendar.ownerId = userId
+        calendar.share = 'Personal'
+        calendar.single = []
+        calendar.recurrent = []
+        calendar.budget = []
+        calendar.invites = []
 
         return Promise.all([this.db.postCalendar(userId, calendar), this.dbExchanges.getExchanges()])
             .then(res => {
                 const calendar = res[0]
                 const exchanges = res[1]
                 calendar.exchanges = exchanges
-                return calendar
+                return {
+                    "id": calendar.id,
+                    "name": calendar.name
+                }
             })
     }
 

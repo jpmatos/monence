@@ -116,7 +116,7 @@ class MyShare extends React.Component {
                         {this.context.calendar.share}
                     </Typography>
                 </Typography>
-                {this.context.calendar.share === 'Personal' ?
+                {this.context.calendar.share !== 'Shared' ?
                     (<React.Fragment>
                         <Button variant="contained" color="primary" onClick={() => this.setSharePrompt(true)}>
                             Share

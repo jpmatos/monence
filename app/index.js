@@ -61,7 +61,7 @@ class UserContextBinder extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevState.sessions !== null && this.state.sessions === null){
+        if(prevState.session !== null && this.state.session === null){
             window.history.replaceState(null, '', window.location.origin + '/#/')
             axios.get('/auth/session')
                 .then(res => {
