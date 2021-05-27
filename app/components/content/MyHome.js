@@ -53,7 +53,8 @@ class MyHome extends React.Component {
             clickedCreate: false,
             calendarName: null,
             validCalendarName: true,
-            currency: 'EUR'
+            currency: 'EUR',
+            isRefreshInvitesDisabled: false
         }
     }
 
@@ -136,7 +137,11 @@ class MyHome extends React.Component {
     }
 
     handleRefreshPendingInvites = () => {
+        this.setState({isRefreshInvitesDisabled: true})
         this.context.handleRefreshPendingInvites()
+        setTimeout(() => {
+            this.setState({isRefreshInvitesDisabled: false})
+        }, 5000)
     }
 
     render() {
@@ -243,7 +248,7 @@ class MyHome extends React.Component {
                                             component="div">
                                     Pending Invites
                                 </Typography>
-                                <IconButton aria-label="refresh" component="span" onClick={this.handleRefreshPendingInvites}>
+                                <IconButton aria-label="refresh" component="span" onClick={this.handleRefreshPendingInvites} disabled={this.state.isRefreshInvitesDisabled}>
                                     <RefreshIcon/>
                                 </IconButton>
                             </Grid>
