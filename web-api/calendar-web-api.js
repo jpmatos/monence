@@ -53,6 +53,10 @@ function calendarWebApi(router, calendarController){
     }))
 
     //Invites
+    router.get('/:calendarId/invites', checkAuth, (req, res, next) => {
+        return calendarController.getInvites(req, res, next)
+    })
+
     router.post('/:calendarId/invite', checkAuth, (req, res, next) => {
         return calendarController.postInvite(req, res, next)
     })

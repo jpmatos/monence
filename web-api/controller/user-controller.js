@@ -24,6 +24,13 @@ class UserController {
             .catch(next)
     }
 
+    getInvites(req, res, next) {
+        const userId = req.user.id
+        return this.userService.getInvites(userId)
+            .then(invites => res.status(200).json(success(invites)))
+            .catch(next)
+    }
+
     acceptInvite(req, res, next) {
         const userId = req.user.id
         const inviteId = req.params.inviteId

@@ -14,6 +14,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
+import IconButton from "@material-ui/core/IconButton";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 const useStyles = (theme => ({
     large: {
@@ -36,12 +38,13 @@ const useStyles = (theme => ({
         minWidth: 300,
         maxWidth: 800
     },
-    title: {
+    pendingInvitesTitle: {
         paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
         paddingBottom: theme.spacing(1),
         paddingTop: theme.spacing(1)
     }
-}));
+}))
 
 class MyHome extends React.Component {
     constructor(props) {
@@ -130,6 +133,10 @@ class MyHome extends React.Component {
                 this.props.sendErrorSnack('Failed to decline invite!', err)
                 console.debug(err)
             })
+    }
+
+    handleRefreshPendingInvites = () => {
+        this.context.handleRefreshPendingInvites()
     }
 
     render() {
@@ -225,9 +232,21 @@ class MyHome extends React.Component {
                             }
                         </Box>
                         <TableContainer component={Paper} className={classes.table}>
-                            <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                                Invites
-                            </Typography>
+                            <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                                className={classes.pendingInvitesTitle}
+                            >
+                                <Typography variant="h6" id="tableTitle"
+                                            component="div">
+                                    Pending Invites
+                                </Typography>
+                                <IconButton aria-label="refresh" component="span" onClick={this.handleRefreshPendingInvites}>
+                                    <RefreshIcon/>
+                                </IconButton>
+                            </Grid>
                             <Table aria-label="simple table">
                                 <TableHead>
                                     <TableRow>

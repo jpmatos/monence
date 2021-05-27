@@ -56,6 +56,13 @@ class UserService {
             })
     }
 
+    getInvites(userId) {
+        return this.db.getUserInvites(userId)
+            .then(invites => {
+                return invites
+            })
+    }
+
     acceptInvite(userId, inviteId) {
         return Promise.all([this.db.getUser(userId), this.db.deleteUserInvite(userId, inviteId)])
             .then(res => {

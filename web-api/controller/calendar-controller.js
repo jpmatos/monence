@@ -131,6 +131,15 @@ class CalendarController {
     }
 
     //Invites
+    getInvites(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        return this.calendarService
+            .getInvites(calendarId, userId)
+            .then(invites => res.status(200).json(success(invites)))
+            .catch(next)
+    }
+
     postInvite(req, res, next) {
         const userId = req.user.id
         const username = req.user.displayName

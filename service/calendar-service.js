@@ -253,6 +253,13 @@ class CalendarService {
     }
 
     //Invites
+    getInvites(calendarId, userId) {
+        return this.db.getCalendarInvites(calendarId)
+            .then(invites => {
+                return invites
+            })
+    }
+
     postInvite(calendarId, invite, username, userId) {
         return Promise.all([this.db.getUserByEmail(invite.email), this.db.getCalendar(calendarId)])
             .then(res => {

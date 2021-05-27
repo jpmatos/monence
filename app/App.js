@@ -31,7 +31,8 @@ class App extends React.Component {
             buildDisplayValue: this.buildDisplayValue,
             setCalendarShare: this.setCalendarShare,
             handleNewInvite: this.handleNewInvite,
-            handleDeleteInvite: this.handleDeleteInvite
+            handleDeleteInvite: this.handleDeleteInvite,
+            handleRefreshPendingInvites: this.handleRefreshPendingInvites
         }
     }
 
@@ -87,6 +88,16 @@ class App extends React.Component {
         this.setState({
             calendar: calendar
         })
+    }
+
+    handleRefreshPendingInvites = () => {
+        return axios.get(`/calendar/${this.state.calendarId}/invites`)
+            .then(res => {
+                const invites = res.data.body
+                const calendar = this.state.calendar
+                calendar.invites = invites
+                this.setState({calendar: calendar})
+            })
     }
 
     handleNewItem = (item) => {

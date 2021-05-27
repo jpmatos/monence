@@ -15,6 +15,8 @@ import TableRow from "@material-ui/core/TableRow";
 import {TableCell} from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import Paper from '@material-ui/core/Paper';
+import IconButton from "@material-ui/core/IconButton";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const useStyles = (theme) => ({
     pad: {
@@ -34,6 +36,12 @@ const useStyles = (theme) => ({
         minWidth: 300,
         maxWidth: 800
     },
+    pendingInvitesTitle: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+        paddingBottom: theme.spacing(1),
+        paddingTop: theme.spacing(1)
+    }
 })
 
 class MyShare extends React.Component {
@@ -71,7 +79,7 @@ class MyShare extends React.Component {
     }
 
     handleInvite = () => {
-        if(!this.state.validUserEmail)
+        if (!this.state.validUserEmail)
             return
 
         const invite = {
@@ -106,6 +114,10 @@ class MyShare extends React.Component {
             })
     }
 
+    handleRefreshPendingInvites = () => {
+        this.context.handleRefreshPendingInvites()
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -136,6 +148,21 @@ class MyShare extends React.Component {
                             alignItems="flex-start"
                         >
                             <TableContainer component={Paper} className={classes.table}>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="space-between"
+                                    alignItems="center"
+                                    className={classes.pendingInvitesTitle}
+                                >
+                                    <Typography variant="h6" id="tableTitle"
+                                                component="div">
+                                        Pending Invites
+                                    </Typography>
+                                    <IconButton aria-label="refresh" component="span" onClick={this.handleRefreshPendingInvites}>
+                                        <RefreshIcon/>
+                                    </IconButton>
+                                </Grid>
                                 <Table aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
@@ -150,7 +177,8 @@ class MyShare extends React.Component {
                                                     {invite.email}
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
-                                                    <Button variant="outlined" color="secondary" onClick={() => this.handleDeleteInvite(invite.id)}>
+                                                    <Button variant="outlined" color="secondary"
+                                                            onClick={() => this.handleDeleteInvite(invite.id)}>
                                                         Delete Invite
                                                     </Button>
                                                 </TableCell>
