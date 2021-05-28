@@ -55,6 +55,7 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${itemId}`})
     }
 
+    //TODO
     putItem(calendarId, itemId, item, arrayName) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
@@ -87,6 +88,7 @@ class DatabaseMock {
         return Promise.resolve(budget)
     }
 
+    //TODO
     putBudget(calendarId, budgetId, budget) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
@@ -115,6 +117,7 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
     }
 
+    //TODO
     verifyNewUser(user) {
         const userIdx = this.users.findIndex(usr => usr.id === user.id)
         if (userIdx === -1) {
@@ -135,6 +138,7 @@ class DatabaseMock {
         return Promise.resolve(this.users[userIdx])
     }
 
+    //TODO
     postCalendar(userId, calendar) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
@@ -163,8 +167,12 @@ class DatabaseMock {
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
         const invites = this.calendars[calendarIdx].invites
+        const invitees = this.calendars[calendarIdx].invitees
 
-        return Promise.resolve(invites)
+        return Promise.resolve({
+            'invites': invites,
+            'invitees': invitees
+        })
     }
 
     getUserInvites(userId) {
@@ -192,20 +200,6 @@ class DatabaseMock {
         return Promise.resolve(invite)
     }
 
-    deleteInvite(calendarId, inviteId, email) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
-
-        const userIdx = this.users.findIndex(user => user.email === email)
-        if (userIdx !== -1)
-            this.users[userIdx].invites = this.users[userIdx].invites.filter(inv => inv.id !== inviteId)
-
-        return Promise.resolve({'message': 'Deleted invite'})
-    }
-
     deleteUserInvite(userId, inviteId) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
@@ -227,13 +221,10 @@ class DatabaseMock {
 
         return Promise.resolve({'message': 'Deleted invite'})
     }
-
-    acceptCalendarInvite(inviteId, calendarId, invitee) {
+    postCalendarInvitee(inviteId, calendarId, invitee) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
 
         this.calendars[calendarIdx].invitees.push(invitee)
 
@@ -242,6 +233,7 @@ class DatabaseMock {
             "name": this.calendars[calendarIdx].name
         }
 
+        //TODO Should this be returned?
         return Promise.resolve(accept)
     }
 
@@ -253,6 +245,26 @@ class DatabaseMock {
         this.users[userIdx].invitedCalendars.push(accept)
 
         return Promise.resolve(accept)
+    }
+
+    deleteUserFromCalendar(calendarId, userId) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        this.calendars[calendarIdx].invitees = this.calendars[calendarIdx].invitees.filter(inv => inv.id !== userId)
+
+        return Promise.resolve({'message': 'Deleted user from calendar'})
+    }
+
+    deleteCalendarFromUser(calendarId, userId) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
+        this.users[userIdx].invitedCalendars = this.users[userIdx].invitedCalendars.filter(cal => cal.id !== calendarId)
+
+        return Promise.resolve({'message': 'Deleted calendar from user'})
     }
 
     readFile(filePath) {

@@ -65,6 +65,10 @@ function calendarWebApi(router, calendarController){
         return calendarController.deleteInvite(req, res, next)
     })
 
+    router.put('/:calendarId/kick', checkAuth, (req, res, next) => {
+        return calendarController.kickUser(req, res, next)
+    })
+
     return router
 }
 

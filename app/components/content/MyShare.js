@@ -41,6 +41,12 @@ const useStyles = (theme) => ({
         paddingRight: theme.spacing(2),
         paddingBottom: theme.spacing(1),
         paddingTop: theme.spacing(1)
+    },
+    pendingInviteesTitle: {
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(2),
+        paddingBottom: theme.spacing(1),
+        paddingTop: theme.spacing(2)
     }
 })
 
@@ -115,9 +121,23 @@ class MyShare extends React.Component {
             })
     }
 
+    handleRemoveInvitee = (id) => {
+        const user = {'id': id}
+        axios.put(`/calendar/${this.context.calendar.id}/kick`, user)
+            .then(res => {
+                this.context.handleRemoveInvitee(id)
+                console.log(res)
+                this.props.sendSuccessSnack(`Removed user`)
+            })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to kick user!', err)
+                console.debug(err)
+            })
+    }
+
     handleRefreshPendingInvites = () => {
         this.setState({isRefreshInvitesDisabled: true})
-        this.context.handleRefreshPendingInvites()
+        this.context.handleRefreshPendingInvitesAndInvitees()
         setTimeout(() => {
             this.setState({isRefreshInvitesDisabled: false})
         }, 5000)
@@ -152,6 +172,39 @@ class MyShare extends React.Component {
                             justify="flex-start"
                             alignItems="flex-start"
                         >
+                            <TableContainer component={Paper} className={classes.table}>
+                                <Typography variant="h6" id="tableTitle"
+                                            component="div" className={classes.pendingInviteesTitle}>
+                                    Participants
+                                </Typography>
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell align="left">Name</TableCell>
+                                            <TableCell align="left">Email</TableCell>
+                                            <TableCell align="left">Actions</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {this.context.calendar.invitees.map((invitee) => (
+                                            <TableRow key={invitee.id}>
+                                                <TableCell component="th" scope="row">
+                                                    {invitee.name}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    {invitee.email}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    <Button variant="outlined" color="secondary"
+                                                            onClick={() => this.handleRemoveInvitee(invitee.id)}>
+                                                        Remove
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                             <TableContainer component={Paper} className={classes.table}>
                                 <Grid
                                     container

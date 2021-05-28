@@ -160,6 +160,16 @@ class CalendarController {
             .then(msg => res.status(201).json(success(msg)))
             .catch(next)
     }
+
+    kickUser(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        const userToKick = req.body
+        return this.calendarService
+            .kickUser(calendarId, userToKick, userId)
+            .then(msg => res.status(201).json(success(msg)))
+            .catch(next)
+    }
 }
 
 module.exports = CalendarController

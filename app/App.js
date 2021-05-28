@@ -32,7 +32,8 @@ class App extends React.Component {
             setCalendarShare: this.setCalendarShare,
             handleNewInvite: this.handleNewInvite,
             handleDeleteInvite: this.handleDeleteInvite,
-            handleRefreshPendingInvites: this.handleRefreshPendingInvites
+            handleRefreshPendingInvitesAndInvitees: this.handleRefreshPendingInvitesAndInvitees,
+            handleRemoveInvitee: this.handleRemoveInvitee
         }
     }
 
@@ -90,14 +91,24 @@ class App extends React.Component {
         })
     }
 
-    handleRefreshPendingInvites = () => {
+    handleRefreshPendingInvitesAndInvitees = () => {
         return axios.get(`/calendar/${this.state.calendarId}/invites`)
             .then(res => {
-                const invites = res.data.body
+                const invites = res.data.body.invites
+                const invitees = res.data.body.invitees
                 const calendar = this.state.calendar
                 calendar.invites = invites
+                calendar.invitees = invitees
                 this.setState({calendar: calendar})
             })
+    }
+
+    handleRemoveInvitee = (userId) => {
+        const calendar = this.state.calendar
+        calendar.invitees = calendar.invitees.filter(inv => inv.id !== userId)
+        this.setState({
+            calendar: calendar
+        })
     }
 
     handleNewItem = (item) => {

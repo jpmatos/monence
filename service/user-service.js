@@ -64,7 +64,7 @@ class UserService {
     }
 
     acceptInvite(userId, inviteId) {
-        return Promise.all([this.db.getUser(userId), this.db.deleteUserInvite(userId, inviteId)])
+        return Promise.all([this.db.getUser(userId), this.db.deleteUserInvite(userId, inviteId), this.db.deleteCalendarInvite])
             .then(res => {
                 const user = res[0]
                 const invite = res[1]
@@ -75,7 +75,7 @@ class UserService {
                     "email": user.email
                 }
 
-                return this.db.acceptCalendarInvite(invite.id, invite.calendarId, invitee)
+                return this.db.postCalendarInvitee(invite.id, invite.calendarId, invitee)
             })
             .then(accept => {
                 return this.db.postUserInvitedCalendar(userId, accept)

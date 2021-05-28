@@ -298,7 +298,19 @@ class CalendarService {
 
                 const email = calendar.invites.find(inv => inv.id === inviteId).email
 
-                return this.db.deleteInvite(calendarId, inviteId, email)
+                // return this.db.deleteInvite(calendarId, inviteId, email)
+                return this.db.getUserByEmail(email)
+            }).then(user => {
+                return this.db.deleteUserInvite(user.id, inviteId)
+            }).then(() => {
+                return this.db.deleteCalendarInvite(inviteId, calendarId)
+            })
+    }
+
+    kickUser(calendarId, userToKick, userId) {
+        return this.db.deleteUserFromCalendar(calendarId, userToKick.id)
+            .then(res => {
+                return this.db.deleteCalendarFromUser(calendarId, userToKick.id)
             })
     }
 }
