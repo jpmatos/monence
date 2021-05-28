@@ -1,5 +1,6 @@
 const error = require("../object/error");
 const postCalendarSchema = require('./joi-schemas/calendar-schemas').postCalendarSchema
+const uuid = require('short-uuid')
 
 
 class UserService {
@@ -37,6 +38,7 @@ class UserService {
             return Promise.reject(error(400, result.error.details[0].message))
         calendar = Object.assign({}, result.value)
 
+        calendar.id = uuid.generate()
         calendar.ownerId = userId
         calendar.share = 'Personal'
         calendar.single = []
@@ -44,15 +46,14 @@ class UserService {
         calendar.budget = []
         calendar.invites = []
 
-        return Promise.all([this.db.postCalendar(userId, calendar), this.dbExchanges.getExchanges()])
-            .then(res => {
-                const calendar = res[0]
-                const exchanges = res[1]
-                calendar.exchanges = exchanges
-                return {
-                    "id": calendar.id,
-                    "name": calendar.name
-                }
+        const userCalendar = {
+            'id': calendar.id,
+            'name': calendar.name
+        }
+
+        return Promise.all([this.db.postCalendar(userId, calendar), this.db.postCalendarToUser(userId, userCalendar)])
+            .then(() => {
+                return userCalendar
             })
     }
 

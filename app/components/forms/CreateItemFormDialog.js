@@ -89,7 +89,7 @@ class CreateItemFormDialog extends React.Component {
 
         let value = this.state.value
         if (typeof (value) === 'string')
-            value = parseFloat(value.replaceAll(',', ''))
+            value = parseFloat(value.replace(/,/g, ''))
 
         let fail = false
         if (this.state.itemTitle === null || this.state.itemTitle === '') {

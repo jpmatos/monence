@@ -56,7 +56,7 @@ class CreateBudgetFormDialog extends React.Component {
 
         let value = this.state.value
         if(typeof(value) === 'string')
-            value = parseFloat(value.replaceAll(',', ''))
+            value = parseFloat(value.replace(/,/g, ''))
 
         if (this.state.value === null || value === 0) {
             this.setState({validValue: false})

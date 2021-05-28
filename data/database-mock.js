@@ -1,6 +1,5 @@
 const fs = require('fs').promises
 const path = require('path')
-const uuid = require('short-uuid')
 const error = require('../object/error')
 
 class DatabaseMock {
@@ -138,18 +137,20 @@ class DatabaseMock {
         return Promise.resolve(this.users[userIdx])
     }
 
-    //TODO
     postCalendar(userId, calendar) {
+        this.calendars.push(calendar)
+
+        return Promise.resolve(calendar)
+    }
+
+    postCalendarToUser(userId, userCalendar) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
             return Promise.resolve({'message': `Could not find user ${userIdx}`})
 
-        calendar.id = uuid.generate()
+        this.users[userIdx].calendars.push(userCalendar)
 
-        this.users[userIdx].calendars.push(calendar)
-        this.calendars.push(calendar)
-
-        return Promise.resolve(calendar)
+        return Promise.resolve(userCalendar)
     }
 
     getUserByEmail(email) {

@@ -46,7 +46,7 @@ class ViewBudgetFormDialog extends React.Component {
 
         let value = this.state.value
         if(typeof(value) === 'string')
-            value = parseFloat(value.replaceAll(',', ''))
+            value = parseFloat(value.replace(/,/g, ''))
         const budget = {
             'date': moment.utc(this.state.selectedDate)
                 .startOf(this.props.currentlyOpenBudget.period === 'week' ? 'isoWeek' : this.props.currentlyOpenBudget.period)
