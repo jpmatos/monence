@@ -184,18 +184,22 @@ class DatabaseMock {
         return Promise.resolve(invites)
     }
 
-    postInvite(calendarId, invite, userId, userInvite) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-
+    postInviteToUser(userId, userInvite) {
         const userIdx = this.users.findIndex(user => user.id === userId)
         if (userIdx === -1)
             return Promise.resolve({'message': `Could not find user ${userIdx}`})
 
-        this.calendars[calendarIdx].invites.push(invite)
         this.users[userIdx].invites.push(userInvite)
+
+        return Promise.resolve({'message': 'Posted invite to user'})
+    }
+
+    postInviteToCalendar(calendarId, invite) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+
+        this.calendars[calendarIdx].invites.push(invite)
 
         return Promise.resolve(invite)
     }

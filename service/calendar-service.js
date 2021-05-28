@@ -286,7 +286,10 @@ class CalendarService {
 
                 invite.id = id
 
-                return this.db.postInvite(calendarId, invite, user.id, userInvite)
+                return this.db.postInviteToUser(user.id, userInvite)
+            })
+            .then(() => {
+                return this.db.postInviteToCalendar(calendarId, invite)
             })
     }
 
