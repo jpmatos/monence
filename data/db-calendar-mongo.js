@@ -1,29 +1,49 @@
 const MongoClient = require('mongodb').MongoClient
 const uuid = require('short-uuid')
+const error = require('../object/error')
+const MONGO_USER = "defaultUser"
+const MONGO_SECRET = "nJknMAc8zCAornn3"
 
 class DataBaseCalendarMongo {
 
-    static init(user, password) {
-        MongoClient.connect(`mongodb+srv://${user}:${password}@monencecluster.i6cih.mongodb.net/monenceDB?retryWrites=true&w=majority`)
+    constructor() {
+        MongoClient.connect(`mongodb+srv://${MONGO_USER}:${MONGO_SECRET}@monencecluster.i6cih.mongodb.net/monenceDB?authSource=admin&retryWrites=true&w=majority`,
+            {useUnifiedTopology: true})
             .then(client => {
                 this.db = client.db('monenceDB')
             })
-        return DataBaseCalendarMongo
     }
 
-    static getCalendar(calendarId) {
+    static init() {
+        return new DataBaseCalendarMongo()
+    }
+
+    getCalendar(calendarId) {
         return this.db.collection('calendars')
             .findOne({id: calendarId})
             .then(calendar => {
                 if (calendar === null) {
-                    return {'message': `Could not find calendar ${calendarId}`}
+                    return Promise.reject(error(404, 'Calendar Not Found'))
                 }
                 delete calendar._id
                 return calendar
             })
     }
 
-    static postItem(calendarId, item, arrayName) {
+    putCalendar(calendarId, calendar) {
+        return this.db.collection('calendars')
+            .updateOne({id: calendarId}, {$set: calendar})
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return Promise.reject(`Calendar Not Found`)
+                } else {
+                    return calendar
+                }
+            })
+    }
+
+    postItem(calendarId, item, arrayName) {
         return this.db.collection('calendars')
             .updateOne({id: calendarId}, {$push: {[arrayName]: item}})
             .then(result => {
@@ -36,7 +56,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    static deleteItem(calendarId, itemId, arrayName) {
+    deleteItem(calendarId, itemId, arrayName) {
         return this.db.collection('calendars')
             .updateOne({id: calendarId}, {$pull: {[arrayName]: {"id": itemId}}})
             .then(result => {
@@ -49,7 +69,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    static putItem(calendarId, itemId, item, arrayName) {
+    putItem(calendarId, itemId, item, arrayName) {
         return this.db.collection('calendars')
             .updateOne({id: calendarId, [arrayName]: {"id": itemId}},
                 {
@@ -70,7 +90,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    static postBudget(calendarId, budget) {
+    postBudget(calendarId, budget) {
         return this.db.collection('calendars')
             .updateOne({id: calendarId}, {
                 $push: {budget: budget}
@@ -85,7 +105,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    static putBudget(calendarId, budgetId, budget) {
+    putBudget(calendarId, budgetId, budget) {
         return this.db.collection('calendars')
             .findOneAndUpdate({id: calendarId, "budget.id": budgetId},
                 {
@@ -110,31 +130,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    static verifyNewUser(userId, name, emails, photos) {
-        return this.db.collection('users')
-            .updateOne(
-                {id: [userId].toString()},
-                {
-                    $setOnInsert: {
-                        'id': userId,
-                        'name': name,
-                        'emails': emails,
-                        'photos': photos,
-                        'calendars': []
-                    }
-                },
-                {upsert: true})
-            .then(result => {
-                // check if update succeeded
-                if (result.nMatched === 1) {
-                    return {'message': 'User already exists'}
-                } else {
-                    return {'message': 'Created new user'}
-                }
-            })
-    }
-
-    static getCalendars(userId) {
+    getCalendars(userId) {
         return this.db.collection('users')
             .findOne({id: [userId].toString()}, {projection: {calendars: 1, _id: 0}})
             .then(calendarsObj => {
@@ -146,40 +142,32 @@ class DataBaseCalendarMongo {
             })
     }
 
-    static postCalendar(userId, calendar) {
-        calendar.id = uuid.generate()
-        return this.db.collection('users')
-            .updateOne(
-                {id: [userId].toString()},
-                {
-                    $push: {calendars: calendar}
-                })
-            .then(result => {
-                // check if update succeeded and add calendar
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find user ${userId}`}
+    deleteBudget(calendarId, budgetId) {
+
+    }
+
+    postCalendar(userId, calendar) {
+
+        return this.db.collection('calendars')
+            .insertOne({
+                "name": calendar.name,
+                "ownerId": userId,
+                "id": calendar.id,
+                "single": [],
+                "recurrent": [],
+                "budget": []
+
+            }).then(result => {
+                if (result.insertedCount !== 1) {
+                    return {'message': `Could not add calendar`}
                 } else {
-                    return this.db.collection('calendars')
-                        .insertOne({
-                            "name": calendar.name,
-                            "ownerId": userId,
-                            "id": calendar.id,
-                            "single": [],
-                            "recurrent": [],
-                            "budget": []
+                    return calendar
 
-                        }).then(result => {
-                            if (result.insertedCount !== 1) {
-                                return {'message': `Could not add calendar`}
-                            } else {
-                                return calendar
-
-                            }
-                        })
                 }
             })
     }
 
+
 }
 
-module.exports = DataBaseCalendarMongo.init('dbDefaultUser', 'YFWytbUn49uf31QN')
+module.exports = DataBaseCalendarMongo
