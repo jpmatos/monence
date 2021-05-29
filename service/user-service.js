@@ -4,13 +4,13 @@ const uuid = require('short-uuid')
 
 
 class UserService {
-    constructor(db, dbExchanges) {
+    constructor(db, dbUser) {
         this.db = db
-        this.dbExchanges = dbExchanges
+        this.dbUser = dbUser
     }
 
-    static init(db, dbExchanges) {
-        return new UserService(db, dbExchanges)
+    static init(db, dbUser) {
+        return new UserService(db, dbUser)
     }
 
     verifyNewUser(userId, name, email, photos) {
@@ -24,11 +24,11 @@ class UserService {
                 'invites': [],
                 'invitedCalendars': []
             }
-        return this.db.verifyNewUser(user)
+        return this.dbUser.verifyNewUser(user)
     }
 
     getUser(userId) {
-        return this.db.getUser(userId)
+        return this.dbUser.getUser(userId)
     }
 
     postCalendar(userId, calendar) {
@@ -51,21 +51,21 @@ class UserService {
             'name': calendar.name
         }
 
-        return Promise.all([this.db.postCalendar(userId, calendar), this.db.postCalendarToUser(userId, userCalendar)])
+        return Promise.all([this.db.postCalendar(userId, calendar), this.dbUser.postCalendarToUser(userId, userCalendar)])
             .then(() => {
                 return userCalendar
             })
     }
 
     getInvites(userId) {
-        return this.db.getUserInvites(userId)
+        return this.dbUser.getUserInvites(userId)
             .then(invites => {
                 return invites
             })
     }
 
     acceptInvite(userId, inviteId) {
-        return Promise.all([this.db.getUser(userId), this.db.deleteUserInvite(userId, inviteId)])
+        return Promise.all([this.dbUser.getUser(userId), this.dbUser.deleteUserInvite(userId, inviteId)])
             .then(res => {
                 const user = res[0]
                 const invite = res[1]
@@ -83,12 +83,12 @@ class UserService {
             })
             .then(res => {
                 const accept = res[0]
-                return this.db.postUserInvitedCalendar(userId, accept)
+                return this.dbUser.postUserInvitedCalendar(userId, accept)
             })
     }
 
     declineInvite(userId, inviteId) {
-        return this.db.deleteUserInvite(userId, inviteId)
+        return this.dbUser.deleteUserInvite(userId, inviteId)
             .then(invite => {
                 return this.db.deleteCalendarInvite(invite.id, invite.calendarId)
             })

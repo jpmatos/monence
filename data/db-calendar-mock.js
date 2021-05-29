@@ -2,7 +2,7 @@ const fs = require('fs').promises
 const path = require('path')
 const error = require('../object/error')
 
-class DatabaseMock {
+class DataBaseCalendarMock {
     constructor() {
         this.readFile(path.join(__dirname, '/mock/calendars.json'))
             .then(res => {
@@ -15,7 +15,7 @@ class DatabaseMock {
     }
 
     static init() {
-        return new DatabaseMock()
+        return new DataBaseCalendarMock()
     }
 
     getCalendar(calendarId) {
@@ -116,49 +116,10 @@ class DatabaseMock {
         return Promise.resolve({'message': `Deleted item with id ${budgetId}`})
     }
 
-    //TODO
-    verifyNewUser(user) {
-        const userIdx = this.users.findIndex(usr => usr.id === user.id)
-        if (userIdx === -1) {
-            this.users.push(user)
-            return Promise.resolve('Created new user')
-        }
-        return Promise.resolve('User already exists')
-    }
-
-
-    //Users Index
-
-    getUser(userId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        return Promise.resolve(this.users[userIdx])
-    }
-
     postCalendar(userId, calendar) {
         this.calendars.push(calendar)
 
         return Promise.resolve(calendar)
-    }
-
-    postCalendarToUser(userId, userCalendar) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        this.users[userIdx].calendars.push(userCalendar)
-
-        return Promise.resolve(userCalendar)
-    }
-
-    getUserByEmail(email) {
-        const userIdx = this.users.findIndex(user => user.email === email)
-        if (userIdx === -1)
-            return Promise.resolve({'error': `Could not find user ${email}`})
-
-        return this.users[userIdx]
     }
 
     //Invites
@@ -176,43 +137,12 @@ class DatabaseMock {
         })
     }
 
-    getUserInvites(userId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        const invites = this.users[userIdx].invites
-        return Promise.resolve(invites)
-    }
-
-    postInviteToUser(userId, userInvite) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        this.users[userIdx].invites.push(userInvite)
-
-        return Promise.resolve({'message': 'Posted invite to user'})
-    }
-
     postInviteToCalendar(calendarId, invite) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
         this.calendars[calendarIdx].invites.push(invite)
-
-        return Promise.resolve(invite)
-    }
-
-    deleteUserInvite(userId, inviteId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        const invite = this.users[userIdx].invites.find(inv => inv.id === inviteId)
-
-        this.users[userIdx].invites = this.users[userIdx].invites.filter(inv => inv.id !== inviteId)
 
         return Promise.resolve(invite)
     }
@@ -242,16 +172,6 @@ class DatabaseMock {
         return Promise.resolve(accept)
     }
 
-    postUserInvitedCalendar(userId, accept) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        this.users[userIdx].invitedCalendars.push(accept)
-
-        return Promise.resolve(accept)
-    }
-
     deleteUserFromCalendar(calendarId, userId) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
@@ -260,16 +180,6 @@ class DatabaseMock {
         this.calendars[calendarIdx].invitees = this.calendars[calendarIdx].invitees.filter(inv => inv.id !== userId)
 
         return Promise.resolve({'message': 'Deleted user from calendar'})
-    }
-
-    deleteCalendarFromUser(calendarId, userId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        this.users[userIdx].invitedCalendars = this.users[userIdx].invitedCalendars.filter(cal => cal.id !== calendarId)
-
-        return Promise.resolve({'message': 'Deleted calendar from user'})
     }
 
     readFile(filePath) {
@@ -288,4 +198,4 @@ class DatabaseMock {
     }
 }
 
-module.exports = DatabaseMock
+module.exports = DataBaseCalendarMock

@@ -1,14 +1,14 @@
 const MongoClient = require('mongodb').MongoClient
 const uuid = require('short-uuid')
 
-class MonenceMongoDB {
+class DataBaseCalendarMongo {
 
     static init(user, password) {
         MongoClient.connect(`mongodb+srv://${user}:${password}@monencecluster.i6cih.mongodb.net/monenceDB?retryWrites=true&w=majority`)
             .then(client => {
                 this.db = client.db('monenceDB')
             })
-        return MonenceMongoDB
+        return DataBaseCalendarMongo
     }
 
     static getCalendar(calendarId) {
@@ -182,4 +182,4 @@ class MonenceMongoDB {
 
 }
 
-module.exports = MonenceMongoDB.init('dbDefaultUser', 'YFWytbUn49uf31QN')
+module.exports = DataBaseCalendarMongo.init('dbDefaultUser', 'YFWytbUn49uf31QN')
