@@ -8,14 +8,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {Box} from "@material-ui/core";
-import FloatingActionButton from "../FloatingActionButton";
-import {CalendarContext} from "../context/CalendarContext";
+import FloatingActionButton from "../components/FloatingActionButton";
+import {CalendarContext} from "../context/default/CalendarContext";
 import Typography from "@material-ui/core/Typography";
 import moment from "moment";
-import BudgetRow from "../BudgetRow";
-import CreateBudgetFormDialog from "../forms/CreateBudgetFormDialog";
+import BudgetRow from "../components/BudgetRow";
+import CreateBudgetFormDialog from "../components/forms/CreateBudgetFormDialog";
 import axios from "axios";
-import ViewBudgetFormDialog from "../forms/ViewBudgetFormDialog";
+import ViewBudgetFormDialog from "../components/forms/ViewBudgetFormDialog";
 
 class MyBudget extends React.Component {
     constructor(props) {

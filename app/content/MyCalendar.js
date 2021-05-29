@@ -11,10 +11,10 @@ import {green} from '@material-ui/core/colors';
 import {yellow} from '@material-ui/core/colors';
 import {blue} from '@material-ui/core/colors';
 
-import FloatingActionButton from '../FloatingActionButton'
-import CreateItemFormDialog from '../forms/CreateItemFormDialog'
-import ViewItemFormDialog from '../forms/ViewItemFormDialog'
-import {CalendarContext} from '../context/CalendarContext'
+import FloatingActionButton from '../components/FloatingActionButton'
+import CreateItemFormDialog from '../components/forms/CreateItemFormDialog'
+import ViewItemFormDialog from '../components/forms/ViewItemFormDialog'
+import {CalendarContext} from '../context/default/CalendarContext'
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 

@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
 import GoogleButton from "react-google-button";
-import {UserContext} from "../context/UserContext";
+import {UserContext} from "../context/default/UserContext";
 import {FormControl, NativeSelect} from "@material-ui/core";
 
 function Copyright() {

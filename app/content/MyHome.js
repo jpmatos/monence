@@ -2,11 +2,11 @@ import React from 'react'
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {withStyles} from "@material-ui/core/styles";
-import {UserContext} from "../context/UserContext";
+import {UserContext} from "../context/default/UserContext";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import {CalendarContext} from "../context/CalendarContext";
+import {CalendarContext} from "../context/default/CalendarContext";
 import {FormControl, FormHelperText, InputLabel, NativeSelect, TableCell, TextField} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";

@@ -2,7 +2,7 @@ import React from 'react'
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {Box, DialogContent, FormControl, InputLabel, NativeSelect} from "@material-ui/core";
-import {CalendarContext} from "../context/CalendarContext";
+import {CalendarContext} from "../../context/default/CalendarContext";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";

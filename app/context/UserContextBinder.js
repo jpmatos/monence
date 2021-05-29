@@ -1,12 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import CalendarContextBinder from './CalendarContextBinder';
 
-import 'bootstrap/dist/css/bootstrap.min.css';      ///TODO Review this here
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
-import MomentUtils from "@date-io/moment";
-import {UserContext} from "./components/context/UserContext";
-import LoginPage from "./components/content/LoginPage";
+import {UserContext} from "./default/UserContext";
+import LoginPage from "../content/LoginPage";
 import axios from "axios";
 
 class UserContextBinder extends React.Component {
@@ -119,7 +115,7 @@ class UserContextBinder extends React.Component {
                     this.state.session.isAuthenticated ?
                         this.state.user !== null ?
                             this.state.user.calendars.length !== 0 ?
-                                <App/> :
+                                <CalendarContextBinder/> :
                                 <LoginPage needsCalendar={true}/> :
                             null :
                         <LoginPage needsCalendar={false}/> :
@@ -129,9 +125,4 @@ class UserContextBinder extends React.Component {
     }
 }
 
-
-ReactDOM.render(
-    <MuiPickersUtilsProvider utils={MomentUtils}>
-        <UserContextBinder/>
-    </MuiPickersUtilsProvider>
-    , document.getElementById('root'));
+export default UserContextBinder

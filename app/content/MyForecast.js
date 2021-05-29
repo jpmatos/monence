@@ -1,13 +1,13 @@
 import React from 'react';
 
 import {ResponsiveContainer} from 'recharts';
-import {CalendarContext} from "../context/CalendarContext";
+import {CalendarContext} from "../context/default/CalendarContext";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
-import FloatingActionButton from "../FloatingActionButton";
+import FloatingActionButton from "../components/FloatingActionButton";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import CustomAreaChart from "../CustomAreaChart";
+import CustomAreaChart from "../components/CustomAreaChart";
 import {FormControl, FormControlLabel, Switch} from "@material-ui/core";
 
 class MyForecast extends React.Component {

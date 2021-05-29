@@ -3,8 +3,8 @@ import Typography from "@material-ui/core/Typography";
 import {withStyles} from '@material-ui/core/styles'
 import {grey} from "@material-ui/core/colors";
 import Button from "@material-ui/core/Button";
-import Prompt from "../prompts/Prompt";
-import {CalendarContext} from "../context/CalendarContext";
+import Prompt from "../components/Prompt";
+import {CalendarContext} from "../context/default/CalendarContext";
 import axios from "axios";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";

@@ -1,15 +1,14 @@
 import React from "react";
-import MyNavbar from './components/content/MyNavbar'
-import {CalendarContext} from "./components/context/CalendarContext";
-import './App.css'
+import App from '../content/App'
+import {CalendarContext} from "./default/CalendarContext";
 import axios from "axios";
 import moment from "moment";
-import {UserContext} from "./components/context/UserContext";
+import {UserContext} from "./default/UserContext";
 import * as qs from "qs";
 import {Slide, Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 
-class App extends React.Component {
+class CalendarContextBinder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -297,12 +296,12 @@ class App extends React.Component {
     render() {
         return (
             <CalendarContext.Provider value={this.state}>
-                {this.state.calendar !== null ? <MyNavbar/> : null}
+                {this.state.calendar !== null ? <App/> : null}
             </CalendarContext.Provider>
         )
     };
 }
 
-App.contextType = UserContext
+CalendarContextBinder.contextType = UserContext
 
-export default App;
+export default CalendarContextBinder;

@@ -26,7 +26,7 @@ import SettingsIcon from '@material-ui/icons/Settings'
 
 import MyCalendar from './MyCalendar'
 import MyBudget from "./MyBudget"
-import {CalendarContext} from "../context/CalendarContext"
+import {CalendarContext} from "../context/default/CalendarContext"
 import MyHome from "./MyHome"
 import Grid from "@material-ui/core/Grid"
 import MySettings from "./MySettings"
@@ -125,7 +125,7 @@ function ListItemLink(props) {
     )
 }
 
-class MyNavbar extends React.Component {
+class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -293,6 +293,6 @@ class MyNavbar extends React.Component {
     }
 }
 
-MyNavbar.contextType = CalendarContext
+App.contextType = CalendarContext
 
-export default withStyles(useStyles)(MyNavbar)
+export default withStyles(useStyles)(App)
