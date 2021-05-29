@@ -4,7 +4,7 @@ const error = require('../object/error')
 
 class DataBaseUserMock {
     constructor() {
-        this.readFile(path.join(__dirname, '/mock/users.json'))
+        this.readFile(path.join(__dirname, '/mock-data/users.json'))
             .then(res => {
                 this.users = res
             })

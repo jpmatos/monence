@@ -1,12 +1,13 @@
 const fs = require('fs').promises
-const path = require('path')
+const axios = require('axios')
 
 const currencies = ['USD', 'EUR', 'GBP']
 
-class DatabaseExchangesMock {
+class DataBaseExchangesApi {
     constructor() {
-        this.readFile(path.join(__dirname, '/mock/exchanges.json'))
+        axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.OER_ID}`)
             .then(res => {
+                res = res.data
                 Object.keys(res.rates).forEach((key) => currencies.includes(key) || delete res.rates[key]);
                 this.exchanges = []
                 this.exchanges.push({base: res.base, rates: res.rates})
@@ -24,7 +25,7 @@ class DatabaseExchangesMock {
     }
 
     static init(){
-        return new DatabaseExchangesMock()
+        return new DataBaseExchangesApi()
     }
 
     getExchanges() {
@@ -47,4 +48,4 @@ class DatabaseExchangesMock {
     }
 }
 
-module.exports = DatabaseExchangesMock
+module.exports = DataBaseExchangesApi

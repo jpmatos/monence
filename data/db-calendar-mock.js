@@ -4,11 +4,11 @@ const error = require('../object/error')
 
 class DataBaseCalendarMock {
     constructor() {
-        this.readFile(path.join(__dirname, '/mock/calendars.json'))
+        this.readFile(path.join(__dirname, '/mock-data/calendars.json'))
             .then(res => {
                 this.calendars = res
             })
-        this.readFile(path.join(__dirname, '/mock/users.json'))
+        this.readFile(path.join(__dirname, '/mock-data/users.json'))
             .then(res => {
                 this.users = res
             })
