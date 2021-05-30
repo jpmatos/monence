@@ -24,28 +24,28 @@ class UserController {
             .catch(next)
     }
 
-    getInvites(req, res, next) {
-        const userId = req.user.id
-        return this.userService.getInvites(userId)
-            .then(invites => res.status(200).json(success(invites)))
-            .catch(next)
-    }
+    // getInvites(req, res, next) {
+    //     const userId = req.user.id
+    //     return this.userService.getInvites(userId)
+    //         .then(invites => res.status(200).json(success(invites)))
+    //         .catch(next)
+    // }
 
-    acceptInvite(req, res, next) {
-        const userId = req.user.id
-        const inviteId = req.params.inviteId
-        return this.userService.acceptInvite(userId, inviteId)
-            .then(invitedCalendar => res.status(201).json(success(invitedCalendar)))
-            .catch(next)
-    }
+    // acceptInvite(req, res, next) {
+    //     const userId = req.user.id
+    //     const inviteId = req.params.inviteId
+    //     return this.userService.acceptInvite(userId, inviteId)
+    //         .then(invitedCalendar => res.status(201).json(success(invitedCalendar)))
+    //         .catch(next)
+    // }
 
-    declineInvite(req, res, next) {
-        const userId = req.user.id
-        const inviteId = req.params.inviteId
-        return this.userService.declineInvite(userId, inviteId)
-            .then(msg => res.status(201).json(success(msg)))
-            .catch(next)
-    }
+    // declineInvite(req, res, next) {
+    //     const userId = req.user.id
+    //     const inviteId = req.params.inviteId
+    //     return this.userService.declineInvite(userId, inviteId)
+    //         .then(msg => res.status(201).json(success(msg)))
+    //         .catch(next)
+    // }
 }
 
 module.exports = UserController

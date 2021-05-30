@@ -26,6 +26,25 @@ class CalendarController {
             .catch(next)
     }
 
+    getParticipants(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        return this.calendarService
+            .getParticipants(userId, calendarId)
+            .then(participants => res.status(200).json(success(participants)))
+            .catch(next)
+    }
+
+    deleteParticipant(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        const participantId = req.params.userId
+        return this.calendarService
+            .deleteParticipant(calendarId, participantId, userId)
+            .then(msg => res.status(201).json(success(msg)))
+            .catch(next)
+    }
+
     putShare(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
@@ -131,45 +150,35 @@ class CalendarController {
     }
 
     //Invites
-    getInvites(req, res, next) {
-        const userId = req.user.id
-        const calendarId = req.params.calendarId
-        return this.calendarService
-            .getInvites(calendarId, userId)
-            .then(invites => res.status(200).json(success(invites)))
-            .catch(next)
-    }
-
-    postInvite(req, res, next) {
-        const userId = req.user.id
-        const username = req.user.displayName
-        const calendarId = req.params.calendarId
-        const invite = req.body
-        return this.calendarService
-            .postInvite(calendarId, invite, username, userId)
-            .then(invite => res.status(201).json(success(invite)))
-            .catch(next)
-    }
-
-    deleteInvite(req, res, next) {
-        const userId = req.user.id
-        const calendarId = req.params.calendarId
-        const inviteId = req.params.inviteId
-        return this.calendarService
-            .deleteInvite(calendarId, inviteId, userId)
-            .then(msg => res.status(201).json(success(msg)))
-            .catch(next)
-    }
-
-    kickUser(req, res, next) {
-        const userId = req.user.id
-        const calendarId = req.params.calendarId
-        const userToKick = req.body
-        return this.calendarService
-            .kickUser(calendarId, userToKick, userId)
-            .then(msg => res.status(201).json(success(msg)))
-            .catch(next)
-    }
+    // getInvites(req, res, next) {
+    //     const userId = req.user.id
+    //     const calendarId = req.params.calendarId
+    //     return this.calendarService
+    //         .getInvites(calendarId, userId)
+    //         .then(invites => res.status(200).json(success(invites)))
+    //         .catch(next)
+    // }
+    //
+    // postInvite(req, res, next) {
+    //     const userId = req.user.id
+    //     const username = req.user.displayName
+    //     const calendarId = req.params.calendarId
+    //     const invite = req.body
+    //     return this.calendarService
+    //         .postInvite(calendarId, invite, username, userId)
+    //         .then(invite => res.status(201).json(success(invite)))
+    //         .catch(next)
+    // }
+    //
+    // deleteInvite(req, res, next) {
+    //     const userId = req.user.id
+    //     const calendarId = req.params.calendarId
+    //     const inviteId = req.params.inviteId
+    //     return this.calendarService
+    //         .deleteInvite(calendarId, inviteId, userId)
+    //         .then(msg => res.status(201).json(success(msg)))
+    //         .catch(next)
+    // }
 }
 
 module.exports = CalendarController

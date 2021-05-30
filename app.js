@@ -31,6 +31,12 @@ if (process.env.MOCK_USER_DB === 'true')
 else
     dbUser = require('./data/db-user-mongo').init(process.env.CONNECTION_STRING)
 
+let dbInvite
+if(process.env.MOCK_INVITE_DB === 'true')
+    dbInvite = require('./data/db-invite-mock').init()
+// else
+//     dbInvite = require('./data/db-invite-mongo')
+
 let dbExchanges
 if (process.env.MOCK_EXCHANGE_DB === 'true')
     dbExchanges = require('./data/db-exchanges-mock').init()
@@ -39,12 +45,15 @@ else
 
 const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges)
 const userService = require('./service/user-service').init(dbCalendar, dbUser)
+const inviteService = require('./service/invite-service').init(dbCalendar, dbUser, dbInvite)
 const calendarController = require('./web-api/controller/calendar-controller').init(calendarService)
 const userController = require('./web-api/controller/user-controller').init(userService)
+const inviteController = require('./web-api/controller/invite-controller').init(inviteService)
 const authController = require('./web-api/controller/auth-controller').init(userService)
 const calendarRoutes = require('./web-api/calendar-web-api')
 const authRoutes = require('./web-api/auth-web-api')
 const userRoutes = require('./web-api/user-web-api')
+const inviteRoutes = require('./web-api/invite-web-api')
 const webpackConfig = require('./webpack.config.js')
 
 // Use the GoogleStrategy within Passport.
@@ -95,6 +104,7 @@ app.use(passport.session());
 app.use('/calendar', calendarRoutes(express.Router(), calendarController))
 app.use('/auth', authRoutes(express.Router(), authController, passport))
 app.use('/user', userRoutes(express.Router(), userController))
+app.use(inviteRoutes(express.Router(), inviteController))
 app.use((err, req, res, next) => {
     if (err !== undefined) {
         if (err.stack !== undefined)

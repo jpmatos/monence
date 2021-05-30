@@ -10,15 +10,7 @@
         "name": "My Personal Calendar"
       }
     ],
-    "invites": [
-      {
-        "id": "2vfYbkLd1jzTUnebkuzkVp",
-        "calendarId": "jrGfASxuqjhbAmQBkJouX1",
-        "inviter": "Hugo Cameira",
-        "calendarName": "My Other Calendar"
-      }
-    ],
-    "invitedCalendars": [
+    "participating": [
     ]
   },
   {
@@ -32,9 +24,7 @@
         "name": "My Other Calendar"
       }
     ],
-    "invites": [
-    ],
-    "invitedCalendars": [
+    "participating": [
     ]
   }
 ]

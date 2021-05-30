@@ -4,6 +4,7 @@ import CalendarContextBinder from './CalendarContextBinder';
 import {UserContext} from "./default/UserContext";
 import LoginPage from "../content/LoginPage";
 import axios from "axios";
+import InviteContextBinder from "./InviteContextBinder";
 
 class UserContextBinder extends React.Component {
     constructor(props) {
@@ -13,9 +14,7 @@ class UserContextBinder extends React.Component {
             user: null,
             handleCreateCalendar: this.handleCreateCalendar,
             handleLogout: this.handleLogout,
-            handleAcceptInvite: this.handleAcceptInvite,
-            handleDeclineInvite: this.handleDeclineInvite,
-            handleRefreshPendingInvites: this.handleRefreshPendingInvites
+            handleNewParticipating: this.handleNewParticipating
         }
     }
 
@@ -45,38 +44,12 @@ class UserContextBinder extends React.Component {
             })
     }
 
-    handleAcceptInvite = (inviteId) => {
-        return axios.put(`/user/invite/${inviteId}/accept`)
-            .then(res => {
-                const invitedCalendar = res.data.body
-                const user = this.state.user
-                user.invitedCalendars.push(invitedCalendar)
-                user.invites = user.invites.filter(inv => inv.id !== inviteId)
-                this.setState({
-                    user: user
-                })
-            })
-    }
-
-    handleDeclineInvite = (inviteId) => {
-        return axios.put(`/user/invite/${inviteId}/decline`)
-            .then(() => {
-                const user = this.state.user
-                user.invites = user.invites.filter(inv => inv.id !== inviteId)
-                this.setState({
-                    user: user
-                })
-            })
-    }
-
-    handleRefreshPendingInvites = () => {
-        return axios.get(`/user/invites`)
-            .then(res => {
-                const invites = res.data.body
-                const user = this.state.user
-                user.invites = invites
-                this.setState({user: user})
-            })
+    handleNewParticipating = (participating) => {
+        const user = this.state.user
+        user.participating.push(participating)
+        this.setState({
+            user: user
+        })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -115,7 +88,7 @@ class UserContextBinder extends React.Component {
                     this.state.session.isAuthenticated ?
                         this.state.user !== null ?
                             this.state.user.calendars.length !== 0 ?
-                                <CalendarContextBinder/> :
+                                <InviteContextBinder /> :
                                 <LoginPage needsCalendar={true}/> :
                             null :
                         <LoginPage needsCalendar={false}/> :

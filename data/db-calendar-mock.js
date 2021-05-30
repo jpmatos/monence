@@ -25,6 +25,30 @@ class DataBaseCalendarMock {
         return Promise.resolve(this.calendars[calendarIdx])
     }
 
+    getParticipants(calendarId){
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.reject(error(404, 'Calendar Not Found'))
+        return Promise.resolve(this.calendars[calendarIdx].participants)
+    }
+
+    deleteParticipant(calendarId, participantId) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.reject(error(404, 'Calendar Not Found'))
+
+        this.calendars[calendarIdx].participants = this.calendars[calendarIdx].participants.filter(participant => participant.id !== participantId)
+
+        return Promise.resolve({'message': 'Deleted participant'})
+    }
+
+    getCalendarName(calendarId) {
+        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+        if (calendarIdx === -1)
+            return Promise.reject(error(404, 'Calendar Not Found'))
+        return Promise.resolve(this.calendars[calendarIdx].name)
+    }
+
     putCalendar(calendarId, calendar) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
@@ -123,64 +147,59 @@ class DataBaseCalendarMock {
     }
 
     //Invites
-    getCalendarInvites(calendarId) {
+    // getCalendarInvites(calendarId) {
+    //     const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+    //     if (calendarIdx === -1)
+    //         return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+    //
+    //     const invites = this.calendars[calendarIdx].invites
+    //     const invitees = this.calendars[calendarIdx].invitees
+    //
+    //     return Promise.resolve({
+    //         'invites': invites,
+    //         'invitees': invitees
+    //     })
+    // }
+
+    // postInviteToCalendar(calendarId, invite) {
+    //     const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+    //     if (calendarIdx === -1)
+    //         return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+    //
+    //     this.calendars[calendarIdx].invites.push(invite)
+    //
+    //     return Promise.resolve(invite)
+    // }
+    //
+    // deleteCalendarInvite(inviteId, calendarId) {
+    //     const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+    //     if (calendarIdx === -1)
+    //         return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+    //
+    //     this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
+    //
+    //     return Promise.resolve({'message': 'Deleted invite'})
+    // }
+
+    postCalendarParticipant(calendarId, participant) {
         const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
         if (calendarIdx === -1)
             return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
 
-        const invites = this.calendars[calendarIdx].invites
-        const invitees = this.calendars[calendarIdx].invitees
+        this.calendars[calendarIdx].participants.push(participant)
 
-        return Promise.resolve({
-            'invites': invites,
-            'invitees': invitees
-        })
+        return Promise.resolve(participant)
     }
-
-    postInviteToCalendar(calendarId, invite) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        this.calendars[calendarIdx].invites.push(invite)
-
-        return Promise.resolve(invite)
-    }
-
-    deleteCalendarInvite(inviteId, calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        this.calendars[calendarIdx].invites = this.calendars[calendarIdx].invites.filter(inv => inv.id !== inviteId)
-
-        return Promise.resolve({'message': 'Deleted invite'})
-    }
-    postCalendarInvitee(inviteId, calendarId, invitee) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        this.calendars[calendarIdx].invitees.push(invitee)
-
-        const accept = {
-            "id": this.calendars[calendarIdx].id,
-            "name": this.calendars[calendarIdx].name
-        }
-
-        //TODO Should this be returned?
-        return Promise.resolve(accept)
-    }
-
-    deleteUserFromCalendar(calendarId, userId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
-            return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
-
-        this.calendars[calendarIdx].invitees = this.calendars[calendarIdx].invitees.filter(inv => inv.id !== userId)
-
-        return Promise.resolve({'message': 'Deleted user from calendar'})
-    }
+    //
+    // deleteUserFromCalendar(calendarId, userId) {
+    //     const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
+    //     if (calendarIdx === -1)
+    //         return Promise.resolve({'message': `Could not find calendar ${calendarId}`})
+    //
+    //     this.calendars[calendarIdx].invitees = this.calendars[calendarIdx].invitees.filter(inv => inv.id !== userId)
+    //
+    //     return Promise.resolve({'message': 'Deleted user from calendar'})
+    // }
 
     readFile(filePath) {
         return fs

@@ -8,5 +8,6 @@
   "REQUIRES_AUTH": true,
   "MOCK_CALENDAR_DB": false,
   "MOCK_USER_DB": false,
+  "MOCK_INVITE_DB": false,
   "MOCK_EXCHANGE_DB": false
 }

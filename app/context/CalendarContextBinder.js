@@ -4,16 +4,13 @@ import {CalendarContext} from "./default/CalendarContext";
 import axios from "axios";
 import moment from "moment";
 import {UserContext} from "./default/UserContext";
-import * as qs from "qs";
-import {Slide, Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
 
 class CalendarContextBinder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            calendar: null,
             calendarId: null,
+            calendar: null,
             calendarDate: null,
             items: null,
             currency: null,
@@ -29,10 +26,8 @@ class CalendarContextBinder extends React.Component {
             handleDeleteBudget: this.handleDeleteBudget,
             buildDisplayValue: this.buildDisplayValue,
             setCalendarShare: this.setCalendarShare,
-            handleNewInvite: this.handleNewInvite,
-            handleDeleteInvite: this.handleDeleteInvite,
-            handleRefreshPendingInvitesAndInvitees: this.handleRefreshPendingInvitesAndInvitees,
-            handleRemoveInvitee: this.handleRemoveInvitee
+            handleRemoveParticipant: this.handleRemoveParticipant,
+            handleRefreshParticipants: this.handleRefreshParticipants
         }
     }
 
@@ -74,40 +69,28 @@ class CalendarContextBinder extends React.Component {
         })
     }
 
-    handleNewInvite = (invite) => {
-        const calendar = this.state.calendar
-        calendar.invites.push(invite)
-        this.setState({
-            calendar: calendar
-        })
-    }
-
-    handleDeleteInvite = (inviteId) => {
-        const calendar = this.state.calendar
-        calendar.invites = calendar.invites.filter(inv => inv.id !== inviteId)
-        this.setState({
-            calendar: calendar
-        })
-    }
-
-    handleRefreshPendingInvitesAndInvitees = () => {
-        return axios.get(`/calendar/${this.state.calendarId}/invites`)
+    handleRemoveParticipant = (userId) => {
+        axios.put(`/calendar/${this.state.calendarId}/kick/${userId}`)
             .then(res => {
-                const invites = res.data.body.invites
-                const invitees = res.data.body.invitees
                 const calendar = this.state.calendar
-                calendar.invites = invites
-                calendar.invitees = invitees
-                this.setState({calendar: calendar})
+                calendar.participants = calendar.participants.filter(inv => inv.id !== userId)
+                this.setState({
+                    calendar: calendar
+                })
             })
     }
 
-    handleRemoveInvitee = (userId) => {
-        const calendar = this.state.calendar
-        calendar.invitees = calendar.invitees.filter(inv => inv.id !== userId)
-        this.setState({
-            calendar: calendar
-        })
+    handleRefreshParticipants = () => {
+        return axios.get(`/calendar/${this.state.calendarId}/participants`)
+            .then(res => {
+                const participants = res.data.body
+
+                const calendar = this.state.calendar
+                calendar.participants = participants
+                this.setState({
+                    calendar: calendar
+                })
+            })
     }
 
     handleNewItem = (item) => {

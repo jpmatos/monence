@@ -9,6 +9,14 @@ function calendarWebApi(router, calendarController){
         return calendarController.getCalendar(req, res, next)
     })
 
+    router.get('/:calendarId/participants', checkAuth, (req, res, next) => {
+        return calendarController.getParticipants(req, res, next)
+    })
+
+    router.put('/:calendarId/kick/:userId', checkAuth, (req, res, next) => {
+        return calendarController.deleteParticipant(req, res, next)
+    })
+
     router.put('/:calendarId/share', checkAuth, ((req, res, next) => {
         return calendarController.putShare(req, res, next)
     }))
@@ -48,25 +56,8 @@ function calendarWebApi(router, calendarController){
         return calendarController.putBudget(req, res, next)
     })
 
-    router.delete('/:calendarId/budget/:budgetId', checkAuth, ((req, res, next) => {
+    router.delete('/:calendarId/budget/:budgetId', checkAuth, (req, res, next) => {
         return calendarController.deleteBudget(req, res, next)
-    }))
-
-    //Invites
-    router.get('/:calendarId/invites', checkAuth, (req, res, next) => {
-        return calendarController.getInvites(req, res, next)
-    })
-
-    router.post('/:calendarId/invite', checkAuth, (req, res, next) => {
-        return calendarController.postInvite(req, res, next)
-    })
-
-    router.delete('/:calendarId/invite/:inviteId', checkAuth, (req, res, next) => {
-        return calendarController.deleteInvite(req, res, next)
-    })
-
-    router.put('/:calendarId/kick', checkAuth, (req, res, next) => {
-        return calendarController.kickUser(req, res, next)
     })
 
     return router

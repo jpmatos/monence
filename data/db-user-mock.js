@@ -50,46 +50,36 @@ class DataBaseUserMock {
         return this.users[userIdx]
     }
 
-    getUserInvites(userId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        const invites = this.users[userIdx].invites
-        return Promise.resolve(invites)
-    }
-
-    postInviteToUser(userId, userInvite) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        this.users[userIdx].invites.push(userInvite)
-
-        return Promise.resolve({'message': 'Posted invite to user'})
-    }
-
-    deleteUserInvite(userId, inviteId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        const invite = this.users[userIdx].invites.find(inv => inv.id === inviteId)
-
-        this.users[userIdx].invites = this.users[userIdx].invites.filter(inv => inv.id !== inviteId)
-
-        return Promise.resolve(invite)
-    }
-
-    postUserInvitedCalendar(userId, accept) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
-            return Promise.resolve({'message': `Could not find user ${userIdx}`})
-
-        this.users[userIdx].invitedCalendars.push(accept)
-
-        return Promise.resolve(accept)
-    }
+    // getUserInvites(userId) {
+    //     const userIdx = this.users.findIndex(user => user.id === userId)
+    //     if (userIdx === -1)
+    //         return Promise.resolve({'message': `Could not find user ${userIdx}`})
+    //
+    //     const invites = this.users[userIdx].invites
+    //     return Promise.resolve(invites)
+    // }
+    //
+    // postInviteToUser(userId, userInvite) {
+    //     const userIdx = this.users.findIndex(user => user.id === userId)
+    //     if (userIdx === -1)
+    //         return Promise.resolve({'message': `Could not find user ${userIdx}`})
+    //
+    //     this.users[userIdx].invites.push(userInvite)
+    //
+    //     return Promise.resolve({'message': 'Posted invite to user'})
+    // }
+    //
+    // deleteUserInvite(userId, inviteId) {
+    //     const userIdx = this.users.findIndex(user => user.id === userId)
+    //     if (userIdx === -1)
+    //         return Promise.resolve({'message': `Could not find user ${userIdx}`})
+    //
+    //     const invite = this.users[userIdx].invites.find(inv => inv.id === inviteId)
+    //
+    //     this.users[userIdx].invites = this.users[userIdx].invites.filter(inv => inv.id !== inviteId)
+    //
+    //     return Promise.resolve(invite)
+    // }
 
     deleteCalendarFromUser(calendarId, userId) {
         const userIdx = this.users.findIndex(user => user.id === userId)
@@ -99,6 +89,26 @@ class DataBaseUserMock {
         this.users[userIdx].invitedCalendars = this.users[userIdx].invitedCalendars.filter(cal => cal.id !== calendarId)
 
         return Promise.resolve({'message': 'Deleted calendar from user'})
+    }
+
+    postParticipating(userId, participating) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
+        this.users[userIdx].participating.push(participating)
+
+        return Promise.resolve(participating)
+    }
+
+    deleteParticipating(userId, calendarId) {
+        const userIdx = this.users.findIndex(user => user.id === userId)
+        if (userIdx === -1)
+            return Promise.resolve({'message': `Could not find user ${userIdx}`})
+
+        this.users[userIdx].participating = this.users[userIdx].participating.filter(calendar => calendar.calendarId !== calendarId)
+
+        return Promise.resolve({'message': 'Deleted participating calendar'})
     }
 
     readFile(filePath) {

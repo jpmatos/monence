@@ -24,12 +24,26 @@ class CalendarService {
         return Promise.all([this.dbCalendar.getCalendar(calendarId), this.dbExchanges.getExchanges()])
             .then(res => {
                 const calendar = res[0]
-                if (calendar.ownerId !== userId && (calendar.invitees.find(invitee => invitee.id === userId) === undefined))
+                if (calendar.ownerId !== userId && (calendar.participants.find(participant => participant.id === userId) === undefined))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 const exchanges = res[1]
                 calendar.exchanges = exchanges
                 return calendar
+            })
+    }
+
+    getParticipants(userId, calendarId) {
+        return this.dbCalendar.getParticipants(calendarId)
+    }
+
+    deleteParticipant(calendarId, participantId, userId) {
+        return Promise.all([
+            this.dbCalendar.deleteParticipant(calendarId, participantId),
+            this.dbUser.deleteParticipating(participantId, calendarId)
+        ])
+            .then(res => {
+                return res[0]
             })
     }
 
@@ -40,8 +54,7 @@ class CalendarService {
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 calendar.share = 'Shared'
-                calendar.invites = []
-                calendar.invitees = []
+                calendar.participants = []
 
                 return this.dbCalendar.putCalendar(calendarId, calendar)
             })
@@ -254,69 +267,62 @@ class CalendarService {
     }
 
     //Invites
-    getInvites(calendarId, userId) {
-        return this.dbCalendar.getCalendarInvites(calendarId)
-            .then(invites => {
-                return invites
-            })
-    }
+    // getInvites(calendarId, userId) {
+    //     return this.dbCalendar.getCalendarInvites(calendarId)
+    //         .then(invites => {
+    //             return invites
+    //         })
+    // }
 
-    postInvite(calendarId, invite, username, userId) {
-        return Promise.all([this.dbUser.getUserByEmail(invite.email), this.dbCalendar.getCalendar(calendarId)])
-            .then(res => {
-                const user = res[0]
-                const calendar = res[1]
+    // postInvite(calendarId, invite, username, userId) {
+    //     return Promise.all([this.dbUser.getUserByEmail(invite.email), this.dbCalendar.getCalendar(calendarId)])
+    //         .then(res => {
+    //             const user = res[0]
+    //             const calendar = res[1]
+    //
+    //             if(user.error !== undefined)
+    //                 return Promise.reject(error(404, 'Could Not Find User'))
+    //
+    //             if (calendar.ownerId !== userId)
+    //                 return Promise.reject(error(404, 'Calendar Not Found'))
+    //
+    //             if(user.invites.findIndex(inv => inv.calendarId === calendarId) !== -1)
+    //                 return Promise.reject(error(400, 'User Already Invited!'))
+    //
+    //             const id = uuid.generate()
+    //
+    //             const userInvite = {
+    //                 id: id,
+    //                 calendarId: calendarId,
+    //                 inviter: username,
+    //                 calendarName: calendar.name
+    //             }
+    //
+    //             invite.id = id
+    //
+    //             return this.dbUser.postInviteToUser(user.id, userInvite)
+    //         })
+    //         .then(() => {
+    //             return this.dbCalendar.postInviteToCalendar(calendarId, invite)
+    //         })
+    // }
 
-                if(user.error !== undefined)
-                    return Promise.reject(error(404, 'Could Not Find User'))
-
-                if (calendar.ownerId !== userId)
-                    return Promise.reject(error(404, 'Calendar Not Found'))
-
-                if(user.invites.findIndex(inv => inv.calendarId === calendarId) !== -1)
-                    return Promise.reject(error(400, 'User Already Invited!'))
-
-                const id = uuid.generate()
-
-                const userInvite = {
-                    id: id,
-                    calendarId: calendarId,
-                    inviter: username,
-                    calendarName: calendar.name
-                }
-
-                invite.id = id
-
-                return this.dbUser.postInviteToUser(user.id, userInvite)
-            })
-            .then(() => {
-                return this.dbCalendar.postInviteToCalendar(calendarId, invite)
-            })
-    }
-
-    deleteInvite(calendarId, inviteId, userId) {
-        return this.dbCalendar.getCalendar(calendarId)
-            .then(calendar => {
-                if (calendar.ownerId !== userId)
-                    return Promise.reject(error(404, 'Calendar Not Found'))
-
-                const email = calendar.invites.find(inv => inv.id === inviteId).email
-
-                // return this.dbCalendar.deleteInvite(calendarId, inviteId, email)
-                return this.dbUser.getUserByEmail(email)
-            }).then(user => {
-                return this.dbUser.deleteUserInvite(user.id, inviteId)
-            }).then(() => {
-                return this.dbCalendar.deleteCalendarInvite(inviteId, calendarId)
-            })
-    }
-
-    kickUser(calendarId, userToKick, userId) {
-        return this.dbCalendar.deleteUserFromCalendar(calendarId, userToKick.id)
-            .then(res => {
-                return this.dbUser.deleteCalendarFromUser(calendarId, userToKick.id)
-            })
-    }
+    // deleteInvite(calendarId, inviteId, userId) {
+    //     return this.dbCalendar.getCalendar(calendarId)
+    //         .then(calendar => {
+    //             if (calendar.ownerId !== userId)
+    //                 return Promise.reject(error(404, 'Calendar Not Found'))
+    //
+    //             const email = calendar.invites.find(inv => inv.id === inviteId).email
+    //
+    //             // return this.dbCalendar.deleteInvite(calendarId, inviteId, email)
+    //             return this.dbUser.getUserByEmail(email)
+    //         }).then(user => {
+    //             return this.dbUser.deleteUserInvite(user.id, inviteId)
+    //         }).then(() => {
+    //             return this.dbCalendar.deleteCalendarInvite(inviteId, calendarId)
+    //         })
+    // }
 }
 
 module.exports = CalendarService
