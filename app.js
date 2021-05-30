@@ -19,9 +19,24 @@ const env = require('./env.json')
 Object.assign(process.env, env)
 
 //Project Files
-const dbCalendar = require(process.env.MOCK_DB === 'true' ? './data/db-calendar-mock' : './data/db-calendar-mongo').init()
-const dbUser = require(process.env.MOCK_DB === 'true' ? './data/db-user-mock' : './data/db-user-mongo').init()
-const dbExchanges = require(process.env.MOCK_EXCHANGE_DB === 'true' ? './data/db-exchanges-mock' : './data/db-exchanges-api').init()
+let dbCalendar
+if (process.env.MOCK_CALENDAR_DB === 'true')
+    dbCalendar = require('./data/db-calendar-mock').init()
+else
+    dbCalendar = require('./data/db-calendar-mongo').init(process.env.CONNECTION_STRING)
+
+let dbUser
+if (process.env.MOCK_USER_DB === 'true')
+    dbUser = require('./data/db-user-mock').init()
+else
+    dbUser = require('./data/db-user-mongo').init(process.env.CONNECTION_STRING)
+
+let dbExchanges
+if (process.env.MOCK_EXCHANGE_DB === 'true')
+    dbExchanges = require('./data/db-exchanges-mock').init()
+else
+    dbExchanges = require('./data/db-exchanges-api').init(process.env.OER_ID)
+
 const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges)
 const userService = require('./service/user-service').init(dbCalendar, dbUser)
 const calendarController = require('./web-api/controller/calendar-controller').init(calendarService)

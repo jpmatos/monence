@@ -1,21 +1,18 @@
 const MongoClient = require('mongodb').MongoClient
-const uuid = require('short-uuid')
 const error = require('../object/error')
-const MONGO_USER = "defaultUser"
-const MONGO_SECRET = "nJknMAc8zCAornn3"
 
 class DataBaseCalendarMongo {
 
-    constructor() {
-        MongoClient.connect(`mongodb+srv://${MONGO_USER}:${MONGO_SECRET}@monencecluster.i6cih.mongodb.net/monenceDB?authSource=admin&retryWrites=true&w=majority`,
+    constructor(connectionString) {
+        MongoClient.connect(connectionString,
             {useUnifiedTopology: true})
             .then(client => {
                 this.db = client.db('monenceDB')
             })
     }
 
-    static init() {
-        return new DataBaseCalendarMongo()
+    static init(connectionString) {
+        return new DataBaseCalendarMongo(connectionString)
     }
 
     getCalendar(calendarId) {

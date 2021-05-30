@@ -4,8 +4,8 @@ const axios = require('axios')
 const currencies = ['USD', 'EUR', 'GBP']
 
 class DataBaseExchangesApi {
-    constructor() {
-        axios.get(`https://openexchangerates.org/api/latest.json?app_id=${process.env.OER_ID}`)
+    constructor(key) {
+        axios.get(`https://openexchangerates.org/api/latest.json?app_id=${key}`)
             .then(res => {
                 res = res.data
                 Object.keys(res.rates).forEach((key) => currencies.includes(key) || delete res.rates[key]);
@@ -24,8 +24,8 @@ class DataBaseExchangesApi {
             })
     }
 
-    static init(){
-        return new DataBaseExchangesApi()
+    static init(key){
+        return new DataBaseExchangesApi(key)
     }
 
     getExchanges() {

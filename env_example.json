@@ -4,7 +4,9 @@
   "CALLBACK_URL": "",
   "OER_ID": "",
   "SESSION_SECRET": "",
+  "CONNECTION_STRING": "",
   "REQUIRES_AUTH": true,
-  "MOCK_DB": false,
+  "MOCK_CALENDAR_DB": false,
+  "MOCK_USER_DB": false,
   "MOCK_EXCHANGE_DB": false
 }
