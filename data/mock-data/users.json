@@ -27,6 +27,10 @@
     "email": "hugo.cameira96@gmail.com",
     "photo": "https://lh3.googleusercontent.com/a/AATXAJz5pqDWeqz1jVmrUx_aV3uY1gTnuj15Mh2H52Qr=s96-c",
     "calendars": [
+      {
+        "id": "jrGfASxuqjhbAmQBkJouX1",
+        "name": "My Other Calendar"
+      }
     ],
     "invites": [
     ],

@@ -141,7 +141,16 @@ class DataBaseCalendarMongo {
     }
 
     deleteBudget(calendarId, budgetId) {
-
+        return this.db.collection('calendars')
+            .updateOne({id: calendarId}, {$pull: {budget: {"id": budgetId}}})
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find calendar ${calendarId}`}
+                } else {
+                    return {'message': `Deleted item with id ${budgetId}`}
+                }
+            })
     }
 
     postCalendar(userId, calendar) {

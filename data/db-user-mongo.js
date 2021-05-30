@@ -16,10 +16,12 @@ class DataBaseUserMongo {
 
     verifyNewUser(user) {
         return this.db.collection('users')
-            .insertOne(user)
+            .findOneAndUpdate({id: user.id},
+                {$setOnInsert: user},
+                {upsert: true})
             .then(result => {
-                // check if update succeeded
-                if (result.insertedCount !== 1) {
+                // check if exists succeeded
+                if (result.lastErrorObject.updatedExisting) {
                     return {'message': 'User already exists'}
                 } else {
                     return {'message': 'Created new user'}
@@ -55,7 +57,7 @@ class DataBaseUserMongo {
             })
     }
 
-    getUserByEmail(email){
+    getUserByEmail(email) {
         return this.db.collection('users')
             .findOne({email: email})
             .then(user => {
@@ -70,13 +72,45 @@ class DataBaseUserMongo {
 
     getUserInvites(userId) {
         return this.db.collection('users')
-            .findOne({id: userId})
-            .then(user => {
-                if (user === null) {
+            .findOne({id: userId}, {
+                projection: {
+                    _id: 0,
+                    invites: 1
+                }
+            })
+            .then(result => {
+                if (result === null) {
                     return Promise.reject(error(404, 'User Not Found'))
                 } else {
-                    delete user._id
-                    return user
+                    return result.invites
+                }
+            })
+    }
+
+    postInviteToUser(userId, userInvite) {
+        return this.db.collection('calendars')
+            .updateOne({id: userId}, {
+                $push: {invites: userInvite}
+            })
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find calendar ${userId}`}
+                } else {
+                    return {'message': 'Posted invite to user'}
+                }
+            })
+    }
+
+    deleteUserInvite(userId, inviteId) {
+        return this.db.collection('calendars')
+            .updateOne({id: userId}, {$pull: {invites: {"id": inviteId}}})
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find user ${userId}`}
+                } else {
+                    return {'message': `Deleted item with id ${inviteId}`}
                 }
             })
     }
