@@ -17,23 +17,12 @@ class DataBaseUserMongo {
         return new DataBaseUserMongo()
     }
 
-    verifyNewUser(userId, name, emails, photos) {
+    verifyNewUser(user) {
         return this.db.collection('users')
-            .updateOne(
-                {id: [userId].toString()},
-                {
-                    $setOnInsert: {
-                        'id': userId,
-                        'name': name,
-                        'emails': emails,
-                        'photos': photos,
-                        'calendars': []
-                    }
-                },
-                {upsert: true})
+            .insertOne(user)
             .then(result => {
                 // check if update succeeded
-                if (result.nMatched === 1) {
+                if (result.insertedCount !== 1) {
                     return {'message': 'User already exists'}
                 } else {
                     return {'message': 'Created new user'}
@@ -41,6 +30,59 @@ class DataBaseUserMongo {
             })
     }
 
+    getUser(userId) {
+        return this.db.collection('users')
+            .findOne({id: userId})
+            .then(user => {
+                if (user === null) {
+                    return Promise.reject(error(404, 'User Not Found'))
+                } else {
+                    delete user._id
+                    return user
+                }
+            })
+    }
+
+    postCalendarToUser(userId, userCalendar) {
+        return this.db.collection('users')
+            .updateOne({id: userId}, {
+                $push: {calendars: userCalendar}
+            })
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find calendar ${userId}`}
+                } else {
+                    return userCalendar
+                }
+            })
+    }
+
+    getUserByEmail(email){
+        return this.db.collection('users')
+            .findOne({email: email})
+            .then(user => {
+                if (user === null) {
+                    return Promise.reject(error(404, 'User Not Found'))
+                } else {
+                    delete user._id
+                    return user
+                }
+            })
+    }
+
+    getUserInvites(userId) {
+        return this.db.collection('users')
+            .findOne({id: userId})
+            .then(user => {
+                if (user === null) {
+                    return Promise.reject(error(404, 'User Not Found'))
+                } else {
+                    delete user._id
+                    return user
+                }
+            })
+    }
 }
 
 module.exports = DataBaseUserMongo

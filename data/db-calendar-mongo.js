@@ -24,9 +24,10 @@ class DataBaseCalendarMongo {
             .then(calendar => {
                 if (calendar === null) {
                     return Promise.reject(error(404, 'Calendar Not Found'))
+                } else {
+                    delete calendar._id
+                    return calendar
                 }
-                delete calendar._id
-                return calendar
             })
     }
 
