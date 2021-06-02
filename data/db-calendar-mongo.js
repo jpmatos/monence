@@ -15,6 +15,7 @@ class DataBaseCalendarMongo {
         return new DataBaseCalendarMongo(connectionString)
     }
 
+    // calendar methods
     getCalendar(calendarId) {
         return this.db.collection('calendars')
             .findOne({id: calendarId})
@@ -41,6 +42,40 @@ class DataBaseCalendarMongo {
             })
     }
 
+    postCalendar(userId, calendar) {
+
+        return this.db.collection('calendars')
+            .insertOne({
+                "name": calendar.name,
+                "ownerId": userId,
+                "id": calendar.id,
+                "single": [],
+                "recurrent": [],
+                "budget": []
+
+            }).then(result => {
+                if (result.insertedCount !== 1) {
+                    return {'message': `Could not add calendar`}
+                } else {
+                    return calendar
+
+                }
+            })
+    }
+
+    getCalendarName(calendarId) {
+        return this.db.collection('calendars')
+            .findOne({id: calendarId})
+            .then(calendar => {
+                if (calendar === null) {
+                    return Promise.reject(error(404, 'Calendar Not Found'))
+                } else {
+                    return calendar.name
+                }
+            })
+    }
+
+    // item methods
     postItem(calendarId, item, arrayName) {
         return this.db.collection('calendars')
             .updateOne({id: calendarId}, {$push: {[arrayName]: item}})
@@ -88,21 +123,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    postBudget(calendarId, budget) {
-        return this.db.collection('calendars')
-            .updateOne({id: calendarId}, {
-                $push: {budget: budget}
-            })
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${calendarId}`}
-                } else {
-                    return budget
-                }
-            })
-    }
-
+    //budget methods
     putBudget(calendarId, budgetId, budget) {
         return this.db.collection('calendars')
             .findOneAndUpdate({id: calendarId, "budget.id": budgetId},
@@ -128,15 +149,18 @@ class DataBaseCalendarMongo {
             })
     }
 
-    getCalendars(userId) {
-        return this.db.collection('users')
-            .findOne({id: [userId].toString()}, {projection: {calendars: 1, _id: 0}})
-            .then(calendarsObj => {
-                if (calendarsObj === undefined) {
-                    return {'message': `Could not find user ${userId}`}
+    postBudget(calendarId, budget) {
+        return this.db.collection('calendars')
+            .updateOne({id: calendarId}, {
+                $push: {budget: budget}
+            })
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find calendar ${calendarId}`}
+                } else {
+                    return budget
                 }
-
-                return calendarsObj.calendars
             })
     }
 
@@ -153,27 +177,57 @@ class DataBaseCalendarMongo {
             })
     }
 
-    postCalendar(userId, calendar) {
+    getCalendars(userId) {
+        return this.db.collection('users')
+            .findOne({id: [userId].toString()}, {projection: {calendars: 1, _id: 0}})
+            .then(calendarsObj => {
+                if (calendarsObj === undefined) {
+                    return {'message': `Could not find user ${userId}`}
+                }
 
+                return calendarsObj.calendars
+            })
+    }
+
+    // participant methods
+    getParticipants(calendarId) {
         return this.db.collection('calendars')
-            .insertOne({
-                "name": calendar.name,
-                "ownerId": userId,
-                "id": calendar.id,
-                "single": [],
-                "recurrent": [],
-                "budget": []
+            .findOne({id: [calendarId].toString()}, {projection: {participants: 1, _id: 0}})
+            .then(calendarsObj => {
+                if (calendarsObj === undefined) {
+                    return {'message': `Could not find calendar ${calendarId}`}
+                }
+                return calendarsObj.participants
+            })
+    }
 
-            }).then(result => {
-                if (result.insertedCount !== 1) {
-                    return {'message': `Could not add calendar`}
+    postCalendarParticipant(calendarId, participant) {
+        return this.db.collection('calendars')
+            .updateOne({id: calendarId}, {
+                $push: {participants: participant}
+            })
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find calendar ${calendarId}`}
                 } else {
-                    return calendar
-
+                    return participant
                 }
             })
     }
 
+    deleteParticipant(calendarId, participantId) {
+        return this.db.collection('calendars')
+            .updateOne({id: calendarId}, {$pull: {participants: {"id": participantId}}})
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find calendar ${calendarId}`}
+                } else {
+                    return {'message': `Deleted participant ${participantId}`}
+                }
+            })
+    }
 
 }
 

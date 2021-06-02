@@ -70,50 +70,94 @@ class DataBaseUserMongo {
             })
     }
 
-    getUserInvites(userId) {
+    /*
+        getUserInvites(userId) {
+            return this.db.collection('users')
+                .findOne({id: userId}, {
+                    projection: {
+                        _id: 0,
+                        invites: 1
+                    }
+                })
+                .then(result => {
+                    if (result === null) {
+                        return Promise.reject(error(404, 'User Not Found'))
+                    } else {
+                        return result.invites
+                    }
+                })
+        }
+
+        postInviteToUser(userId, userInvite) {
+            return this.db.collection('calendars')
+                .updateOne({id: userId}, {
+                    $push: {invites: userInvite}
+                })
+                .then(result => {
+                    // check if update succeeded
+                    if (result.modifiedCount !== 1) {
+                        return {'message': `Could not find calendar ${userId}`}
+                    } else {
+                        return {'message': 'Posted invite to user'}
+                    }
+                })
+        }
+
+        deleteUserInvite(userId, inviteId) {
+            return this.db.collection('calendars')
+                .updateOne({id: userId}, {$pull: {invites: {"id": inviteId}}})
+                .then(result => {
+                    // check if update succeeded
+                    if (result.modifiedCount !== 1) {
+                        return {'message': `Could not find user ${userId}`}
+                    } else {
+                        return {'message': `Deleted item with id ${inviteId}`}
+                    }
+                })
+        }
+    */
+
+    deleteCalendarFromUser(calendarId, userId) {
         return this.db.collection('users')
-            .findOne({id: userId}, {
-                projection: {
-                    _id: 0,
-                    invites: 1
-                }
-            })
-            .then(result => {
-                if (result === null) {
-                    return Promise.reject(error(404, 'User Not Found'))
-                } else {
-                    return result.invites
-                }
-            })
-    }
-
-    postInviteToUser(userId, userInvite) {
-        return this.db.collection('calendars')
-            .updateOne({id: userId}, {
-                $push: {invites: userInvite}
-            })
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${userId}`}
-                } else {
-                    return {'message': 'Posted invite to user'}
-                }
-            })
-    }
-
-    deleteUserInvite(userId, inviteId) {
-        return this.db.collection('calendars')
-            .updateOne({id: userId}, {$pull: {invites: {"id": inviteId}}})
+            .updateOne({id: userId}, {$pull: {participating: {"id": calendarId}}})
             .then(result => {
                 // check if update succeeded
                 if (result.modifiedCount !== 1) {
                     return {'message': `Could not find user ${userId}`}
                 } else {
-                    return {'message': `Deleted item with id ${inviteId}`}
+                    return {'message': 'Deleted calendar from user'}
                 }
             })
     }
+
+    postParticipating(userId, participating) {
+        return this.db.collection('users')
+            .updateOne({id: userId}, {
+                $push: {participating: participating}
+            })
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find user ${userId}`}
+                } else {
+                    return participating
+                }
+            })
+    }
+
+    deleteParticipating(userId, calendarId) {
+        return this.db.collection('users')
+            .updateOne({id: userId}, {$pull: {participating: {"id": calendarId}}})
+            .then(result => {
+                // check if update succeeded
+                if (result.modifiedCount !== 1) {
+                    return {'message': `Could not find user ${userId}`}
+                } else {
+                    return {'message': 'Deleted participating calendar'}
+                }
+            })
+    }
+
 }
 
 module.exports = DataBaseUserMongo
