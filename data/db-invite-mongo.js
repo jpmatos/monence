@@ -16,7 +16,7 @@ class DataBaseInviteMongo {
 
     postInvite(invite) {
         return this.db.collection('invites')
-            .insertOne({invite})
+            .insertOne(invite)
             .then(result => {
                 if (result.insertedCount !== 1) {
                     return {'message': `Could not insert invite`}
@@ -57,8 +57,11 @@ class DataBaseInviteMongo {
                 if (result === null) {
                     return {'message': `Could not find invites`}
                 } else {
-                    return result
+                    delete result.value._id
+                    return result.value
                 }
             })
     }
 }
+
+module.exports = DataBaseInviteMongo

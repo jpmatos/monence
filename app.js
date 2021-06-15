@@ -34,8 +34,8 @@ else
 let dbInvite
 if(process.env.MOCK_INVITE_DB === 'true')
     dbInvite = require('./data/db-invite-mock').init()
-// else
-//     dbInvite = require('./data/db-invite-mongo')
+else
+    dbInvite = require('./data/db-invite-mongo').init(process.env.CONNECTION_STRING)
 
 let dbExchanges
 if (process.env.MOCK_EXCHANGE_DB === 'true')
@@ -69,8 +69,8 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: 'http://localhost:3000/auth/google/callback'
-        // callbackURL: process.env.CALLBACK_URL
+        //callbackURL: 'http://localhost:3000/auth/google/callback'
+        callbackURL: process.env.CALLBACK_URL
     },
     function (accessToken, refreshToken, profile, done) {
         // User.findOrCreate({ googleId: profile.id }, function (err, user) {

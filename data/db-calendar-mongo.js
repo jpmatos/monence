@@ -45,15 +45,7 @@ class DataBaseCalendarMongo {
     postCalendar(userId, calendar) {
 
         return this.db.collection('calendars')
-            .insertOne({
-                "name": calendar.name,
-                "ownerId": userId,
-                "id": calendar.id,
-                "single": [],
-                "recurrent": [],
-                "budget": []
-
-            }).then(result => {
+            .insertOne(calendar).then(result => {
                 if (result.insertedCount !== 1) {
                     return {'message': `Could not add calendar`}
                 } else {
