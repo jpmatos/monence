@@ -221,6 +221,20 @@ class DataBaseCalendarMongo {
             })
     }
 
+    putRole(calendarId, participantId, role) {
+        return this.db.collection('calendars')
+            .findOneAndUpdate({id: calendarId, "participants.id": participantId},
+                {
+                    $set: {
+                        "participants.$.role": role
+                    }
+                }, {returnOriginal: false})
+            .then(result => {
+                return result.value.participants.find(par => par.id === participantId)
+            })
+    }
+
+
 }
 
 module.exports = DataBaseCalendarMongo

@@ -27,7 +27,8 @@ class CalendarContextBinder extends React.Component {
             buildDisplayValue: this.buildDisplayValue,
             setCalendarShare: this.setCalendarShare,
             handleRemoveParticipant: this.handleRemoveParticipant,
-            handleRefreshParticipants: this.handleRefreshParticipants
+            handleRefreshParticipants: this.handleRefreshParticipants,
+            handleChangeRole: this.handleChangeRole
         }
     }
 
@@ -168,6 +169,23 @@ class CalendarContextBinder extends React.Component {
         this.setState({
             calendar: calendar
         })
+    }
+
+    handleChangeRole = (participantId, role) => {
+        const roleBody = {
+            role: role
+        }
+
+        return axios.put(`/calendar/${this.state.calendarId}/role/${participantId}`, roleBody)
+            .then(res => {
+                const participant = res.data.body
+                const calendar = this.state.calendar
+                calendar.participants = calendar.participants.filter(par => par.id !== participant.id)
+                calendar.participants.push(participant)
+                this.setState({
+                    calendar: calendar
+                })
+            })
     }
 
     buildSingleItem(item, currency, ignoreExchange) {

@@ -18,6 +18,8 @@ import TableBody from "@material-ui/core/TableBody";
 import Paper from '@material-ui/core/Paper';
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from '@material-ui/icons/Refresh';
+import InviteUserFormDialog from "../components/forms/InviteUserFormDialog";
+import ChangeRoleFormDialog from "../components/forms/ChangeRoleFormDialog";
 
 const useStyles = (theme) => ({
     pad: {
@@ -56,14 +58,29 @@ class MyShare extends React.Component {
         super(props);
         this.state = {
             isSharePromptOpen: false,
-            userInviteEmail: '',
-            validUserEmail: false,
-            isRefreshInvitesDisabled: false
+            isRefreshInvitesDisabled: false,
+            isInviteUserFDOpen: false,
+            isChangeRoleFDOpen: false,
+            selectedParticipant: {}
         }
     }
 
     setSharePrompt = (value) => {
         this.setState({isSharePromptOpen: value})
+    }
+
+    setInviteUserFD = (value) => {
+        this.setState({isInviteUserFDOpen: value})
+    }
+
+    setChangeRoleFD = (value, participant) => {
+        if(!value)
+            participant = {}
+
+        this.setState({
+            isChangeRoleFDOpen: value,
+            selectedParticipant: participant
+        })
     }
 
     handleConfirmPrompt = () => {
@@ -76,25 +93,7 @@ class MyShare extends React.Component {
             })
     }
 
-    handleUserInviteEmailChange = (event) => {
-        const value = event.target.value
-        const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-
-        this.setState({
-            userInviteEmail: value,
-            validUserEmail: value.match(emailRegex)
-        })
-    }
-
-    handleInvite = (inviteContext) => {
-        if (!this.state.validUserEmail)
-            return
-
-        const invite = {
-            calendarId: this.context.calendarId,
-            email: this.state.userInviteEmail
-        }
-
+    handleInvite = (inviteContext, invite) => {
         inviteContext.handleNewInvite(invite)
             .then(res => {
                 this.props.sendSuccessSnack(`Invited user ${invite.email}`)
@@ -103,11 +102,6 @@ class MyShare extends React.Component {
                 this.props.sendErrorSnack('Failed to invite!', err)
                 console.debug(err)
             })
-
-        this.setState({
-            userInviteEmail: '',
-            validUserEmail: false
-        })
     }
 
     handleDeleteInvite = (inviteContext, inviteId) => {
@@ -121,6 +115,18 @@ class MyShare extends React.Component {
             })
     }
 
+    handleChangeRole = (participantId, role) => {
+        this.context.handleChangeRole(participantId, role)
+            .then(() => {
+                this.props.sendSuccessSnack(`Changed participant role`)
+            })
+            .catch((err) => {
+                this.props.sendErrorSnack('Failed to change participant role!', err)
+                console.debug(err)
+            })
+
+    }
+
     handleRemoveParticipant = (participantId) => {
         this.context.handleRemoveParticipant(participantId)
             .then(res => {
@@ -130,17 +136,6 @@ class MyShare extends React.Component {
                 this.props.sendErrorSnack('Failed to kick participant!', err)
                 console.debug(err)
             })
-        // const user = {'id': id}
-        // axios.put(`/calendar/${this.context.calendar.id}/kick`, user)
-        //     .then(res => {
-        //         this.context.handleRemoveInvitee(id)
-        //         console.log(res)
-        //         this.props.sendSuccessSnack(`Removed user`)
-        //     })
-        //     .catch(err => {
-        //         this.props.sendErrorSnack('Failed to kick user!', err)
-        //         console.debug(err)
-        //     })
     }
 
     handleRefreshInvitesAndParticipants = (inviteContext) => {
@@ -193,6 +188,7 @@ class MyShare extends React.Component {
                                                 <TableRow>
                                                     <TableCell align="left">Name</TableCell>
                                                     <TableCell align="left">Email</TableCell>
+                                                    <TableCell align="left">Role</TableCell>
                                                     <TableCell align="left">Actions</TableCell>
                                                 </TableRow>
                                             </TableHead>
@@ -206,6 +202,13 @@ class MyShare extends React.Component {
                                                             {participant.email}
                                                         </TableCell>
                                                         <TableCell component="th" scope="row">
+                                                            {participant.role}
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row">
+                                                            <Button variant="outlined" color="primary"
+                                                                    onClick={() => this.setChangeRoleFD(true, participant)}>
+                                                                Change Role
+                                                            </Button>
                                                             <Button variant="outlined" color="secondary"
                                                                     onClick={() => this.handleRemoveParticipant(participant.id)}>
                                                                 Remove
@@ -238,6 +241,7 @@ class MyShare extends React.Component {
                                             <TableHead>
                                                 <TableRow>
                                                     <TableCell align="left">Email</TableCell>
+                                                    <TableCell align="left">Role</TableCell>
                                                     <TableCell align="left">Actions</TableCell>
                                                 </TableRow>
                                             </TableHead>
@@ -246,6 +250,9 @@ class MyShare extends React.Component {
                                                     <TableRow key={invite.inviteeEmail}>
                                                         <TableCell component="th" scope="row">
                                                             {invite.inviteeEmail}
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row">
+                                                            {invite.role}
                                                         </TableCell>
                                                         <TableCell component="th" scope="row">
                                                             <Button variant="outlined" color="secondary"
@@ -258,22 +265,21 @@ class MyShare extends React.Component {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                    <TextField
-                                        error={!this.state.validUserEmail && !(this.state.userInviteEmail === '')}
-                                        id='Invite User'
-                                        style={{width: 230}}
-                                        label='User Email'
-                                        placeholder='email@host.com'
-                                        value={this.state.userInviteEmail}
-                                        onChange={this.handleUserInviteEmailChange}
-                                        type='string'
-                                        className={classes.pad}
-                                    />
-                                    <Button variant="contained" color="primary"
-                                            onClick={() => this.handleInvite(inviteContext)}>
-                                        Invite
+                                    <Button variant="contained"
+                                            color="primary"
+                                            onClick={() => this.setInviteUserFD(true)}
+                                            className={classes.pad}>
+                                        Invite a User
                                     </Button>
                                 </Grid>
+                                <InviteUserFormDialog isOpen={this.state.isInviteUserFDOpen}
+                                                      setOpen={this.setInviteUserFD}
+                                                      handleInvite={(invite) => this.handleInvite(inviteContext, invite)}
+                                                      calendarId={this.context.calendarId}/>
+                                <ChangeRoleFormDialog isOpen={this.state.isChangeRoleFDOpen}
+                                                      setOpen={this.setChangeRoleFD}
+                                                      handleChangeRole={this.handleChangeRole}
+                                                      participant={this.state.selectedParticipant}/>
                             </React.Fragment>)}
                     </React.Fragment>)}
             </InviteContext.Consumer>

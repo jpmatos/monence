@@ -31,7 +31,7 @@ class CreateItemFormDialog extends React.Component {
         }
     }
 
-    handleClose = () => {
+        handleClose = () => {
         this.props.setOpen(false)
         setTimeout(() => {
             this.setState({

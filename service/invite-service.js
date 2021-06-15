@@ -49,13 +49,15 @@ class InviteService {
 
                 const participating = {
                     'calendarId': invite.calendarId,
-                    'calendarName': invite.calendarName
+                    'calendarName': invite.calendarName,
+                    'role': invite.role
                 }
 
                 const participant = {
                     'id': invite.inviteeId,
                     'name': invite.inviteeName,
-                    'email': invite.inviteeEmail
+                    'email': invite.inviteeEmail,
+                    'role': invite.role
                 }
 
                 return Promise.all([

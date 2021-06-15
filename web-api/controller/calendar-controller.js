@@ -45,6 +45,17 @@ class CalendarController {
             .catch(next)
     }
 
+    changeRole(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        const participantId = req.params.userId
+        const role = req.body
+        return this.calendarService
+            .changeRole(calendarId, participantId, role, userId)
+            .then(participant => res.status(201).json(success(participant)))
+            .catch(next)
+    }
+
     putShare(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId

@@ -263,6 +263,7 @@ class MyHome extends React.Component {
                                             <TableRow>
                                                 <TableCell align="left">Calendar</TableCell>
                                                 <TableCell align="left">Inviter</TableCell>
+                                                <TableCell align="left">Role</TableCell>
                                                 <TableCell align="left">Actions</TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -274,6 +275,9 @@ class MyHome extends React.Component {
                                                     </TableCell>
                                                     <TableCell component="th" scope="row">
                                                         {invite.inviterName}
+                                                    </TableCell>
+                                                    <TableCell component="th" scope="row">
+                                                        {invite.role}
                                                     </TableCell>
                                                     <TableCell component="th" scope="row">
                                                         <Button variant="outlined" color="secondary"

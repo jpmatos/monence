@@ -47,6 +47,10 @@ class CalendarService {
             })
     }
 
+    changeRole(calendarId, participantId, role, userId) {
+        return this.dbCalendar.putRole(calendarId, participantId, role.role)
+    }
+
     putShare(calendarId, userId){
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
