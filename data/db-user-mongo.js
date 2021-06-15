@@ -147,7 +147,7 @@ class DataBaseUserMongo {
 
     deleteParticipating(userId, calendarId) {
         return this.db.collection('users')
-            .updateOne({id: userId}, {$pull: {participating: {"id": calendarId}}})
+            .updateOne({id: userId}, {$pull: {participating: {"calendarId": calendarId}}})
             .then(result => {
                 // check if update succeeded
                 if (result.modifiedCount !== 1) {
