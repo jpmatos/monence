@@ -6,6 +6,8 @@ export const CalendarContext = React.createContext({
     calendarDate: null,
     items: null,
     currency: null,
+    isOwner: () => {},
+    canEdit: () => {},
     setCalendarId: () => {},
     setCalendarDate: () => {},
     setCurrency: () => {},

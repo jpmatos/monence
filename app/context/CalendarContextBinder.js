@@ -14,6 +14,8 @@ class CalendarContextBinder extends React.Component {
             calendarDate: null,
             items: null,
             currency: null,
+            isOwner: this.isOwner,
+            canEdit: this.canEdit,
             setCalendarId: this.setCalendarId,
             setCalendarDate: this.setCalendarDate,
             setCurrency: this.setCurrency,
@@ -36,6 +38,21 @@ class CalendarContextBinder extends React.Component {
         this.setState({
             calendarId: id
         })
+    }
+
+    isOwner = () => {
+        return this.context.user.id === this.state.calendar.owner.ownerId
+    }
+
+    canEdit = () => {
+        if(this.context.user.id === this.state.calendar.owner.ownerId)
+            return true
+
+        const idx = this.state.calendar.participants.findIndex(par => par.id === this.context.user.id)
+        if(idx !== -1)
+            return this.state.calendar.participants[idx].role === 'Editor'
+
+        return false
     }
 
     setCurrency = (currency) => {

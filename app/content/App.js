@@ -35,6 +35,7 @@ import {Slide, Snackbar} from "@material-ui/core"
 import {Alert} from "@material-ui/lab"
 import PlaceHolder from "./PlaceHolder";
 import MyShare from "./MyShare";
+import MyShareParticipant from "./MyShareParticipant";
 
 const drawerWidth = 220
 
@@ -265,7 +266,11 @@ class App extends React.Component {
                             <MyForecast sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
                         <Route path='/share*'>
-                            <MyShare sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                            {this.context.isOwner() ?
+                                <MyShare sendSuccessSnack={this.sendSuccessSnack}
+                                         sendErrorSnack={this.sendErrorSnack}/> :
+                                <MyShareParticipant sendSuccessSnack={this.sendSuccessSnack}
+                                             sendErrorSnack={this.sendErrorSnack}/>}
                         </Route>
                         <Route path='/settings*'>
                             <PlaceHolder sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>

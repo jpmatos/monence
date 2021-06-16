@@ -38,7 +38,6 @@ class UserService {
         calendar = Object.assign({}, result.value)
 
         calendar.id = uuid.generate()
-        calendar.ownerId = userId
         calendar.share = 'Personal'
         calendar.single = []
         calendar.recurrent = []
@@ -50,10 +49,22 @@ class UserService {
             'name': calendar.name
         }
 
-        return Promise.all([this.db.postCalendar(userId, calendar), this.dbUser.postCalendarToUser(userId, userCalendar)])
-            .then(() => {
-                return userCalendar
+        return this.dbUser.getUser(userId)
+            .then(user => {
+
+                calendar.owner = {
+                    'ownerId': user.id,
+                    'name': user.name,
+                    'email': user.email
+                }
+
+                return Promise.all([this.db.postCalendar(userId, calendar), this.dbUser.postCalendarToUser(userId, userCalendar)])
+                    .then(() => {
+                        return userCalendar
+                    })
             })
+
+
     }
 
     // getInvites(userId) {

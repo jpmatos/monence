@@ -7,7 +7,6 @@ import Prompt from "../components/Prompt";
 import {CalendarContext} from "../context/default/CalendarContext";
 import axios from "axios";
 import {InviteContext} from "../context/default/InviteContext";
-import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";

@@ -76,8 +76,10 @@ class FloatingActionButton extends React.Component {
                     alignItems="flex-end"
                     className={classes.add}
                 >
-                    <Fab color='primary' aria-label='add' onClick={this.props.handleOnClickFAB}
-                         style={{visibility: this.props.hideCreate ? 'hidden' : 'visible'}}>
+                    <Fab color='primary'
+                         aria-label='add'
+                         onClick={this.props.handleOnClickFAB}
+                         style={{visibility: this.props.hideCreate || !this.props.canEdit ? 'hidden' : 'visible'}}>
                         <AddIcon/>
                     </Fab>
                     <SecondaryButton handleOnClick={this.props.handleRecedeMonth} icon={<KeyboardArrowDownIcon/>}/>

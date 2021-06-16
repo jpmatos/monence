@@ -256,6 +256,7 @@ class MyBudget extends React.Component {
                                       handleUpdateBudget={this.handleUpdateBudget}
                                       handleDeleteBudget={this.handleDeleteBudget}/>
                 <FloatingActionButton date={this.context.calendarDate}
+                                      canEdit={this.context.canEdit()}
                                       handleOnClickFAB={this.handleClickOpen}
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}

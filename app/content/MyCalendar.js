@@ -167,6 +167,7 @@ class MyCalendar extends React.Component {
                     }}
                 />
                 <FloatingActionButton date={this.context.calendarDate}
+                                      canEdit={this.context.canEdit()}
                                       handleOnClickFAB={this.handleClickOpen}
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}

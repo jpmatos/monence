@@ -24,7 +24,7 @@ class CalendarService {
         return Promise.all([this.dbCalendar.getCalendar(calendarId), this.dbExchanges.getExchanges()])
             .then(res => {
                 const calendar = res[0]
-                if (calendar.ownerId !== userId && (calendar.participants.find(participant => participant.id === userId) === undefined))
+                if (calendar.owner.ownerId !== userId && (calendar.participants.find(participant => participant.id === userId) === undefined))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 const exchanges = res[1]
@@ -54,7 +54,7 @@ class CalendarService {
     putShare(calendarId, userId){
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 calendar.share = 'Shared'
@@ -78,7 +78,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 item.recurrency = 'single'
@@ -108,7 +108,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.putItem(calendarId, itemId, item, 'single')
@@ -124,7 +124,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.deleteItem(calendarId, itemId, 'single')
@@ -148,7 +148,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 item.recurrency = 'recurrent'
@@ -180,7 +180,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.putItem(calendarId, itemId, item, 'recurrent')
@@ -196,7 +196,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.deleteItem(calendarId, itemId, 'recurrent')
@@ -218,7 +218,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 budget.id = uuid.generate()
@@ -247,7 +247,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.putBudget(calendarId, budgetId, budget)
@@ -263,7 +263,7 @@ class CalendarService {
 
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (calendar.ownerId !== userId)
+                if (calendar.owner.ownerId !== userId)
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.deleteBudget(calendarId, budgetId)
@@ -287,7 +287,7 @@ class CalendarService {
     //             if(user.error !== undefined)
     //                 return Promise.reject(error(404, 'Could Not Find User'))
     //
-    //             if (calendar.ownerId !== userId)
+    //             if (calendar.owner.ownerId !== userId)
     //                 return Promise.reject(error(404, 'Calendar Not Found'))
     //
     //             if(user.invites.findIndex(inv => inv.calendarId === calendarId) !== -1)
@@ -314,7 +314,7 @@ class CalendarService {
     // deleteInvite(calendarId, inviteId, userId) {
     //     return this.dbCalendar.getCalendar(calendarId)
     //         .then(calendar => {
-    //             if (calendar.ownerId !== userId)
+    //             if (calendar.owner.ownerId !== userId)
     //                 return Promise.reject(error(404, 'Calendar Not Found'))
     //
     //             const email = calendar.invites.find(inv => inv.id === inviteId).email
