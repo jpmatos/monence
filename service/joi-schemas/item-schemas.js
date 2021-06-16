@@ -17,6 +17,7 @@ const postItemRecurrentSchema = Joi.object({
     title: Joi.string().min(1).max(64).required(),
     start: Joi.date().iso().required(),
     end: Joi.date().iso().required(),
+    recurrencyPeriod: Joi.string().pattern(/^week$|^month$|^year$/).required(),
     value: Joi.number().precision(2).positive().max(1000000).required(),
     type: Joi.string().pattern(/^gain$|^expense$/).required()
 })
