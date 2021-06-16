@@ -283,14 +283,21 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendar(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
             .then(calendar => {
-                if (calendar.owner.ownerId !== userId)
+                if (!calendar ||
+                    (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
+
+                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                    return Promise.reject(error(403, 'Insufficient permission'))
 
                 budget.id = uuid.generate()
 
                 return this.dbCalendar.postBudget(calendarId, budget)
+            })
+            .then(calendar => {
+                return calendar.budget[0]
             })
     }
 
@@ -312,12 +319,19 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendar(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
             .then(calendar => {
-                if (calendar.owner.ownerId !== userId)
+                if (!calendar ||
+                    (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
+                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                    return Promise.reject(error(403, 'Insufficient permission'))
+
                 return this.dbCalendar.putBudget(calendarId, budgetId, budget)
+            })
+            .then(calendar => {
+                return calendar.budget[0]
             })
     }
 
@@ -328,72 +342,21 @@ class CalendarService {
         if (uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendar(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
             .then(calendar => {
-                if (calendar.owner.ownerId !== userId)
+                if (!calendar ||
+                    (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
+
+                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                    return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.deleteBudget(calendarId, budgetId)
             })
+            .then(() => {
+                return {'message': `Deleted item with id ${budgetId}`}
+            })
     }
-
-    //Invites
-    // getInvites(calendarId, userId) {
-    //     return this.dbCalendar.getCalendarInvites(calendarId)
-    //         .then(invites => {
-    //             return invites
-    //         })
-    // }
-
-    // postInvite(calendarId, invite, username, userId) {
-    //     return Promise.all([this.dbUser.getUserByEmail(invite.email), this.dbCalendar.getCalendar(calendarId)])
-    //         .then(res => {
-    //             const user = res[0]
-    //             const calendar = res[1]
-    //
-    //             if(user.error !== undefined)
-    //                 return Promise.reject(error(404, 'Could Not Find User'))
-    //
-    //             if (calendar.owner.ownerId !== userId)
-    //                 return Promise.reject(error(404, 'Calendar Not Found'))
-    //
-    //             if(user.invites.findIndex(inv => inv.calendarId === calendarId) !== -1)
-    //                 return Promise.reject(error(400, 'User Already Invited!'))
-    //
-    //             const id = uuid.generate()
-    //
-    //             const userInvite = {
-    //                 id: id,
-    //                 calendarId: calendarId,
-    //                 inviter: username,
-    //                 calendarName: calendar.name
-    //             }
-    //
-    //             invite.id = id
-    //
-    //             return this.dbUser.postInviteToUser(user.id, userInvite)
-    //         })
-    //         .then(() => {
-    //             return this.dbCalendar.postInviteToCalendar(calendarId, invite)
-    //         })
-    // }
-
-    // deleteInvite(calendarId, inviteId, userId) {
-    //     return this.dbCalendar.getCalendar(calendarId)
-    //         .then(calendar => {
-    //             if (calendar.owner.ownerId !== userId)
-    //                 return Promise.reject(error(404, 'Calendar Not Found'))
-    //
-    //             const email = calendar.invites.find(inv => inv.id === inviteId).email
-    //
-    //             // return this.dbCalendar.deleteInvite(calendarId, inviteId, email)
-    //             return this.dbUser.getUserByEmail(email)
-    //         }).then(user => {
-    //             return this.dbUser.deleteUserInvite(user.id, inviteId)
-    //         }).then(() => {
-    //             return this.dbCalendar.deleteCalendarInvite(inviteId, calendarId)
-    //         })
-    // }
 }
 
 module.exports = CalendarService

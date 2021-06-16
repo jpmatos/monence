@@ -166,32 +166,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
-    deleteItemRecurrent(calendarId, itemId) {
-        return this.db.collection('calendars')
-            .updateOne(
-                {
-                    id: calendarId
-                },
-                {
-                    $pull: {recurrent: {"id": itemId}}
-                }
-            )
-    }
-
-    //TODO Check if mock does the same
-    deleteItemSingle(calendarId, itemId) {
-        return this.db.collection('calendars')
-            .updateOne(
-                {
-                    id: calendarId
-                },
-                {
-                    $pull: {single: {"id": itemId}}
-                }
-            )
-    }
-
     //TODO Mock
     putItemSingle(calendarId, itemId, item) {
         const newItem = {}
@@ -268,79 +242,106 @@ class DataBaseCalendarMongo {
             })
     }
 
-    // putItem(calendarId, itemId, item, arrayName) {
-    //     return this.db.collection('calendars')
-    //         .updateOne({id: calendarId, [arrayName]: {"id": itemId}},
-    //             {
-    //                 $set: {
-    //                     start: item.start,
-    //                     end: item.end,
-    //                     title: item.title,
-    //                     value: item.value
-    //                 }
-    //             })
-    //         .then(result => {
-    //             // check if update succeeded
-    //             if (result.modifiedCount !== 1) {
-    //                 return {'message': `Could not find calendar ${calendarId}`}
-    //             } else {
-    //                 return item
-    //             }
-    //         })
-    // }
+    //TODO Mock this
+    deleteItemRecurrent(calendarId, itemId) {
+        return this.db.collection('calendars')
+            .updateOne(
+                {
+                    id: calendarId
+                },
+                {
+                    $pull: {recurrent: {"id": itemId}}
+                }
+            )
+    }
+
+    //TODO Check if mock does the same
+    deleteItemSingle(calendarId, itemId) {
+        return this.db.collection('calendars')
+            .updateOne(
+                {
+                    id: calendarId
+                },
+                {
+                    $pull: {single: {"id": itemId}}
+                }
+            )
+    }
 
     //budget methods
-    putBudget(calendarId, budgetId, budget) {
+    //TODO Mock this
+    postBudget(calendarId, budget) {
         return this.db.collection('calendars')
-            .findOneAndUpdate({id: calendarId, "budget.id": budgetId},
+            .findOneAndUpdate(
                 {
-                    $set: {
-                        "budget.$.date": budget.date,
-                        "budget.$.value": budget.value
+                    id: calendarId
+                },
+                {
+                    $push: {budget: budget}
+                },
+                {
+                    returnOriginal: false,
+                    projection: {
+                        _id: 0,
+                        budget: {
+                            $filter: {
+                                input: "$budget",
+                                as: "budget",
+                                cond: {$eq: ["$$budget.id", budget.id]}
+                            }
+                        }
                     }
                 })
             .then(result => {
-                // check if update succeeded
-                if (result.ok !== 1) {
-                    return {'message': `Could not find calendar ${calendarId}`}
-                } else {
-                    return result.value.budget.find((element) => {
-                        if (element.id === budgetId) {
-                            element.date = budget.date
-                            element.value = budget.value
-                            return element
-                        }
-                    })
-                }
+                return result.value
             })
     }
 
-    postBudget(calendarId, budget) {
+    //TODO Mock this
+    putBudget(calendarId, budgetId, budget) {
+        const newBudget = {}
+        if (budget.date)
+            newBudget["budget.$.date"] = budget.date
+        if (budget.value)
+            newBudget["budget.$.value"] = budget.value
         return this.db.collection('calendars')
-            .updateOne({id: calendarId}, {
-                $push: {budget: budget}
-            })
+            .findOneAndUpdate(
+                {
+                    id: calendarId,
+                    "budget.id": budgetId
+                },
+                {
+                    $set: newBudget
+                },
+                {
+                    returnOriginal: false,
+                    projection: {
+                        _id: 0,
+                        budget: {
+                            $filter: {
+                                input: "$budget",
+                                as: "budget",
+                                cond: {$eq: ["$$budget.id", budgetId]}
+                            }
+                        }
+                    }
+                })
             .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${calendarId}`}
-                } else {
-                    return budget
-                }
+                return result.value
             })
     }
 
+    //TODO Mock this
     deleteBudget(calendarId, budgetId) {
         return this.db.collection('calendars')
-            .updateOne({id: calendarId}, {$pull: {budget: {"id": budgetId}}})
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${calendarId}`}
-                } else {
-                    return {'message': `Deleted item with id ${budgetId}`}
+            .updateOne(
+                {
+                    id: calendarId
+                },
+                {
+                    $pull: {budget: {"id": budgetId}}
                 }
-            })
+            )
     }
 
     getCalendars(userId) {

@@ -66,43 +66,6 @@ class UserService {
 
 
     }
-
-    // getInvites(userId) {
-    //     return this.dbUser.getUserInvites(userId)
-    //         .then(invites => {
-    //             return invites
-    //         })
-    // }
-
-    // acceptInvite(userId, inviteId) {
-    //     return Promise.all([this.dbUser.getUser(userId), this.dbUser.deleteUserInvite(userId, inviteId)])
-    //         .then(res => {
-    //             const user = res[0]
-    //             const invite = res[1]
-    //
-    //             const invitee = {
-    //                 "id": user.id,
-    //                 "name": user.name,
-    //                 "email": user.email
-    //             }
-    //
-    //             return Promise.all([
-    //                 this.db.postCalendarInvitee(invite.id, invite.calendarId, invitee),
-    //                 this.db.deleteCalendarInvite(inviteId, invite.calendarId)
-    //             ])
-    //         })
-    //         .then(res => {
-    //             const accept = res[0]
-    //             return this.dbUser.postUserInvitedCalendar(userId, accept)
-    //         })
-    // }
-
-    // declineInvite(userId, inviteId) {
-    //     return this.dbUser.deleteUserInvite(userId, inviteId)
-    //         .then(invite => {
-    //             return this.db.deleteCalendarInvite(invite.id, invite.calendarId)
-    //         })
-    // }
 }
 
 module.exports = UserService
