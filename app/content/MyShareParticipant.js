@@ -14,6 +14,9 @@ import {InviteContext} from "../context/default/InviteContext";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Prompt from "../components/Prompt";
+import axios from "axios";
 
 const useStyles = (theme) => ({
     pad: {
@@ -51,7 +54,8 @@ class MyShareParticipant extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isRefreshInvitesDisabled: false
+            isRefreshInvitesDisabled: false,
+            isLeavePromptOpen: false
         }
     }
 
@@ -65,63 +69,96 @@ class MyShareParticipant extends React.Component {
         }, 5000)
     }
 
+    handleConfirmPrompt = () => {
+        this.context.handleLeaveCalendar()
+            .then(res => {
+                this.props.sendSuccessSnack(`Left calendar`)
+            })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to leave calendar!', err)
+                console.debug(err)
+            })
+    }
+
+    setLeavePrompt = (value) => {
+        this.setState({isLeavePromptOpen: value})
+    }
+
     render() {
         const {classes} = this.props
         return (
-            <TableContainer component={Paper} className={classes.table}>
-                <Grid
-                    container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="center"
-                    className={classes.pendingInvitesTitle}
-                >
-                    <Typography variant="h6" id="tableTitle"
-                                component="div" className={classes.pendingInviteesTitle}>
-                        Participants
-                    </Typography>
-                    <IconButton aria-label="refresh" component="span"
-                                onClick={this.handleRefreshParticipants}
-                                disabled={this.state.isRefreshInvitesDisabled}>
-                        <RefreshIcon/>
-                    </IconButton>
-                </Grid>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="left">Name</TableCell>
-                            <TableCell align="left">Email</TableCell>
-                            <TableCell align="left">Role</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        <TableRow key={this.context.calendar.owner.ownerId}>
-                            <TableCell component="th" scope="row">
-                                {this.context.calendar.owner.name}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                                {this.context.calendar.owner.email}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                                Owner
-                            </TableCell>
-                        </TableRow>
-                        {this.context.calendar.participants.map((participant) => (
-                            <TableRow key={participant.id}>
+            <Grid
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="flex-start"
+            >
+                <TableContainer component={Paper} className={classes.table}>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                        className={classes.pendingInvitesTitle}
+                    >
+                        <Typography variant="h6" id="tableTitle"
+                                    component="div" className={classes.pendingInviteesTitle}>
+                            Participants
+                        </Typography>
+                        <IconButton aria-label="refresh" component="span"
+                                    onClick={this.handleRefreshParticipants}
+                                    disabled={this.state.isRefreshInvitesDisabled}>
+                            <RefreshIcon/>
+                        </IconButton>
+                    </Grid>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="left">Name</TableCell>
+                                <TableCell align="left">Email</TableCell>
+                                <TableCell align="left">Role</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow key={this.context.calendar.owner.ownerId}>
                                 <TableCell component="th" scope="row">
-                                    {participant.name}
+                                    {this.context.calendar.owner.name}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
-                                    {participant.email}
+                                    {this.context.calendar.owner.email}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
-                                    {participant.role}
+                                    Owner
                                 </TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                            {this.context.calendar.participants.map((participant) => (
+                                <TableRow key={participant.id}>
+                                    <TableCell component="th" scope="row">
+                                        {participant.name}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {participant.email}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                        {participant.role}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Button variant="contained"
+                        color="secondary"
+                        className={classes.padTop}
+                        onClick={() => this.setLeavePrompt(true)}>
+                    Leave Calendar
+                </Button>
+                <Prompt isOpen={this.state.isLeavePromptOpen}
+                        setOpen={this.setLeavePrompt}
+                        onConfirm={this.handleConfirmPrompt}
+                        title='Leave this Calendar?'
+                        text='To re-join, you will have to be re-invited by the Owner.'/>
+            </Grid>
         );
     }
 }

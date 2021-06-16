@@ -21,5 +21,6 @@ export const CalendarContext = React.createContext({
     buildDisplayValue: () => {},
     handleRemoveParticipant: () => {},
     handleRefreshParticipants: () => {},
-    handleChangeRole: () => {}
+    handleChangeRole: () => {},
+    handleLeaveCalendar: () => {}
 });

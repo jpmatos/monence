@@ -5,5 +5,6 @@ export const UserContext = React.createContext({
     user: null,
     handleCreateCalendar: () => {},
     handleLogout: () => {},
-    handleNewParticipating: () => {}
+    handleNewParticipating: () => {},
+    handleLeaveCalendar: () => {}
 })

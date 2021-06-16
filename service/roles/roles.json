@@ -1,0 +1,10 @@
+{
+  "Viewer": {
+    "view": true,
+    "edit": false
+  },
+  "Editor": {
+    "view": true,
+    "edit": true
+  }
+}

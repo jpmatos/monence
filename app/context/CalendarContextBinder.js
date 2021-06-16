@@ -30,7 +30,8 @@ class CalendarContextBinder extends React.Component {
             setCalendarShare: this.setCalendarShare,
             handleRemoveParticipant: this.handleRemoveParticipant,
             handleRefreshParticipants: this.handleRefreshParticipants,
-            handleChangeRole: this.handleChangeRole
+            handleChangeRole: this.handleChangeRole,
+            handleLeaveCalendar: this.handleLeaveCalendar
         }
     }
 
@@ -201,6 +202,19 @@ class CalendarContextBinder extends React.Component {
                 calendar.participants.push(participant)
                 this.setState({
                     calendar: calendar
+                })
+            })
+    }
+
+    handleLeaveCalendar = () => {
+        return axios.put(`/calendar/${this.state.calendarId}/kick/${this.context.user.id}`)
+            .then(res => {
+                const oldCalendarId = this.state.calendarId
+                this.context.handleLeaveCalendar(oldCalendarId)
+
+                const calendarId = this.context.user.calendars[0].id;
+                this.setState({
+                    calendarId: calendarId
                 })
             })
     }
