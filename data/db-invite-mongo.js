@@ -14,7 +14,7 @@ class DataBaseInviteMongo {
         return new DataBaseInviteMongo(connectionString)
     }
 
-    //TODO Mock
+    //TODO Check Mock
     postInvite(invite) {
         return this.db.collection('invites')
             .insertOne(invite)
@@ -26,7 +26,7 @@ class DataBaseInviteMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     getPending(userId) {
         return this.db.collection('invites')
             .find(
@@ -42,7 +42,7 @@ class DataBaseInviteMongo {
             ).toArray()
     }
 
-    //TODO Mock
+    //TODO Check Mock
     getSent(calendarId) {
         return this.db.collection('invites')
             .find(
@@ -58,7 +58,39 @@ class DataBaseInviteMongo {
             ).toArray()
     }
 
-    //TODO Mock
+    //TODO Check Mock
+    getInviteeId(inviteId) {
+        return this.db.collection('invites')
+            .findOne(
+                {
+                    id: inviteId
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        inviteeId: 1
+                    }
+                }
+            )
+    }
+
+    //TODO Check Mock
+    getInviterId(inviteId) {
+        return this.db.collection('invites')
+            .findOne(
+                {
+                    id: inviteId
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        inviterId: 1
+                    }
+                }
+            )
+    }
+
+    //TODO Check Mock
     deleteInvite(inviteId) {
         return this.db.collection('invites')
             .findOneAndDelete(

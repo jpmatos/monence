@@ -16,7 +16,7 @@ class DataBaseUserMongo {
         return new DataBaseUserMongo(connectionString)
     }
 
-    //TODO Mock
+    //TODO Check Mock
     createNewUser(user) {
         return this.db.collection('users')
             .insertOne(user)
@@ -28,7 +28,7 @@ class DataBaseUserMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     getUser(userId) {
         return this.db.collection('users')
             .findOne(
@@ -43,7 +43,7 @@ class DataBaseUserMongo {
             )
     }
 
-    //TODO Mock
+    //TODO Check Mock
     postCalendarToUser(userId, userCalendar) {
         return this.db.collection('users')
             .findOneAndUpdate(
@@ -74,7 +74,7 @@ class DataBaseUserMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     getUserByEmail(email) {
         return this.db.collection('users')
             .findOne(
@@ -89,7 +89,7 @@ class DataBaseUserMongo {
             )
     }
 
-    //TODO Mock
+    //TODO Check Mock
     postParticipating(userId, participating) {
         return this.db.collection('users')
             .findOneAndUpdate(
@@ -119,7 +119,7 @@ class DataBaseUserMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     deleteParticipating(userId, calendarId) {
         return this.db.collection('users')
             .findOneAndUpdate(

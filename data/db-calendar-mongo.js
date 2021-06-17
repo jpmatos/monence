@@ -15,9 +15,8 @@ class DataBaseCalendarMongo {
         return new DataBaseCalendarMongo(connectionString)
     }
 
-    // calendar methods
-
-    //TODO Mock
+    // Calendar methods
+    //TODO Check Mock
     getCalendar(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -46,7 +45,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     postCalendar(userId, calendar) {
         return this.db.collection('calendars')
             .insertOne(calendar)
@@ -58,7 +57,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     getCalendarOwner(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -74,7 +73,7 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     getCalendarOwnerAndParticipant(calendarId, participantId) {
         return this.db.collection('calendars')
             .findOne(
@@ -97,8 +96,8 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Mock
-    getCalendarName(calendarId) {
+    //TODO Check Mock
+    getCalendarOwnerAndName(calendarId) {
         return this.db.collection('calendars')
             .findOne(
                 {
@@ -107,6 +106,7 @@ class DataBaseCalendarMongo {
                 {
                     projection: {
                         _id: 0,
+                        owner: 1,
                         name: 1
                     }
                 }
@@ -114,8 +114,7 @@ class DataBaseCalendarMongo {
     }
 
     // item methods
-
-    //TODO Mock this
+    //TODO Check Mock
     postItemSingle(calendarId, item) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -146,7 +145,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     postItemRecurrent(calendarId, item) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -175,7 +174,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     putItemSingle(calendarId, itemId, item) {
         const newItem = {}
         if (item.start)
@@ -212,7 +211,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     putItemRecurrent(calendarId, itemId, item) {
         const newItem = {}
         if (item.start)
@@ -251,7 +250,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     deleteItemRecurrent(calendarId, itemId) {
         return this.db.collection('calendars')
             .updateOne(
@@ -264,7 +263,7 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Check if mock does the same
+    //TODO Check Mock
     deleteItemSingle(calendarId, itemId) {
         return this.db.collection('calendars')
             .updateOne(
@@ -278,7 +277,7 @@ class DataBaseCalendarMongo {
     }
 
     //budget methods
-    //TODO Mock this
+    //TODO Check Mock
     postBudget(calendarId, budget) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -306,7 +305,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     putBudget(calendarId, budgetId, budget) {
         const newBudget = {}
         if (budget.date)
@@ -340,7 +339,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     deleteBudget(calendarId, budgetId) {
         return this.db.collection('calendars')
             .updateOne(
@@ -354,7 +353,7 @@ class DataBaseCalendarMongo {
     }
 
     // participant methods
-    //TODO Mock
+    //TODO Check Mock
     getParticipants(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -370,7 +369,7 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Mock
+    //TODO Check Mock
     postCalendarParticipant(calendarId, participant) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -400,7 +399,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock
+    //TODO Check Mock
     deleteParticipant(calendarId, participantId) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -433,7 +432,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Mock this
+    //TODO Check Mock
     putRole(calendarId, participantId, role) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
