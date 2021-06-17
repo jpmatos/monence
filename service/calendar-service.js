@@ -22,12 +22,16 @@ class CalendarService {
     }
 
     getCalendar(calendarId, userId) {
-        return Promise.all([this.dbCalendar.getCalendar(calendarId), this.dbExchanges.getExchanges()])
+        return Promise.all([
+            this.dbCalendar.getCalendar(calendarId),
+            this.dbExchanges.getExchanges()
+        ])
             .then(res => {
                 const calendar = res[0]
                 const exchanges = res[1]
 
-                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canView(calendar, userId))
+                if (!calendar ||
+                    (!roleCheck.isOwner(calendar, userId) && !roleCheck.canView(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 calendar.exchanges = exchanges
@@ -43,6 +47,9 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.canView(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
+                return this.dbCalendar.getParticipants(calendarId)
+            })
+            .then(calendar => {
                 return calendar.participants
             })
     }
@@ -60,7 +67,7 @@ class CalendarService {
                 ])
             })
             .then(res => {
-                return res[0]
+                return res[0].participants[0]
             })
     }
 

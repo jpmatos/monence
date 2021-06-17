@@ -4,7 +4,9 @@ const error = require('../object/error')
 class DataBaseUserMongo {
     constructor(connectionString) {
         MongoClient.connect(connectionString,
-            {useUnifiedTopology: true})
+            {
+                useUnifiedTopology: true
+            })
             .then(client => {
                 this.db = client.db('monenceDB')
             })
@@ -14,147 +16,138 @@ class DataBaseUserMongo {
         return new DataBaseUserMongo(connectionString)
     }
 
-    verifyNewUser(user) {
+    //TODO Mock
+    createNewUser(user) {
         return this.db.collection('users')
-            .findOneAndUpdate({id: user.id},
-                {$setOnInsert: user},
-                {upsert: true})
+            .insertOne(user)
             .then(result => {
-                // check if exists succeeded
-                if (result.lastErrorObject.updatedExisting) {
-                    return {'message': 'User already exists'}
-                } else {
-                    return {'message': 'Created new user'}
-                }
+                if (result.ops.length === 0)
+                    return null
+                else
+                    return result.ops[0]
             })
     }
 
+    //TODO Mock
     getUser(userId) {
         return this.db.collection('users')
-            .findOne({id: userId})
-            .then(user => {
-                if (user === null) {
-                    return Promise.reject(error(404, 'User Not Found'))
-                } else {
-                    delete user._id
-                    return user
+            .findOne(
+                {
+                    id: userId
+                },
+                {
+                    projection: {
+                        _id: 0
+                    }
                 }
-            })
+            )
     }
 
+    //TODO Mock
     postCalendarToUser(userId, userCalendar) {
         return this.db.collection('users')
-            .updateOne({id: userId}, {
-                $push: {calendars: userCalendar}
-            })
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${userId}`}
-                } else {
-                    return userCalendar
-                }
-            })
-    }
-
-    getUserByEmail(email) {
-        return this.db.collection('users')
-            .findOne({email: email})
-            .then(user => {
-                if (user === null) {
-                    return Promise.reject(error(404, 'User Not Found'))
-                } else {
-                    delete user._id
-                    return user
-                }
-            })
-    }
-
-    /*
-        getUserInvites(userId) {
-            return this.db.collection('users')
-                .findOne({id: userId}, {
+            .findOneAndUpdate(
+                {
+                    id: userId
+                },
+                {
+                    $push: {
+                        calendars: userCalendar
+                    }
+                },
+                {
+                    returnOriginal: false,
                     projection: {
                         _id: 0,
-                        invites: 1
+                        calendars: {
+                            $filter: {
+                                input: "$calendars",
+                                as: "calendars",
+                                cond: {$eq: ["$$calendars.id", userCalendar.id]}
+                            }
+                        }
                     }
-                })
-                .then(result => {
-                    if (result === null) {
-                        return Promise.reject(error(404, 'User Not Found'))
-                    } else {
-                        return result.invites
-                    }
-                })
-        }
-
-        postInviteToUser(userId, userInvite) {
-            return this.db.collection('calendars')
-                .updateOne({id: userId}, {
-                    $push: {invites: userInvite}
-                })
-                .then(result => {
-                    // check if update succeeded
-                    if (result.modifiedCount !== 1) {
-                        return {'message': `Could not find calendar ${userId}`}
-                    } else {
-                        return {'message': 'Posted invite to user'}
-                    }
-                })
-        }
-
-        deleteUserInvite(userId, inviteId) {
-            return this.db.collection('calendars')
-                .updateOne({id: userId}, {$pull: {invites: {"id": inviteId}}})
-                .then(result => {
-                    // check if update succeeded
-                    if (result.modifiedCount !== 1) {
-                        return {'message': `Could not find user ${userId}`}
-                    } else {
-                        return {'message': `Deleted item with id ${inviteId}`}
-                    }
-                })
-        }
-    */
-
-    deleteCalendarFromUser(calendarId, userId) {
-        return this.db.collection('users')
-            .updateOne({id: userId}, {$pull: {participating: {"id": calendarId}}})
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find user ${userId}`}
-                } else {
-                    return {'message': 'Deleted calendar from user'}
                 }
+            )
+            .then(result => {
+                return result.value
             })
     }
 
+    //TODO Mock
+    getUserByEmail(email) {
+        return this.db.collection('users')
+            .findOne(
+                {
+                    email: email
+                },
+                {
+                    projection: {
+                        _id: 0
+                    }
+                }
+            )
+    }
+
+    //TODO Mock
     postParticipating(userId, participating) {
         return this.db.collection('users')
-            .updateOne({id: userId}, {
-                $push: {participating: participating}
-            })
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find user ${userId}`}
-                } else {
-                    return participating
+            .findOneAndUpdate(
+                {
+                    id: userId
+                },
+                {
+                    $push: {
+                        participating: participating
+                    }
+                },
+                {
+                    returnOriginal: false,
+                    projection: {
+                        _id: 0,
+                        participating: {
+                            $filter: {
+                                input: "$participating",
+                                as: "participating",
+                                cond: {$eq: ["$$participating.calendarId", participating.calendarId]}
+                            }
+                        }
+                    }
                 }
+            ).then(result => {
+                return result.value
             })
     }
 
+    //TODO Mock
     deleteParticipating(userId, calendarId) {
         return this.db.collection('users')
-            .updateOne({id: userId}, {$pull: {participating: {"calendarId": calendarId}}})
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find user ${userId}`}
-                } else {
-                    return {'message': 'Deleted participating calendar'}
+            .findOneAndUpdate(
+                {
+                    id: userId
+                },
+                {
+                    $pull: {
+                        participating: {
+                            "calendarId": calendarId
+                        }
+                    }
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        participating: {
+                            $filter: {
+                                input: "$participating",
+                                as: "participating",
+                                cond: {$eq: ["$$participating.calendarId", calendarId]}
+                            }
+                        }
+                    }
                 }
+            )
+            .then(result => {
+                return result.value
             })
     }
 

@@ -14,52 +14,66 @@ class DataBaseInviteMongo {
         return new DataBaseInviteMongo(connectionString)
     }
 
+    //TODO Mock
     postInvite(invite) {
         return this.db.collection('invites')
             .insertOne(invite)
             .then(result => {
-                if (result.insertedCount !== 1) {
-                    return {'message': `Could not insert invite`}
-                } else {
-                    return invite
-                }
+                if (result.ops.length === 0)
+                    return null
+                else
+                    return result.ops[0]
             })
     }
 
+    //TODO Mock
     getPending(userId) {
         return this.db.collection('invites')
-            .find({inviteeId: userId}, {projection: {_id: 0}}).toArray()
-            .then(result => {
-                if (result === null) {
-                    return {'message': `Could not find invites`}
-                } else {
-                    return result
+            .find(
+                {
+                    inviteeId: userId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
                 }
-            })
+            ).toArray()
     }
 
+    //TODO Mock
     getSent(calendarId) {
         return this.db.collection('invites')
-            .find({calendarId: calendarId}, {projection: {_id: 0}}).toArray()
-            .then(result => {
-                if (result === null) {
-                    return {'message': `Could not find invites`}
-                } else {
-                    return result
+            .find(
+                {
+                    calendarId: calendarId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
                 }
-            })
+            ).toArray()
     }
 
+    //TODO Mock
     deleteInvite(inviteId) {
         return this.db.collection('invites')
-            .findOneAndDelete({id: inviteId})
-            .then(result => {
-                if (result === null) {
-                    return {'message': `Could not find invites`}
-                } else {
-                    delete result.value._id
-                    return result.value
+            .findOneAndDelete(
+                {
+                    id: inviteId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
                 }
+            )
+            .then(result => {
+                return result.value
             })
     }
 }

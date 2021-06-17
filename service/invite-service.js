@@ -13,6 +13,7 @@ class InviteService {
     }
 
     postInvite(userId, invite){
+        //TODO Joi
         return Promise.all([
             this.dbUser.getUserByEmail(invite.email),
             this.dbUser.getUser(userId),
@@ -21,7 +22,10 @@ class InviteService {
             .then(res => {
                 const invitee = res[0]
                 const inviter = res[1]
-                const calendarName = res[2]
+                const calendarName = res[2].name
+
+                //TODO Permissions
+                //TODO Check for null
 
                 invite.id = uuid.generate()
                 invite.inviteeId = invitee.id
@@ -36,16 +40,23 @@ class InviteService {
     }
 
     getPending(userId) {
+        //TODO Permissions
+        //TODO Check for null
         return this.dbInvite.getPending(userId)
     }
 
     getSent(userId, calendarId) {
+        //TODO Permissions
+        //TODO Check for null
         return this.dbInvite.getSent(calendarId)
     }
 
     acceptInvite(userId, inviteId) {
         return this.dbInvite.deleteInvite(inviteId)
             .then(invite => {
+
+                //TODO Permissions
+                //TODO Check for null
 
                 const participating = {
                     'calendarId': invite.calendarId,
@@ -66,13 +77,15 @@ class InviteService {
                 ])
             })
             .then(res => {
-                return res[0]
+                return res[0].participating[0]
             })
     }
 
     deleteInvite(userId, inviteId) {
         return this.dbInvite.deleteInvite(inviteId)
             .then(invite => {
+                //TODO Permissions
+                //TODO Check for null
                 return {'message': 'Deleted invite'}
             })
     }
@@ -80,6 +93,8 @@ class InviteService {
     declineInvite(userId, inviteId) {
         return this.dbInvite.deleteInvite(inviteId)
             .then(invite => {
+                //TODO Permissions
+                //TODO Check for null
                 return {'message': 'Declined invite'}
             })
     }

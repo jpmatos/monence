@@ -89,7 +89,7 @@ class CalendarContextBinder extends React.Component {
     }
 
     handleRemoveParticipant = (userId) => {
-        axios.put(`/calendar/${this.state.calendarId}/kick/${userId}`)
+        return axios.put(`/calendar/${this.state.calendarId}/kick/${userId}`)
             .then(res => {
                 const calendar = this.state.calendar
                 calendar.participants = calendar.participants.filter(inv => inv.id !== userId)

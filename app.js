@@ -21,25 +21,25 @@ Object.assign(process.env, env)
 //Project Files
 let dbCalendar
 if (process.env.MOCK_CALENDAR_DB === 'true')
-    dbCalendar = require('./data/db-calendar-mock').init()
+    dbCalendar = require('./data/mock/db-calendar-mock').init()
 else
     dbCalendar = require('./data/db-calendar-mongo').init(process.env.CONNECTION_STRING)
 
 let dbUser
 if (process.env.MOCK_USER_DB === 'true')
-    dbUser = require('./data/db-user-mock').init()
+    dbUser = require('./data/mock/db-user-mock').init()
 else
     dbUser = require('./data/db-user-mongo').init(process.env.CONNECTION_STRING)
 
 let dbInvite
 if(process.env.MOCK_INVITE_DB === 'true')
-    dbInvite = require('./data/db-invite-mock').init()
+    dbInvite = require('./data/mock/db-invite-mock').init()
 else
     dbInvite = require('./data/db-invite-mongo').init(process.env.CONNECTION_STRING)
 
 let dbExchanges
 if (process.env.MOCK_EXCHANGE_DB === 'true')
-    dbExchanges = require('./data/db-exchanges-mock').init()
+    dbExchanges = require('./data/mock/db-exchanges-mock').init()
 else
     dbExchanges = require('./data/db-exchanges-api').init(process.env.OER_ID)
 

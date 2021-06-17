@@ -16,19 +16,23 @@ class DataBaseCalendarMongo {
     }
 
     // calendar methods
+
+    //TODO Mock
     getCalendar(calendarId) {
         return this.db.collection('calendars')
-            .findOne({id: calendarId})
-            .then(calendar => {
-                if (calendar === null) {
-                    return Promise.reject(error(404, 'Calendar Not Found'))
-                } else {
-                    delete calendar._id
-                    return calendar
+            .findOne(
+                {
+                    id: calendarId
+                },
+                {
+                    projection: {
+                        _id: 0
+                    }
                 }
-            })
+            )
     }
 
+    //Check this
     putCalendar(calendarId, calendar) {
         return this.db.collection('calendars')
             .updateOne({id: calendarId}, {$set: calendar})
@@ -42,16 +46,15 @@ class DataBaseCalendarMongo {
             })
     }
 
+    //TODO Mock
     postCalendar(userId, calendar) {
-
         return this.db.collection('calendars')
-            .insertOne(calendar).then(result => {
-                if (result.insertedCount !== 1) {
-                    return {'message': `Could not add calendar`}
-                } else {
-                    return calendar
-
-                }
+            .insertOne(calendar)
+            .then(result => {
+                if (result.ops.length === 0)
+                    return null
+                else
+                    return result.ops[0]
             })
     }
 
@@ -94,16 +97,20 @@ class DataBaseCalendarMongo {
             )
     }
 
+    //TODO Mock
     getCalendarName(calendarId) {
         return this.db.collection('calendars')
-            .findOne({id: calendarId})
-            .then(calendar => {
-                if (calendar === null) {
-                    return Promise.reject(error(404, 'Calendar Not Found'))
-                } else {
-                    return calendar.name
+            .findOne(
+                {
+                    id: calendarId
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        name: 1
+                    }
                 }
-            })
+            )
     }
 
     // item methods
@@ -116,7 +123,9 @@ class DataBaseCalendarMongo {
                     id: calendarId
                 },
                 {
-                    $push: {single: item}
+                    $push: {
+                        single: item
+                    }
                 },
                 {
                     returnOriginal: false,
@@ -344,73 +353,116 @@ class DataBaseCalendarMongo {
             )
     }
 
-    getCalendars(userId) {
-        return this.db.collection('users')
-            .findOne({id: [userId].toString()}, {projection: {calendars: 1, _id: 0}})
-            .then(calendarsObj => {
-                if (calendarsObj === undefined) {
-                    return {'message': `Could not find user ${userId}`}
-                }
-
-                return calendarsObj.calendars
-            })
-    }
-
     // participant methods
+    //TODO Mock
     getParticipants(calendarId) {
         return this.db.collection('calendars')
-            .findOne({id: [calendarId].toString()}, {projection: {participants: 1, _id: 0}})
-            .then(calendarsObj => {
-                if (calendarsObj === undefined) {
-                    return {'message': `Could not find calendar ${calendarId}`}
+            .findOne(
+                {
+                    id: calendarId
+                },
+                {
+                    projection: {
+                        participants: 1,
+                        _id: 0
+                    }
                 }
-                return calendarsObj.participants
-            })
+            )
     }
 
+    //TODO Mock
     postCalendarParticipant(calendarId, participant) {
         return this.db.collection('calendars')
-            .updateOne({id: calendarId}, {
-                $push: {participants: participant}
-            })
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${calendarId}`}
-                } else {
-                    return participant
+            .findOneAndUpdate(
+                {
+                    id: calendarId
+                },
+                {
+                    $push: {
+                        participants: participant
+                    }
+                },
+                {
+                    returnOriginal: false,
+                    projection: {
+                        _id: 0,
+                        participant: {
+                            $filter: {
+                                input: "$participant",
+                                as: "participant",
+                                cond: {$eq: ["$$participant.id", participant.id]}
+                            }
+                        }
+                    }
                 }
+            ).then(result => {
+                return result.value
             })
     }
 
+    //TODO Mock
     deleteParticipant(calendarId, participantId) {
         return this.db.collection('calendars')
-            .updateOne({id: calendarId}, {$pull: {participants: {"id": participantId}}})
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return {'message': `Could not find calendar ${calendarId}`}
-                } else {
-                    return {'message': `Deleted participant ${participantId}`}
+            .findOneAndUpdate(
+                {
+                    id: calendarId
+                },
+                {
+                    $pull: {
+                        participants:
+                            {
+                                "id": participantId
+                            }
+                    }
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        participants: {
+                            $filter: {
+                                input: "$participants",
+                                as: "participants",
+                                cond: {$eq: ["$$participants.id", participantId]}
+                            }
+                        }
+                    }
                 }
+            )
+            .then(result => {
+                return result.value
             })
     }
 
     //TODO Mock this
     putRole(calendarId, participantId, role) {
         return this.db.collection('calendars')
-            .findOneAndUpdate({id: calendarId, "participants.id": participantId},
+            .findOneAndUpdate(
+                {
+                    id: calendarId,
+                    "participants.id": participantId
+                },
                 {
                     $set: {
                         "participants.$.role": role
                     }
-                }, {returnOriginal: false})
+                },
+                {
+                    returnOriginal: false,
+                    projection: {
+                        _id: 0,
+                        participants: {
+                            $filter: {
+                                input: "$participants",
+                                as: "participants",
+                                cond: {$eq: ["$$participants.id", participantId]}
+                            }
+                        }
+                    }
+                })
             .then(result => {
-                return result.value.participants.find(par => par.id === participantId)
+                return result.value
             })
     }
-
-
 }
 
 module.exports = DataBaseCalendarMongo

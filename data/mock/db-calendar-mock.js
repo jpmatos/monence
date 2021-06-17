@@ -1,6 +1,6 @@
 const fs = require('fs').promises
 const path = require('path')
-const error = require('../object/error')
+const error = require('../../object/error')
 
 class DataBaseCalendarMock {
     constructor() {
