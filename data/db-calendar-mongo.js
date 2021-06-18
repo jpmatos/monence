@@ -19,7 +19,6 @@ class DataBaseCalendarMongo {
     }
 
     // Calendar methods
-    //TODO Check Mock
     getCalendar(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -34,7 +33,6 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Check Mock
     postCalendar(calendar) {
         return this.db.collection('calendars')
             .insertOne(calendar)
@@ -60,7 +58,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     deleteCalendar(calendarId) {
         return this.db.collection('calendars')
             .findOneAndDelete(
@@ -79,7 +76,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     getCalendarOwner(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -95,7 +91,6 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Check Mock
     getCalendarOwnerAndParticipant(calendarId, participantId) {
         return this.db.collection('calendars')
             .findOne(
@@ -118,7 +113,6 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Check Mock
     getCalendarOwnerAndName(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -135,8 +129,7 @@ class DataBaseCalendarMongo {
             )
     }
 
-    // item methods
-    //TODO Check Mock
+    // Item methods
     postItemSingle(calendarId, item) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -167,7 +160,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     postItemRecurrent(calendarId, item) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -196,7 +188,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     putItemSingle(calendarId, itemId, item) {
         const newItem = {}
         if (item.start)
@@ -233,7 +224,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     putItemRecurrent(calendarId, itemId, item) {
         const newItem = {}
         if (item.start)
@@ -272,7 +262,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     deleteItemSingle(calendarId, itemId) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -304,7 +293,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     deleteItemRecurrent(calendarId, itemId) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -332,8 +320,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //budget methods
-    //TODO Check Mock
+    // Budget methods
     postBudget(calendarId, budget) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -361,7 +348,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     putBudget(calendarId, budgetId, budget) {
         const newBudget = {}
         if (budget.date)
@@ -395,7 +381,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     deleteBudget(calendarId, budgetId) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -427,8 +412,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    // participant methods
-    //TODO Check Mock
+    // Participant methods
     getParticipants(calendarId) {
         return this.db.collection('calendars')
             .findOne(
@@ -444,7 +428,6 @@ class DataBaseCalendarMongo {
             )
     }
 
-    //TODO Check Mock
     postCalendarParticipant(calendarId, participant) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -460,11 +443,11 @@ class DataBaseCalendarMongo {
                     returnOriginal: false,
                     projection: {
                         _id: 0,
-                        participant: {
+                        participants: {
                             $filter: {
-                                input: "$participant",
-                                as: "participant",
-                                cond: {$eq: ["$$participant.id", participant.id]}
+                                input: "$participants",
+                                as: "participants",
+                                cond: {$eq: ["$$participants.id", participant.id]}
                             }
                         }
                     }
@@ -474,7 +457,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     deleteParticipant(calendarId, participantId) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
@@ -507,7 +489,6 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //TODO Check Mock
     putRole(calendarId, participantId, role) {
         return this.db.collection('calendars')
             .findOneAndUpdate(

@@ -3,7 +3,7 @@ const path = require('path')
 
 class DataBaseInviteMock {
     constructor() {
-        this.readFile(path.join(__dirname, './mock-data/invites.json'))
+        this.read = this.readFile(path.join(__dirname, './mock-data/invites.json'))
             .then(res => {
                 this.invites = res
             })
@@ -13,27 +13,58 @@ class DataBaseInviteMock {
         return new DataBaseInviteMock()
     }
 
-    postInvite(invite) {
-        this.invites.push(invite)
-        return Promise.resolve(invite)
+    isConnected() {
+        return this.read
     }
 
     getPending(userId) {
         const invites = this.invites.filter(inv => inv.inviteeId === userId)
+
         return Promise.resolve(invites)
     }
 
     getSent(calendarId) {
         const invites = this.invites.filter(inv => inv.calendarId === calendarId)
+
         return Promise.resolve(invites)
+    }
+
+    postInvite(invite) {
+        this.invites.push(invite)
+
+        return Promise.resolve(invite)
+    }
+
+    getInviteeId(inviteId) {
+        const invite = this.invites.find(invite => invite.id === inviteId)
+        if(!invite)
+            return null
+
+        return Promise.resolve({
+            'inviteeId': invite.inviteeId
+        })
+    }
+
+    getInviterId(inviteId) {
+        const invite = this.invites.find(invite => invite.id === inviteId)
+        if(!invite)
+            return null
+
+        return Promise.resolve({
+            'inviterId': invite.inviterId
+        })
     }
 
     deleteInvite(inviteId) {
         const invite = this.invites.find(invite => invite.id === inviteId)
+        if(!invite)
+            return null
+
+        const res = Object.assign({}, invite)
 
         this.invites = this.invites.filter(invite => invite.id !== inviteId)
 
-        return Promise.resolve(invite)
+        return Promise.resolve(res)
     }
 
     readFile(filePath) {

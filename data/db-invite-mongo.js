@@ -18,51 +18,6 @@ class DataBaseInviteMongo {
         return this.connect
     }
 
-    //TODO Check Mock
-    postInvite(invite) {
-        return this.db.collection('invites')
-            .insertOne(invite)
-            .then(result => {
-                if (result.ops.length === 0)
-                    return null
-                else
-                    return result.ops[0]
-            })
-    }
-
-    //TODO Check Mock
-    getInviteeId(inviteId) {
-        return this.db.collection('invites')
-            .findOne(
-                {
-                    id: inviteId
-                },
-                {
-                    projection: {
-                        _id: 0,
-                        inviteeId: 1
-                    }
-                }
-            )
-    }
-
-    //TODO Check Mock
-    getInviterId(inviteId) {
-        return this.db.collection('invites')
-            .findOne(
-                {
-                    id: inviteId
-                },
-                {
-                    projection: {
-                        _id: 0,
-                        inviterId: 1
-                    }
-                }
-            )
-    }
-
-    //TODO Check Mock
     getPending(userId) {
         return this.db.collection('invites')
             .find(
@@ -78,7 +33,6 @@ class DataBaseInviteMongo {
             ).toArray()
     }
 
-    //TODO Check Mock
     getSent(calendarId) {
         return this.db.collection('invites')
             .find(
@@ -94,7 +48,47 @@ class DataBaseInviteMongo {
             ).toArray()
     }
 
-    //TODO Check Mock
+    postInvite(invite) {
+        return this.db.collection('invites')
+            .insertOne(invite)
+            .then(result => {
+                if (result.ops.length === 0)
+                    return null
+                else
+                    return result.ops[0]
+            })
+    }
+
+    getInviteeId(inviteId) {
+        return this.db.collection('invites')
+            .findOne(
+                {
+                    id: inviteId
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        inviteeId: 1
+                    }
+                }
+            )
+    }
+
+    getInviterId(inviteId) {
+        return this.db.collection('invites')
+            .findOne(
+                {
+                    id: inviteId
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        inviterId: 1
+                    }
+                }
+            )
+    }
+
     deleteInvite(inviteId) {
         return this.db.collection('invites')
             .findOneAndDelete(

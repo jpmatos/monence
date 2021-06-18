@@ -64,6 +64,13 @@ describe('Monence tests for calendar database', () => {
     const budgetToUpdate = {
         "value": 250.00
     }
+    const participantToPost = {
+        'id': 'testuserid124',
+        'name': 'Test User 2',
+        'email': 'test.user2@gmail.com',
+        'role': 'Viewer'
+    }
+    const roleToUpdate = 'Viewer'
 
     before(() => {
         return dbCalendar.isConnected()
@@ -148,7 +155,7 @@ describe('Monence tests for calendar database', () => {
                 expect(calendar.owner.email).to.eql(calendarToPost.owner.email)
             })
     })
-    
+
     it('Should post a single item', () => {
         return dbCalendar.postItemSingle(calendarId, itemSingleToPost)
             .then(calendar => {
@@ -278,6 +285,58 @@ describe('Monence tests for calendar database', () => {
                 expect(budget.date).to.eql(budgetToPost.date)
                 expect(budget.value).to.eql(budgetToUpdate.value)
                 expect(budget.period).to.eql(budgetToPost.period)
+            })
+    })
+
+    it('Should post a participant', () => {
+        return dbCalendar.postCalendarParticipant(calendarId, participantToPost)
+            .then(calendar => {
+                expect(calendar.participants[0]).to.be.a('object')
+
+                const participant = calendar.participants[0]
+                expect(participant.id).to.eql(participantToPost.id)
+                expect(participant.name).to.eql(participantToPost.name)
+                expect(participant.email).to.eql(participantToPost.email)
+                expect(participant.role).to.eql(participantToPost.role)
+            })
+    })
+
+    it('Should get participants', () => {
+        return dbCalendar.getParticipants(calendarId)
+            .then(calendar => {
+                expect(calendar.participants[0]).to.be.a('object')
+
+                const participant = calendar.participants[0]
+                expect(participant.id).to.eql(participantToPost.id)
+                expect(participant.name).to.eql(participantToPost.name)
+                expect(participant.email).to.eql(participantToPost.email)
+                expect(participant.role).to.eql(participantToPost.role)
+            })
+    })
+
+    it('Should update role', () => {
+        return dbCalendar.putRole(calendarId, participantToPost.id, roleToUpdate)
+            .then(calendar => {
+                expect(calendar.participants[0]).to.be.a('object')
+
+                const participant = calendar.participants[0]
+                expect(participant.id).to.eql(participantToPost.id)
+                expect(participant.name).to.eql(participantToPost.name)
+                expect(participant.email).to.eql(participantToPost.email)
+                expect(participant.role).to.eql(participantToPost.role)
+            })
+    })
+
+    it('Should delete a participant', () => {
+        return dbCalendar.deleteParticipant(calendarId, participantToPost.id)
+            .then(calendar => {
+                expect(calendar.participants[0]).to.be.a('object')
+
+                const participant = calendar.participants[0]
+                expect(participant.id).to.eql(participantToPost.id)
+                expect(participant.name).to.eql(participantToPost.name)
+                expect(participant.email).to.eql(participantToPost.email)
+                expect(participant.role).to.eql(participantToPost.role)
             })
     })
 })

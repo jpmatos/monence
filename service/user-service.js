@@ -72,7 +72,7 @@ class UserService {
                 }
 
                 return Promise.all([
-                    this.dbCalendar.postCalendar(userId, calendar),
+                    this.dbCalendar.postCalendar(calendar),
                     this.dbUser.postCalendarToUser(userId, userCalendar)
                 ])
                     .then((res) => {
