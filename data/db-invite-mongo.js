@@ -3,7 +3,7 @@ const MongoClient = require('mongodb').MongoClient
 class DataBaseInviteMongo {
 
     constructor(connectionString) {
-        MongoClient.connect(connectionString,
+        this.connect = MongoClient.connect(connectionString,
             {useUnifiedTopology: true})
             .then(client => {
                 this.db = client.db('monenceDB')
@@ -12,6 +12,10 @@ class DataBaseInviteMongo {
 
     static init(connectionString) {
         return new DataBaseInviteMongo(connectionString)
+    }
+
+    isConnected() {
+        return this.connect
     }
 
     //TODO Check Mock
@@ -24,38 +28,6 @@ class DataBaseInviteMongo {
                 else
                     return result.ops[0]
             })
-    }
-
-    //TODO Check Mock
-    getPending(userId) {
-        return this.db.collection('invites')
-            .find(
-                {
-                    inviteeId: userId
-                },
-                {
-                    projection:
-                        {
-                            _id: 0
-                        }
-                }
-            ).toArray()
-    }
-
-    //TODO Check Mock
-    getSent(calendarId) {
-        return this.db.collection('invites')
-            .find(
-                {
-                    calendarId: calendarId
-                },
-                {
-                    projection:
-                        {
-                            _id: 0
-                        }
-                }
-            ).toArray()
     }
 
     //TODO Check Mock
@@ -88,6 +60,38 @@ class DataBaseInviteMongo {
                     }
                 }
             )
+    }
+
+    //TODO Check Mock
+    getPending(userId) {
+        return this.db.collection('invites')
+            .find(
+                {
+                    inviteeId: userId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
+                }
+            ).toArray()
+    }
+
+    //TODO Check Mock
+    getSent(calendarId) {
+        return this.db.collection('invites')
+            .find(
+                {
+                    calendarId: calendarId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
+                }
+            ).toArray()
     }
 
     //TODO Check Mock

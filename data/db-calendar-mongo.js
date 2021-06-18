@@ -1,10 +1,9 @@
 const MongoClient = require('mongodb').MongoClient
-const error = require('../object/error')
 
 class DataBaseCalendarMongo {
 
     constructor(connectionString) {
-        MongoClient.connect(connectionString,
+        this.connect = MongoClient.connect(connectionString,
             {useUnifiedTopology: true})
             .then(client => {
                 this.db = client.db('monenceDB')
@@ -13,6 +12,10 @@ class DataBaseCalendarMongo {
 
     static init(connectionString) {
         return new DataBaseCalendarMongo(connectionString)
+    }
+
+    isConnected() {
+        return this.connect
     }
 
     // Calendar methods
@@ -31,6 +34,18 @@ class DataBaseCalendarMongo {
             )
     }
 
+    //TODO Check Mock
+    postCalendar(calendar) {
+        return this.db.collection('calendars')
+            .insertOne(calendar)
+            .then(result => {
+                if (result.ops.length === 0)
+                    return null
+                else
+                    return result.ops[0]
+            })
+    }
+
     //Check this
     putCalendar(calendarId, calendar) {
         return this.db.collection('calendars')
@@ -46,14 +61,21 @@ class DataBaseCalendarMongo {
     }
 
     //TODO Check Mock
-    postCalendar(userId, calendar) {
+    deleteCalendar(calendarId) {
         return this.db.collection('calendars')
-            .insertOne(calendar)
+            .findOneAndDelete(
+                {
+                    id: calendarId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
+                }
+            )
             .then(result => {
-                if (result.ops.length === 0)
-                    return null
-                else
-                    return result.ops[0]
+                return result.value
             })
     }
 
@@ -251,29 +273,63 @@ class DataBaseCalendarMongo {
     }
 
     //TODO Check Mock
+    deleteItemSingle(calendarId, itemId) {
+        return this.db.collection('calendars')
+            .findOneAndUpdate(
+                {
+                    id: calendarId
+                },
+                {
+                    $pull: {
+                        single: {
+                            "id": itemId
+                        }
+                    }
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        single: {
+                            $filter: {
+                                input: "$single",
+                                as: "single",
+                                cond: {$eq: ["$$single.id", itemId]}
+                            }
+                        }
+                    }
+                }
+            )
+            .then(result => {
+                return result.value
+            })
+    }
+
+    //TODO Check Mock
     deleteItemRecurrent(calendarId, itemId) {
         return this.db.collection('calendars')
-            .updateOne(
+            .findOneAndUpdate(
                 {
                     id: calendarId
                 },
                 {
                     $pull: {recurrent: {"id": itemId}}
-                }
-            )
-    }
-
-    //TODO Check Mock
-    deleteItemSingle(calendarId, itemId) {
-        return this.db.collection('calendars')
-            .updateOne(
-                {
-                    id: calendarId
                 },
                 {
-                    $pull: {single: {"id": itemId}}
+                    projection: {
+                        _id: 0,
+                        recurrent: {
+                            $filter: {
+                                input: "$recurrent",
+                                as: "recurrent",
+                                cond: {$eq: ["$$recurrent.id", itemId]}
+                            }
+                        }
+                    }
                 }
             )
+            .then(result => {
+                return result.value
+            })
     }
 
     //budget methods
@@ -342,14 +398,33 @@ class DataBaseCalendarMongo {
     //TODO Check Mock
     deleteBudget(calendarId, budgetId) {
         return this.db.collection('calendars')
-            .updateOne(
+            .findOneAndUpdate(
                 {
                     id: calendarId
                 },
                 {
-                    $pull: {budget: {"id": budgetId}}
+                    $pull: {
+                        budget: {
+                            "id": budgetId
+                        }
+                    }
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        budget: {
+                            $filter: {
+                                input: "$budget",
+                                as: "budget",
+                                cond: {$eq: ["$$budget.id", budgetId]}
+                            }
+                        }
+                    }
                 }
             )
+            .then(result => {
+                return result.value
+            })
     }
 
     // participant methods

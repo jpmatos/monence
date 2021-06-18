@@ -1,9 +1,8 @@
 const MongoClient = require('mongodb').MongoClient
-const error = require('../object/error')
 
 class DataBaseUserMongo {
     constructor(connectionString) {
-        MongoClient.connect(connectionString,
+        this.connect = MongoClient.connect(connectionString,
             {
                 useUnifiedTopology: true
             })
@@ -14,6 +13,10 @@ class DataBaseUserMongo {
 
     static init(connectionString) {
         return new DataBaseUserMongo(connectionString)
+    }
+
+    isConnected() {
+        return this.connect
     }
 
     //TODO Check Mock
@@ -29,11 +32,45 @@ class DataBaseUserMongo {
     }
 
     //TODO Check Mock
+    deleteUser(userId) {
+        return this.db.collection('users')
+            .findOneAndDelete(
+                {
+                    id: userId
+                },
+                {
+                    projection:
+                        {
+                            _id: 0
+                        }
+                }
+            )
+            .then(result => {
+                return result.value
+            })
+    }
+
+    //TODO Check Mock
     getUser(userId) {
         return this.db.collection('users')
             .findOne(
                 {
                     id: userId
+                },
+                {
+                    projection: {
+                        _id: 0
+                    }
+                }
+            )
+    }
+
+    //TODO Check Mock
+    getUserByEmail(email) {
+        return this.db.collection('users')
+            .findOne(
+                {
+                    email: email
                 },
                 {
                     projection: {
@@ -72,21 +109,6 @@ class DataBaseUserMongo {
             .then(result => {
                 return result.value
             })
-    }
-
-    //TODO Check Mock
-    getUserByEmail(email) {
-        return this.db.collection('users')
-            .findOne(
-                {
-                    email: email
-                },
-                {
-                    projection: {
-                        _id: 0
-                    }
-                }
-            )
     }
 
     //TODO Check Mock
