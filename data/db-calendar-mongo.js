@@ -44,17 +44,22 @@ class DataBaseCalendarMongo {
             })
     }
 
-    //Check this
-    putCalendar(calendarId, calendar) {
+    putCalendarShare(calendarId, share) {
+        const newCalendar = {}
+        if(share)
+            newCalendar.share = share
+
         return this.db.collection('calendars')
-            .updateOne({id: calendarId}, {$set: calendar})
-            .then(result => {
-                // check if update succeeded
-                if (result.modifiedCount !== 1) {
-                    return Promise.reject(`Calendar Not Found`)
-                } else {
-                    return calendar
+            .findOneAndUpdate(
+                {
+                    id: calendarId
+                },
+                {
+                    $set: newCalendar
                 }
+            )
+            .then(result => {
+                return result.value
             })
     }
 

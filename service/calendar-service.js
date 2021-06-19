@@ -63,32 +63,38 @@ class CalendarService {
                 ])
             })
             .then(res => {
-                return res[0].participants[0]
+                const calendar = res[0]
+                if(calendar.participants.length === 0)
+                    return Promise.reject(error(404, 'Participant Not Found'))
+
+                return calendar.participants[0]
             })
     }
 
     changeRole(calendarId, participantId, role, userId) {
         return this.dbCalendar.getCalendarOwner(calendarId)
-            .then((calendar) => {
+            .then(calendar => {
                 if (!calendar ||
                     !roleCheck.isOwner(calendar, userId))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbCalendar.putRole(calendarId, participantId, role.role)
             })
+            .then(calendar => {
+                if(calendar.length === 0)
+                    return Promise.reject(error(404, 'Participant Not Found'))
+
+                return calendar.participants[0]
+            })
     }
 
-    //TODO Check this put
     putShare(calendarId, userId) {
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
                 if (!roleCheck.isOwner(calendar, userId))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                calendar.share = 'Shared'
-                calendar.participants = []
-
-                return this.dbCalendar.putCalendar(calendarId, calendar)
+                return this.dbCalendar.putCalendarShare(calendarId, 'Shared')
             })
     }
 
@@ -119,6 +125,9 @@ class CalendarService {
                 return this.dbCalendar.postItemSingle(calendarId, item)
             })
             .then(calendar => {
+                if(calendar.single.length === 0)
+                    return Promise.reject(error(500, 'Failed to add item'))
+
                 return calendar.single[0]
             })
     }
@@ -153,6 +162,9 @@ class CalendarService {
                 return this.dbCalendar.putItemSingle(calendarId, itemId, item)
             })
             .then(calendar => {
+                if(calendar.single.length === 0)
+                    return Promise.reject(error(500, 'Failed to add item'))
+
                 return calendar.single[0]
             })
     }
@@ -175,8 +187,11 @@ class CalendarService {
 
                 return this.dbCalendar.deleteItemSingle(calendarId, itemId, 'single')
             })
-            .then(() => {
-                return {'message': `Deleted item with id ${itemId}`}
+            .then((calendar) => {
+                if(calendar.single.length === 0)
+                    return Promise.reject(error(500, 'Failed to delete item'))
+
+                return calendar.single[0]
             })
     }
 
@@ -210,6 +225,9 @@ class CalendarService {
                 return this.dbCalendar.postItemRecurrent(calendarId, item)
             })
             .then(calendar => {
+                if(calendar.recurrent.length === 0)
+                    return Promise.reject(error(500, 'Failed to add item'))
+
                 return calendar.recurrent[0]
             })
     }
@@ -246,6 +264,9 @@ class CalendarService {
                 return this.dbCalendar.putItemRecurrent(calendarId, itemId, item, 'recurrent')
             })
             .then(calendar => {
+                if(calendar.recurrent.length === 0)
+                    return Promise.reject(error(500, 'Failed to update item'))
+
                 return calendar.recurrent[0]
             })
     }
@@ -268,8 +289,11 @@ class CalendarService {
 
                 return this.dbCalendar.deleteItemRecurrent(calendarId, itemId)
             })
-            .then(() => {
-                return {'message': `Deleted item with id ${itemId}`}
+            .then((calendar) => {
+                if(calendar.recurrent.length === 0)
+                    return Promise.reject(error(500, 'Failed to delete item'))
+
+                return calendar.recurrent[0]
             })
     }
 
@@ -300,6 +324,9 @@ class CalendarService {
                 return this.dbCalendar.postBudget(calendarId, budget)
             })
             .then(calendar => {
+                if(calendar.budget.length === 0)
+                    return Promise.reject(error(500, 'Failed to add budget'))
+
                 return calendar.budget[0]
             })
     }
@@ -334,6 +361,9 @@ class CalendarService {
                 return this.dbCalendar.putBudget(calendarId, budgetId, budget)
             })
             .then(calendar => {
+                if(calendar.budget.length === 0)
+                    return Promise.reject(error(500, 'Failed to update budget'))
+
                 return calendar.budget[0]
             })
     }
@@ -356,8 +386,11 @@ class CalendarService {
 
                 return this.dbCalendar.deleteBudget(calendarId, budgetId)
             })
-            .then(() => {
-                return {'message': `Deleted item with id ${budgetId}`}
+            .then((calendar) => {
+                if(calendar.budget.length === 0)
+                    return Promise.reject(error(500, 'Failed to delete budget'))
+
+                return calendar.budget[0]
             })
     }
 }

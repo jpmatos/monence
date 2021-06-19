@@ -59,7 +59,7 @@ class ViewItemFormDialog extends React.Component {
 
         let value = this.state.value
         if (typeof (value) === 'string')
-            value = parseFloat(value.replaceAll(',', ''))
+            value = parseFloat(value.replace(/,/g, ''))
         const item = {
             'title': this.state.itemTitle,
             'start': this.state.selectedDate,

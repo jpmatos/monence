@@ -32,30 +32,30 @@ class DataBaseUserMock {
     }
 
     deleteUser(userId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
+        const user = this.users.find(user => user.id === userId)
+        if (!user)
             return Promise.resolve(null)
 
-        const res = Object.assign({}, this.users[userIdx])
+        const res = Object.assign({}, user)
         this.users = this.users.filter(user => user.id !== userId)
 
         return Promise.resolve(res)
     }
 
     getUserByEmail(email) {
-        const userIdx = this.users.findIndex(user => user.email === email)
-        if (userIdx === -1)
+        const user = this.users.find(user => user.email === email)
+        if (!user)
             return Promise.resolve(null)
 
-        return Promise.resolve(this.users[userIdx])
+        return Promise.resolve(user)
     }
 
     postCalendarToUser(userId, userCalendar) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
+        const user = this.users.find(user => user.id === userId)
+        if (!user)
             return Promise.resolve(null)
 
-        this.users[userIdx].calendars.push(userCalendar)
+        user.calendars.push(userCalendar)
 
         return Promise.resolve({
             "calendars": [userCalendar]
@@ -63,11 +63,11 @@ class DataBaseUserMock {
     }
 
     postParticipating(userId, participating) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
+        const user = this.users.find(user => user.id === userId)
+        if (!user)
             return Promise.resolve(null)
 
-        this.users[userIdx].participating.push(participating)
+        user.participating.push(participating)
 
         return Promise.resolve(
             {
@@ -77,14 +77,14 @@ class DataBaseUserMock {
     }
 
     deleteParticipating(userId, calendarId) {
-        const userIdx = this.users.findIndex(user => user.id === userId)
-        if (userIdx === -1)
+        const user = this.users.find(user => user.id === userId)
+        if (!user)
             return Promise.resolve(null)
 
-        const participatingIdx = this.users[userIdx].participating.findIndex(calendar => calendar.calendarId === calendarId)
-        const res = Object.assign({}, this.users[userIdx].participating[participatingIdx])
+        const participating = user.participating.find(calendar => calendar.calendarId === calendarId)
+        const res = Object.assign({}, participating)
 
-        this.users[userIdx].participating = this.users[userIdx].participating.filter(calendar => calendar.calendarId !== calendarId)
+        user.participating = user.participating.filter(calendar => calendar.calendarId !== calendarId)
 
         return Promise.resolve({
             'participating': [res]

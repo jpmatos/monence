@@ -22,11 +22,11 @@ class DataBaseCalendarMock {
     }
 
     getCalendar(calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        return Promise.resolve(this.calendars[calendarIdx])
+        return Promise.resolve(calendar)
     }
 
     postCalendar(calendar) {
@@ -35,90 +35,92 @@ class DataBaseCalendarMock {
         return Promise.resolve(calendar)
     }
 
-    // putCalendar(calendarId, calendar) {
-    //     const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-    //     if (calendarIdx === -1)
-    //         return Promise.reject(`Calendar Not Found`)
-    //
-    //     this.calendars[calendarIdx] = calendar
-    //
-    //     return Promise.resolve(calendar)
-    // }
-
-    deleteCalendar(calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+    putCalendarShare(calendarId, share) {
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const res = Object.assign({}, this.calendars[calendarIdx])
+        calendar.share = !share ? calendar.share : share
+
+        return Promise.resolve(calendar)
+    }
+
+    deleteCalendar(calendarId) {
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
+            return Promise.resolve(null)
+
+        const res = Object.assign({}, calendar)
         this.calendars = this.calendars.filter(calendar => calendar.id !== calendarId)
 
         return Promise.resolve(res)
     }
 
     getCalendarOwner(calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
         return Promise.resolve({
-            "owner": this.calendars[calendarIdx].owner
+            "owner": calendar.owner
         })
     }
 
     getCalendarOwnerAndParticipant(calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
         return Promise.resolve({
-            "owner": this.calendars[calendarIdx].owner,
-            "participants": this.calendars[calendarIdx].participants
+            "owner": calendar.owner,
+            "participants": calendar.participants
         })
     }
 
     getCalendarOwnerAndName(calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
         return Promise.resolve({
-            "owner": this.calendars[calendarIdx].owner,
-            "name": this.calendars[calendarIdx].name
+            "owner": calendar.owner,
+            "name": calendar.name
         })
     }
 
     postItemSingle(calendarId, item) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        this.calendars[calendarIdx].single.push(item)
+        calendar.single.push(item)
+
         return Promise.resolve({
             "single": [item]
         })
     }
 
     postItemRecurrent(calendarId, item) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        this.calendars[calendarIdx].recurrent.push(item)
+        calendar.recurrent.push(item)
+
         return Promise.resolve({
             "recurrent": [item]
         })
     }
 
     putItemSingle(calendarId, itemId, item) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const itemIdx = this.calendars[calendarIdx].single.findIndex(i => i.id === itemId)
-        const currItem = this.calendars[calendarIdx].single[itemIdx]
+        const itemIdx = calendar.single.findIndex(i => i.id === itemId)
+        const currItem = calendar.single[itemIdx]
 
-        this.calendars[calendarIdx].single[itemIdx] = {
+        calendar.single[itemIdx] = {
             'id': currItem.id,
             'title': !item.title || item.title.length === 0 ? currItem.title : item.title,
             'recurrency': currItem.recurrency,
@@ -128,20 +130,20 @@ class DataBaseCalendarMock {
         }
 
         return Promise.resolve({
-                "single": [this.calendars[calendarIdx].single[itemIdx]]
+                "single": [calendar.single[itemIdx]]
             }
         )
     }
 
     putItemRecurrent(calendarId, itemId, item) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const itemIdx = this.calendars[calendarIdx].recurrent.findIndex(i => i.id === itemId)
-        const currItem = this.calendars[calendarIdx].recurrent[itemIdx]
+        const itemIdx = calendar.recurrent.findIndex(i => i.id === itemId)
+        const currItem = calendar.recurrent[itemIdx]
 
-        this.calendars[calendarIdx].recurrent[itemIdx] = {
+        calendar.recurrent[itemIdx] = {
             'id': currItem.id,
             'title': !item.title || item.title.length === 0 ? currItem.title : item.title,
             'recurrency': currItem.recurrency,
@@ -154,20 +156,20 @@ class DataBaseCalendarMock {
 
         return Promise.resolve(
             {
-                "recurrent": [this.calendars[calendarIdx].recurrent[itemIdx]]
+                "recurrent": [calendar.recurrent[itemIdx]]
             }
         )
     }
 
     deleteItemSingle(calendarId, itemId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const itemIdx = this.calendars[calendarIdx].single.findIndex(i => i.id === itemId)
-        const res = Object.assign({}, this.calendars[calendarIdx].single[itemIdx])
+        const item = calendar.single.find(i => i.id === itemId)
+        const res = Object.assign({}, item)
 
-        this.calendars[calendarIdx].single = this.calendars[calendarIdx].single.filter((item) => item.id !== itemId)
+        calendar.single = calendar.single.filter((item) => item.id !== itemId)
 
         return Promise.resolve({
             "single": [res]
@@ -175,14 +177,14 @@ class DataBaseCalendarMock {
     }
 
     deleteItemRecurrent(calendarId, itemId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const itemIdx = this.calendars[calendarIdx].recurrent.findIndex(i => i.id === itemId)
-        const res = Object.assign({}, this.calendars[calendarIdx].recurrent[itemIdx])
+        const item = calendar.recurrent.find(i => i.id === itemId)
+        const res = Object.assign({}, item)
 
-        this.calendars[calendarIdx].recurrent = this.calendars[calendarIdx].recurrent.filter((item) => item.id !== itemId)
+        calendar.recurrent = calendar.recurrent.filter((item) => item.id !== itemId)
 
         return Promise.resolve({
             "recurrent": [res]
@@ -190,11 +192,11 @@ class DataBaseCalendarMock {
     }
 
     postBudget(calendarId, budget) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        this.calendars[calendarIdx].budget.push(budget)
+        calendar.budget.push(budget)
 
         return Promise.resolve({
             "budget": [budget]
@@ -202,14 +204,14 @@ class DataBaseCalendarMock {
     }
 
     putBudget(calendarId, budgetId, budget) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const budgetIdx = this.calendars[calendarIdx].budget.findIndex(i => i.id === budgetId)
-        const currBudget = this.calendars[calendarIdx].budget[budgetIdx]
+        const budgetIdx = calendar.budget.findIndex(i => i.id === budgetId)
+        const currBudget = calendar.budget[budgetIdx]
 
-        this.calendars[calendarIdx].budget[budgetIdx] = {
+        calendar.budget[budgetIdx] = {
             'id': currBudget.id,
             'date': !budget.date ? currBudget.date : budget.date,
             'value': !budget.value ? currBudget.value : budget.value,
@@ -218,20 +220,20 @@ class DataBaseCalendarMock {
 
         return Promise.resolve(
             {
-                "budget": [this.calendars[calendarIdx].budget[budgetIdx]]
+                "budget": [calendar.budget[budgetIdx]]
             }
         )
     }
 
     deleteBudget(calendarId, budgetId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const budgetIdx = this.calendars[calendarIdx].budget.findIndex(i => i.id === budgetId)
-        const res = Object.assign({}, this.calendars[calendarIdx].budget[budgetIdx])
+        const budget = calendar.budget.find(i => i.id === budgetId)
+        const res = Object.assign({}, budget)
 
-        this.calendars[calendarIdx].budget = this.calendars[calendarIdx].budget.filter((budget) => budget.id !== budgetId)
+        calendar.budget = calendar.budget.filter((budget) => budget.id !== budgetId)
 
         return Promise.resolve({
             "budget": [res]
@@ -239,22 +241,22 @@ class DataBaseCalendarMock {
     }
 
     getParticipants(calendarId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
         return Promise.resolve({
-                "participants": this.calendars[calendarIdx].participants
+                "participants": calendar.participants
             }
         )
     }
 
     postCalendarParticipant(calendarId, participant) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        this.calendars[calendarIdx].participants.push(participant)
+        calendar.participants.push(participant)
 
         return Promise.resolve({
             "participants": [participant]
@@ -262,14 +264,14 @@ class DataBaseCalendarMock {
     }
 
     deleteParticipant(calendarId, participantId) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const participantIdx = this.calendars[calendarIdx].participants.findIndex(i => i.id === participantId)
-        const res = Object.assign({}, this.calendars[calendarIdx].participants[participantIdx])
+        const participant = calendar.participants.find(i => i.id === participantId)
+        const res = Object.assign({}, participant)
 
-        this.calendars[calendarIdx].participants = this.calendars[calendarIdx].participants.filter(participant => participant.id !== participantId)
+        calendar.participants = calendar.participants.filter(participant => participant.id !== participantId)
 
         return Promise.resolve(
             {
@@ -279,14 +281,14 @@ class DataBaseCalendarMock {
     }
 
     putRole(calendarId, participantId, role) {
-        const calendarIdx = this.calendars.findIndex(calendar => calendar.id === calendarId)
-        if (calendarIdx === -1)
+        const calendar = this.calendars.find(calendar => calendar.id === calendarId)
+        if (!calendar)
             return Promise.resolve(null)
 
-        const participantIdx = this.calendars[calendarIdx].participants.findIndex(i => i.id === participantId)
-        const currParticipant = this.calendars[calendarIdx].participants[participantIdx]
+        const participantIdx = calendar.participants.findIndex(i => i.id === participantId)
+        const currParticipant = calendar.participants[participantIdx]
 
-        this.calendars[calendarIdx].participants[participantIdx] = {
+        calendar.participants[participantIdx] = {
             'id': currParticipant.id,
             'name': currParticipant.name,
             'email': currParticipant.email,
@@ -295,7 +297,7 @@ class DataBaseCalendarMock {
 
         return Promise.resolve(
             {
-                "participants": [this.calendars[calendarIdx].participants[participantIdx]]
+                "participants": [calendar.participants[participantIdx]]
             }
         )
     }

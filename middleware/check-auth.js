@@ -1,7 +1,8 @@
 const error = require('../object/error')
 
 function checkAuth(req, res, next) {
-    if (process.env.REQUIRES_AUTH === 'true') {
+    // if (process.env.REQUIRES_AUTH === 'true') {
+    if (true) { //Ignore REQUIRES_AUTH for now
         if (req.isAuthenticated())
             next()
         else {

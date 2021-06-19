@@ -93,7 +93,11 @@ class InviteService {
                 ])
             })
             .then(res => {
-                return res[0].participating[0]
+                const user = res[0]
+                if(user.participating.length === 0)
+                    return Promise.reject(error(500, 'Failed to register user as participant'))
+
+                return user.participating[0]
             })
     }
 
@@ -109,7 +113,7 @@ class InviteService {
                 if(!invite)
                     return Promise.reject(error(404, 'Invite Not Found'))
 
-                return {'message': 'Deleted invite'}
+                return invite
             })
     }
 
@@ -125,7 +129,7 @@ class InviteService {
                 if(!invite)
                     return Promise.reject(error(404, 'Invite Not Found'))
 
-                return {'message': 'Declined invite'}
+                return invite
             })
     }
 }

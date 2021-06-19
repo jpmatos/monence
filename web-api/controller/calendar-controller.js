@@ -41,7 +41,7 @@ class CalendarController {
         const participantId = req.params.userId
         return this.calendarService
             .deleteParticipant(calendarId, participantId, userId)
-            .then(msg => res.status(201).json(success(msg)))
+            .then(participants => res.status(201).json(success(participants)))
             .catch(next)
     }
 
@@ -81,7 +81,7 @@ class CalendarController {
         const itemId = req.params.itemId
         return this.calendarService
             .deleteItem(calendarId, itemId, userId)
-            .then(msg => res.status(201).json(success(msg)))
+            .then(item => res.status(201).json(success(item)))
             .catch(next)
     }
 
@@ -113,7 +113,7 @@ class CalendarController {
         const itemId = req.params.itemId
         return this.calendarService
             .deleteItemRecurrent(calendarId, itemId, userId)
-            .then(msg => res.status(201).json(success(msg)))
+            .then(item => res.status(201).json(success(item)))
             .catch(next)
     }
 
@@ -156,40 +156,9 @@ class CalendarController {
         const budgetId = req.params.budgetId
         return this.calendarService
             .deleteBudget(calendarId, budgetId, userId)
-            .then(msg => res.status(201).json(success(msg)))
+            .then(budget => res.status(201).json(success(budget)))
             .catch(next)
     }
-
-    //Invites
-    // getInvites(req, res, next) {
-    //     const userId = req.user.id
-    //     const calendarId = req.params.calendarId
-    //     return this.calendarService
-    //         .getInvites(calendarId, userId)
-    //         .then(invites => res.status(200).json(success(invites)))
-    //         .catch(next)
-    // }
-    //
-    // postInvite(req, res, next) {
-    //     const userId = req.user.id
-    //     const username = req.user.displayName
-    //     const calendarId = req.params.calendarId
-    //     const invite = req.body
-    //     return this.calendarService
-    //         .postInvite(calendarId, invite, username, userId)
-    //         .then(invite => res.status(201).json(success(invite)))
-    //         .catch(next)
-    // }
-    //
-    // deleteInvite(req, res, next) {
-    //     const userId = req.user.id
-    //     const calendarId = req.params.calendarId
-    //     const inviteId = req.params.inviteId
-    //     return this.calendarService
-    //         .deleteInvite(calendarId, inviteId, userId)
-    //         .then(msg => res.status(201).json(success(msg)))
-    //         .catch(next)
-    // }
 }
 
 module.exports = CalendarController
