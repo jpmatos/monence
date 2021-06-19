@@ -31,7 +31,8 @@ class CalendarContextBinder extends React.Component {
             handleRemoveParticipant: this.handleRemoveParticipant,
             handleRefreshParticipants: this.handleRefreshParticipants,
             handleChangeRole: this.handleChangeRole,
-            handleLeaveCalendar: this.handleLeaveCalendar
+            handleLeaveCalendar: this.handleLeaveCalendar,
+            handleDeleteCalendar: this.handleDeleteCalendar
         }
     }
 
@@ -219,6 +220,18 @@ class CalendarContextBinder extends React.Component {
             })
     }
 
+    handleDeleteCalendar = () => {
+        return axios.delete(`/calendar/${this.state.calendarId}`)
+            .then(res => {
+                const oldCalendarId = this.state.calendarId
+                const newCalendarId = this.context.handleDeleteCalendar(oldCalendarId)
+
+                this.setState({
+                    calendarId: newCalendarId
+                })
+            })
+    }
+
     buildSingleItem(item, currency, ignoreExchange) {
         currency = currency ?? this.state.currency
         let current = Object.assign({}, item)
@@ -279,6 +292,7 @@ class CalendarContextBinder extends React.Component {
                         items = items.concat(this.buildRecurrentItem(item, calendar.currency, true))
                     })
 
+                    window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + this.state.calendarId)
                     this.setState({
                         calendarId: this.state.calendarId,
                         calendar: calendar,
@@ -286,7 +300,6 @@ class CalendarContextBinder extends React.Component {
                         currency: calendar.currency
                     })
                 })
-                .catch()    //TODO
         }
     }
 
@@ -317,7 +330,6 @@ class CalendarContextBinder extends React.Component {
                     currency: calendar.currency
                 })
             })
-            .catch()    //TODO
         this.setState({
             calendarDate: moment.now()
         })

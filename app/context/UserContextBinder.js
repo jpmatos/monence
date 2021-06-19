@@ -15,7 +15,8 @@ class UserContextBinder extends React.Component {
             handleCreateCalendar: this.handleCreateCalendar,
             handleLogout: this.handleLogout,
             handleNewParticipating: this.handleNewParticipating,
-            handleLeaveCalendar: this.handleLeaveCalendar
+            handleLeaveCalendar: this.handleLeaveCalendar,
+            handleDeleteCalendar: this.handleDeleteCalendar
         }
     }
 
@@ -59,6 +60,15 @@ class UserContextBinder extends React.Component {
         this.setState({
             user: user
         })
+    }
+
+    handleDeleteCalendar = (calendarId) => {
+        const user = this.state.user
+        user.calendars = user.calendars.filter(calendar => calendar.id !== calendarId)
+        this.setState({
+            user: user
+        })
+        return user.calendars[0].id
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

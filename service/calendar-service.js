@@ -36,6 +36,32 @@ class CalendarService {
             })
     }
 
+    deleteCalendar(calendarId, userId) {
+        return this.dbCalendar.getCalendarOwner(calendarId)
+            .then(calendar => {
+                if (!calendar || !roleCheck.isOwner(calendar, userId))
+                    return Promise.reject(error(404, 'Calendar Not Found'))
+
+                return this.dbCalendar.getParticipants(calendarId)
+            })
+            .then(calendar => {
+                const promises = []
+                promises.push(Promise.resolve(calendar.participants))
+
+                calendar.participants.forEach(participant => {
+                    promises.push(this.dbUser.deleteParticipating(participant.id, calendarId))
+                })
+
+                promises.push(this.dbCalendar.deleteCalendar(calendarId))
+                promises.push(this.dbUser.deleteCalendar(userId, calendarId))
+
+                return Promise.all(promises)
+            })
+            .then(res => {
+                return res[0]
+            })
+    }
+
     getParticipants(userId, calendarId) {
         return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
@@ -64,7 +90,7 @@ class CalendarService {
             })
             .then(res => {
                 const calendar = res[0]
-                if(calendar.participants.length === 0)
+                if (calendar.participants.length === 0)
                     return Promise.reject(error(404, 'Participant Not Found'))
 
                 return calendar.participants[0]
@@ -81,7 +107,7 @@ class CalendarService {
                 return this.dbCalendar.putRole(calendarId, participantId, role.role)
             })
             .then(calendar => {
-                if(calendar.length === 0)
+                if (calendar.length === 0)
                     return Promise.reject(error(404, 'Participant Not Found'))
 
                 return calendar.participants[0]
@@ -116,7 +142,7 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 item.recurrency = 'single'
@@ -125,7 +151,7 @@ class CalendarService {
                 return this.dbCalendar.postItemSingle(calendarId, item)
             })
             .then(calendar => {
-                if(calendar.single.length === 0)
+                if (calendar.single.length === 0)
                     return Promise.reject(error(500, 'Failed to add item'))
 
                 return calendar.single[0]
@@ -156,13 +182,13 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.putItemSingle(calendarId, itemId, item)
             })
             .then(calendar => {
-                if(calendar.single.length === 0)
+                if (calendar.single.length === 0)
                     return Promise.reject(error(500, 'Failed to add item'))
 
                 return calendar.single[0]
@@ -182,13 +208,13 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.deleteItemSingle(calendarId, itemId, 'single')
             })
             .then((calendar) => {
-                if(calendar.single.length === 0)
+                if (calendar.single.length === 0)
                     return Promise.reject(error(500, 'Failed to delete item'))
 
                 return calendar.single[0]
@@ -216,7 +242,7 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 item.recurrency = 'recurrent'
@@ -225,7 +251,7 @@ class CalendarService {
                 return this.dbCalendar.postItemRecurrent(calendarId, item)
             })
             .then(calendar => {
-                if(calendar.recurrent.length === 0)
+                if (calendar.recurrent.length === 0)
                     return Promise.reject(error(500, 'Failed to add item'))
 
                 return calendar.recurrent[0]
@@ -258,13 +284,13 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.putItemRecurrent(calendarId, itemId, item, 'recurrent')
             })
             .then(calendar => {
-                if(calendar.recurrent.length === 0)
+                if (calendar.recurrent.length === 0)
                     return Promise.reject(error(500, 'Failed to update item'))
 
                 return calendar.recurrent[0]
@@ -284,13 +310,13 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.deleteItemRecurrent(calendarId, itemId)
             })
             .then((calendar) => {
-                if(calendar.recurrent.length === 0)
+                if (calendar.recurrent.length === 0)
                     return Promise.reject(error(500, 'Failed to delete item'))
 
                 return calendar.recurrent[0]
@@ -316,7 +342,7 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 budget.id = uuid.generate()
@@ -324,7 +350,7 @@ class CalendarService {
                 return this.dbCalendar.postBudget(calendarId, budget)
             })
             .then(calendar => {
-                if(calendar.budget.length === 0)
+                if (calendar.budget.length === 0)
                     return Promise.reject(error(500, 'Failed to add budget'))
 
                 return calendar.budget[0]
@@ -355,13 +381,13 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.putBudget(calendarId, budgetId, budget)
             })
             .then(calendar => {
-                if(calendar.budget.length === 0)
+                if (calendar.budget.length === 0)
                     return Promise.reject(error(500, 'Failed to update budget'))
 
                 return calendar.budget[0]
@@ -381,13 +407,13 @@ class CalendarService {
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
+                if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
                 return this.dbCalendar.deleteBudget(calendarId, budgetId)
             })
             .then((calendar) => {
-                if(calendar.budget.length === 0)
+                if (calendar.budget.length === 0)
                     return Promise.reject(error(500, 'Failed to delete budget'))
 
                 return calendar.budget[0]

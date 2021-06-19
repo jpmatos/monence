@@ -62,6 +62,21 @@ class DataBaseUserMock {
         })
     }
 
+    deleteCalendar(userId, calendarId) {
+        const user = this.users.find(user => user.id === userId)
+        if (!user)
+            return Promise.resolve(null)
+
+        const calendar = user.calendars.find(cal => cal.id === calendarId)
+        const res = Object.assign({}, calendar)
+
+        user.calendars = user.calendars.filter(cal => cal.id !== calendarId)
+
+        return Promise.resolve({
+            "calendars": [res]
+        })
+    }
+
     postParticipating(userId, participating) {
         const user = this.users.find(user => user.id === userId)
         if (!user)

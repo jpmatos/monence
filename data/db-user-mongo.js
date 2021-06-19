@@ -106,6 +106,37 @@ class DataBaseUserMongo {
             })
     }
 
+    deleteCalendar(userId, calendarId){
+        return this.db.collection('users')
+            .findOneAndUpdate(
+                {
+                    id: userId
+                },
+                {
+                    $pull: {
+                        calendars: {
+                            "id": calendarId
+                        }
+                    }
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        calendars: {
+                            $filter: {
+                                input: "$calendars",
+                                as: "calendars",
+                                cond: {$eq: ["$$calendars.id", calendarId]}
+                            }
+                        }
+                    }
+                }
+            )
+            .then(result => {
+                return result.value
+            })
+    }
+
     postParticipating(userId, participating) {
         return this.db.collection('users')
             .findOneAndUpdate(

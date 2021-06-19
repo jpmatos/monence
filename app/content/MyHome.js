@@ -17,6 +17,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import PromptConfirm from "../components/PromptConfirm";
 
 const useStyles = (theme => ({
     large: {
@@ -55,8 +56,13 @@ class MyHome extends React.Component {
             calendarName: null,
             validCalendarName: true,
             currency: 'EUR',
-            isRefreshInvitesDisabled: false
+            isRefreshInvitesDisabled: false,
+            isDeletePromptOpen: false
         }
+    }
+
+    setDeletePrompt = (event) => {
+        this.setState({isDeletePromptOpen: event})
     }
 
     clickCreateNewCalendar = () => {
@@ -109,6 +115,17 @@ class MyHome extends React.Component {
         window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + event.target.value)
         calendarContext.setCalendarId(event.target.value)
 
+    }
+
+    handleDeleteCalendar = (calendarContext) => {
+        calendarContext.handleDeleteCalendar()
+            .then(() => {
+                this.props.sendSuccessSnack('Calendar deleted!')
+            })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to delete calendar!', err)
+                console.debug(err)
+            })
     }
 
     handleLogout = () => {
@@ -208,7 +225,7 @@ class MyHome extends React.Component {
                                                         error={!this.state.validCalendarName}
                                                         id='calendarName'
                                                         label='Name'
-                                                        value={this.calendarName}
+                                                        value={this.state.calendarName}
                                                         onChange={this.handleCalendarNameChange}
                                                         type='string'
                                                         className={classes.calendar}
@@ -240,6 +257,13 @@ class MyHome extends React.Component {
                                         </React.Fragment>
                                     }
                                 </Box>
+                                {this.context.user.calendars.length > 1 ?
+                                    <Box>
+                                        <Button color="secondary" onClick={() => this.setDeletePrompt(true)}>
+                                            Delete Calendar
+                                        </Button>
+                                    </Box> :
+                                    null}
                                 <TableContainer component={Paper} className={classes.table}>
                                     <Grid
                                         container
@@ -294,6 +318,12 @@ class MyHome extends React.Component {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
+                                <PromptConfirm isOpen={this.state.isDeletePromptOpen}
+                                               setOpen={this.setDeletePrompt}
+                                               onConfirm={() => this.handleDeleteCalendar(calendarContext)}
+                                               inputText={calendarContext.calendar.name}
+                                               title='Delete this calendar?'
+                                               text='This action is irreversible! If the calendar is Shared, all participants will be immediately kicked from it! Type the name of the calendar to confirm.'/>
                             </Grid>
                         )}
                     </InviteContext.Consumer>

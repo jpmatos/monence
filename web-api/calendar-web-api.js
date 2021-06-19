@@ -9,6 +9,10 @@ function calendarWebApi(router, calendarController){
         return calendarController.getCalendar(req, res, next)
     })
 
+    router.delete('/:calendarId', checkAuth, (req, res, next) => {
+        return calendarController.deleteCalendar(req, res, next)
+    })
+
     router.get('/:calendarId/participants', checkAuth, (req, res, next) => {
         return calendarController.getParticipants(req, res, next)
     })

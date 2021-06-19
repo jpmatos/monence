@@ -26,6 +26,15 @@ class CalendarController {
             .catch(next)
     }
 
+    deleteCalendar(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        return this.calendarService
+            .deleteCalendar(calendarId, userId)
+            .then(calendar => res.status(200).json(success(calendar)))
+            .catch(next)
+    }
+
     getParticipants(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId
