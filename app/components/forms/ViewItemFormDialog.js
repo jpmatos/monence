@@ -12,6 +12,9 @@ import {KeyboardDatePicker} from '@material-ui/pickers'
 
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import {Box, TextField} from "@material-ui/core";
+import moment from "moment";
+import IconButton from "@material-ui/core/IconButton";
+import EventNoteIcon from '@material-ui/icons/EventNote';
 
 class ViewItemFormDialog extends React.Component {
     constructor(props) {
@@ -26,6 +29,7 @@ class ViewItemFormDialog extends React.Component {
             editable: false,
             isRecurrent: false
         }
+        this.calendarUrlBase = 'https://www.google.com/calendar/render'
     }
 
     handleClose = () => {
@@ -90,12 +94,28 @@ class ViewItemFormDialog extends React.Component {
         this.handleClose()
     }
 
+    handleGoogleCalendar = () => {
+        const date = moment(this.props.currentlyOpenItem.start).format('YYYYMMDD')
+        console.log(this.props.currentlyOpenItem.type)
+        console.log(this.props.currentlyOpenItem.type === 'expense')
+
+        const details = 'Amount: ' +
+            (this.props.currentlyOpenItem.type === 'expense' ? '-' : encodeURIComponent('+')) +
+            this.props.currentlyOpenItem.displayValue
+        const url = this.createCalendarUrl(this.props.currentlyOpenItem.title, details, date)
+        window.open(url, '_blank');
+    }
+
     capitalizeWord() {
         if (this.props.currentlyOpenItem.type !== undefined)
             return capitalize.words((this.props.currentlyOpenItem.recurrency === 'recurrent' ? 'recurring ' : '')
                 + this.props.currentlyOpenItem.type)
         else
             return ''
+    }
+
+    createCalendarUrl(title, details, date) {
+        return this.calendarUrlBase + '?action=TEMPLATE&text=' + title + '&details=' + details + '&dates=' + date + '%2F' + date
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -126,9 +146,22 @@ class ViewItemFormDialog extends React.Component {
         return (
             <Dialog open={this.props.isOpen} onClose={this.handleClose} aria-labelledby='form-dialog-title'>
                 <Box mb={-1}>
-                    <DialogTitle id='form-dialog-title'>
-                        {this.capitalizeWord()}
-                    </DialogTitle>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                    >
+                        <DialogTitle id='form-dialog-title'>
+                            {this.capitalizeWord()}
+                        </DialogTitle>
+                        <Box pr={2} pt={1}>
+                        <IconButton aria-label="googlecalendar" component="span"
+                                    onClick={this.handleGoogleCalendar}>
+                            <EventNoteIcon/>
+                        </IconButton>
+                        </Box>
+                    </Grid>
                 </Box>
                 <DialogContent>
                     <Grid
