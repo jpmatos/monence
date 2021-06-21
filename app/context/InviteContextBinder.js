@@ -3,6 +3,7 @@ import {InviteContext} from "./default/InviteContext";
 import axios from "axios";
 import CalendarContextBinder from "./CalendarContextBinder";
 import {UserContext} from "./default/UserContext";
+import LoadingScreen from "../components/LoadingScreen";
 
 class InviteContextBinder extends React.Component {
     constructor(props) {
@@ -119,7 +120,7 @@ class InviteContextBinder extends React.Component {
             <InviteContext.Provider value={this.state}>
                 {this.state.pending !== null ?
                     <CalendarContextBinder/>
-                    : null}
+                    : <LoadingScreen/>}
             </InviteContext.Provider>
         )
     }

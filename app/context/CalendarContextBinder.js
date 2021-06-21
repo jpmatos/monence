@@ -4,6 +4,7 @@ import {CalendarContext} from "./default/CalendarContext";
 import axios from "axios";
 import moment from "moment";
 import {UserContext} from "./default/UserContext";
+import LoadingScreen from "../components/LoadingScreen";
 
 class CalendarContextBinder extends React.Component {
     constructor(props) {
@@ -362,7 +363,9 @@ class CalendarContextBinder extends React.Component {
     render() {
         return (
             <CalendarContext.Provider value={this.state}>
-                {this.state.calendar !== null ? <App/> : null}
+                {this.state.calendar !== null ?
+                    <App/> :
+                    <LoadingScreen/>}
             </CalendarContext.Provider>
         )
     };

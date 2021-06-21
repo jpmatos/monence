@@ -1,10 +1,10 @@
 import React from 'react';
-import CalendarContextBinder from './CalendarContextBinder';
 
 import {UserContext} from "./default/UserContext";
 import LoginPage from "../content/LoginPage";
 import axios from "axios";
 import InviteContextBinder from "./InviteContextBinder";
+import LoadingScreen from "../components/LoadingScreen";
 
 class UserContextBinder extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class UserContextBinder extends React.Component {
                 })
             })
             .catch(err => {
-                if(err.stack)
+                if (err.stack)
                     console.debug(err.stack)
                 return Promise.reject(err)
             })
@@ -72,7 +72,7 @@ class UserContextBinder extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevState.session !== null && this.state.session === null){
+        if (prevState.session !== null && this.state.session === null) {
             window.history.replaceState(null, '', window.location.origin + '/#/')
             axios.get('/auth/session')
                 .then(res => {
@@ -87,6 +87,7 @@ class UserContextBinder extends React.Component {
     }
 
     componentDidMount() {
+        // setTimeout( () =>
         axios.get('/auth/session')
             .then(res => {
                 this.setState({session: res.data.body})
@@ -96,9 +97,9 @@ class UserContextBinder extends React.Component {
                             this.setState({user: res.data.body})
                         })
             })
+        // , 5000)
     }
 
-    ///TODO Add a loading screen while waiting for session and calendars
     render() {
         return (
             <UserContext.Provider value={this.state}>
@@ -106,11 +107,11 @@ class UserContextBinder extends React.Component {
                     this.state.session.isAuthenticated ?
                         this.state.user !== null ?
                             this.state.user.calendars.length !== 0 ?
-                                <InviteContextBinder /> :
+                                <InviteContextBinder/> :
                                 <LoginPage needsCalendar={true}/> :
-                            null :
+                            <LoadingScreen/> :
                         <LoginPage needsCalendar={false}/> :
-                    null}
+                    <LoadingScreen/>}
             </UserContext.Provider>
         );
     }

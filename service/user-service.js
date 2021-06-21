@@ -75,16 +75,14 @@ class UserService {
                     this.dbCalendar.postCalendar(calendar),
                     this.dbUser.postCalendarToUser(userId, userCalendar)
                 ])
-                    .then((res) => {
-                        const user = res[1]
-                        if(user.calendars.length === 0)
-                            return Promise.reject(error(500, 'Failed create calendar'))
-
-                        return user.calendars[0]
-                    })
             })
+            .then(res => {
+                const user = res[1]
+                if(user.calendars.length === 0)
+                    return Promise.reject(error(500, 'Failed create calendar'))
 
-
+                return user.calendars[0]
+            })
     }
 }
 
