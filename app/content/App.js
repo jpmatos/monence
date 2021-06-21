@@ -32,7 +32,7 @@ import MyHome from "./MyHome"
 import Grid from "@material-ui/core/Grid"
 import MySettings from "./MySettings"
 import MyForecast from "./MyForecast"
-import {Slide, Snackbar} from "@material-ui/core"
+import {MenuItem, Slide, Snackbar} from "@material-ui/core"
 import {Alert} from "@material-ui/lab"
 import PlaceHolder from "./PlaceHolder";
 import MyShare from "./MyShare";
@@ -123,7 +123,7 @@ const useStyles = (theme) => ({
 })
 
 function ListItemLink(props) {
-    const {icon, primary, to, listClass} = props
+    const {icon, primary, to, selected, setSelected, listClass} = props
 
     const renderLink = React.useMemo(
         () => React.forwardRef((itemProps, ref) => <RouterLink to={to} ref={ref} {...itemProps} />),
@@ -132,10 +132,10 @@ function ListItemLink(props) {
 
     return (
         <li>
-            <ListItem button component={renderLink} className={listClass}>
+            <MenuItem button selected={to === selected} onClick={() => setSelected(to)} component={renderLink} className={listClass}>
                 {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
                 <ListItemText primary={primary}/>
-            </ListItem>
+            </MenuItem>
         </li>
     )
 }
@@ -147,7 +147,8 @@ class App extends React.Component {
             open: false,
             isSnackOpen: false,
             snackMessage: null,
-            snackSeverity: 'success'
+            snackSeverity: 'success',
+            selected: null
         }
     }
 
@@ -164,9 +165,14 @@ class App extends React.Component {
     handleCloseSnack = () => {
         this.setState({isSnackOpen: false})
     }
-
     sendSuccessSnack = (message) => {
         this.sendSnack(message, 'success')
+    }
+
+    setSelected = (value) => {
+        this.setState({
+            selected: value
+        })
     }
 
     sendErrorSnack = (message, err) => {
@@ -189,6 +195,12 @@ class App extends React.Component {
             snackMessage: msg,
             isSnackOpen: true,
             snackSeverity: severity
+        })
+    }
+
+    componentDidMount() {
+        this.setState({
+            selected: window.location.href.split('#')[1]
         })
     }
 
@@ -249,24 +261,42 @@ class App extends React.Component {
                         }}
                     >
                         <List>
-                            <ListItemLink to={`/home?c=${this.context.calendarId}`} primary='Home'
+                            <ListItemLink to={`/home?c=${this.context.calendarId}`}
+                                          selected={this.state.selected}
+                                          setSelected={this.setSelected}
+                                          primary='Home'
                                           icon={<HomeIcon/>}
                                           listClass={classes.list}/>
-                            <ListItemLink to={`/calendar?c=${this.context.calendarId}`} primary='Calendar'
+                            <ListItemLink to={`/calendar?c=${this.context.calendarId}`}
+                                          selected={this.state.selected}
+                                          setSelected={this.setSelected}
+                                          primary='Calendar'
                                           icon={<CalendarIcon/>}
                                           listClass={classes.list}/>
-                            <ListItemLink to={`/budget?c=${this.context.calendarId}`} primary='Budget'
+                            <ListItemLink to={`/budget?c=${this.context.calendarId}`}
+                                          selected={this.state.selected}
+                                          setSelected={this.setSelected}
+                                          primary='Budget'
                                           icon={<AccountBalanceWalletIcon/>}
                                           listClass={classes.list}/>
-                            <ListItemLink to={`/forecast?c=${this.context.calendarId}`} primary='Forecast'
+                            <ListItemLink to={`/forecast?c=${this.context.calendarId}`}
+                                          selected={this.state.selected}
+                                          setSelected={this.setSelected}
+                                          primary='Forecast'
                                           icon={<ForecastIcon/>}
                                           listClass={classes.list}/>
                         </List>
                         <List>
-                            <ListItemLink to={`/share?c=${this.context.calendarId}`} primary='Share'
+                            <ListItemLink to={`/share?c=${this.context.calendarId}`}
+                                          selected={this.state.selected}
+                                          setSelected={this.setSelected}
+                                          primary='Share'
                                           icon={<GroupIcon/>}
                                           listClass={classes.list}/>
-                            <ListItemLink to={`/settings?c=${this.context.calendarId}`} primary='Settings'
+                            <ListItemLink to={`/settings?c=${this.context.calendarId}`}
+                                          selected={this.state.selected}
+                                          setSelected={this.setSelected}
+                                          primary='Settings'
                                           icon={<SettingsIcon/>}
                                           listClass={classes.list}/>
                         </List>
