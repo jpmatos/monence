@@ -161,8 +161,10 @@ class App extends React.Component {
             msg = err.response.data.message
         } else if (err.request) {
             msg = err.request
-        } else {
-            msg = 'UNKNOWN ERROR'
+        } else if (err.message)
+            msg = err.message
+        else {
+            msg = 'Unknown Error'
         }
         this.sendSnack(`${message} Server Response: ${msg}`, 'error')
     }
@@ -270,7 +272,7 @@ class App extends React.Component {
                                 <MyShare sendSuccessSnack={this.sendSuccessSnack}
                                          sendErrorSnack={this.sendErrorSnack}/> :
                                 <MyShareParticipant sendSuccessSnack={this.sendSuccessSnack}
-                                             sendErrorSnack={this.sendErrorSnack}/>}
+                                                    sendErrorSnack={this.sendErrorSnack}/>}
                         </Route>
                         <Route path='/settings*'>
                             <PlaceHolder sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>

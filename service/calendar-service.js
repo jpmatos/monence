@@ -124,6 +124,26 @@ class CalendarService {
             })
     }
 
+    putUnshare(calendarId, userId) {
+        return this.dbCalendar.getCalendar(calendarId)
+            .then(calendar => {
+                if (!roleCheck.isOwner(calendar, userId))
+                    return Promise.reject(error(404, 'Calendar Not Found'))
+
+                return this.dbCalendar.getParticipants(calendarId)
+            })
+            .then(calendar => {
+                const promises = []
+
+                promises.push(this.dbCalendar.putCalendarShare(calendarId, 'Personal'))
+                calendar.participants.forEach(participant => {
+                    promises.push(this.dbUser.deleteParticipating(participant.id, calendarId))
+                })
+
+                return Promise.all(promises)
+            })
+    }
+
     postItem(calendarId, item, userId) {
         if (idSchemas.uuidSchema.validate(calendarId).error)
             return Promise.reject(error(400, 'Invalid Calendar Id'))

@@ -70,7 +70,16 @@ class CalendarController {
         const calendarId = req.params.calendarId
         return this.calendarService
             .putShare(calendarId, userId)
-            .then(msg => res.status(201).json(success(msg)))
+            .then(calendar => res.status(201).json(success(calendar)))
+            .catch(next)
+    }
+
+    putUnshare(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        return this.calendarService
+            .putUnshare(calendarId, userId)
+            .then(calendar => res.status(201).json(success(calendar)))
             .catch(next)
     }
 

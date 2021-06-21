@@ -42,7 +42,9 @@ class DataBaseCalendarMock {
 
         calendar.share = !share ? calendar.share : share
 
-        return Promise.resolve(calendar)
+        return Promise.resolve({
+            share: calendar.share
+        })
     }
 
     deleteCalendar(calendarId) {

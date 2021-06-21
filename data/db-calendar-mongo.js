@@ -45,7 +45,9 @@ class DataBaseCalendarMongo {
     }
 
     putCalendarShare(calendarId, share) {
-        const newCalendar = {}
+        const newCalendar = {
+            participants: []
+        }
         if(share)
             newCalendar.share = share
 
@@ -56,6 +58,13 @@ class DataBaseCalendarMongo {
                 },
                 {
                     $set: newCalendar
+                },
+                {
+                    projection: {
+                        _id: 0,
+                        share: 1,
+                        participants: 1
+                    }
                 }
             )
             .then(result => {

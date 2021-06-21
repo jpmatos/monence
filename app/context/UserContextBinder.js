@@ -99,7 +99,6 @@ class UserContextBinder extends React.Component {
     }
 
     ///TODO Add a loading screen while waiting for session and calendars
-    ///TODO Rethink this with nested react routers
     render() {
         return (
             <UserContext.Provider value={this.state}>

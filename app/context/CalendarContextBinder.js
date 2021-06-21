@@ -28,6 +28,7 @@ class CalendarContextBinder extends React.Component {
             handleDeleteBudget: this.handleDeleteBudget,
             buildDisplayValue: this.buildDisplayValue,
             setCalendarShare: this.setCalendarShare,
+            setCalendarUnshare: this.setCalendarUnshare,
             handleRemoveParticipant: this.handleRemoveParticipant,
             handleRefreshParticipants: this.handleRefreshParticipants,
             handleChangeRole: this.handleChangeRole,
@@ -47,11 +48,11 @@ class CalendarContextBinder extends React.Component {
     }
 
     canEdit = () => {
-        if(this.context.user.id === this.state.calendar.owner.ownerId)
+        if (this.context.user.id === this.state.calendar.owner.ownerId)
             return true
 
         const idx = this.state.calendar.participants.findIndex(par => par.id === this.context.user.id)
-        if(idx !== -1)
+        if (idx !== -1)
             return this.state.calendar.participants[idx].role === 'Editor'
 
         return false
@@ -81,12 +82,27 @@ class CalendarContextBinder extends React.Component {
     }
 
     setCalendarShare = () => {
-        const calendar = this.state.calendar
-        calendar.share = 'Shared'
-        calendar.invitees = []
-        this.setState({
-            calendar: calendar
-        })
+        return axios.put(`/calendar/${this.state.calendarId}/share`)
+            .then(res => {
+                const calendar = this.state.calendar
+                calendar.share = 'Shared'
+                calendar.participants = []
+                this.setState({
+                    calendar: calendar
+                })
+            })
+    }
+
+    setCalendarUnshare = () => {
+        return axios.put(`/calendar/${this.state.calendarId}/unshare`)
+            .then(res => {
+                const calendar = this.state.calendar
+                calendar.share = 'Personal'
+                calendar.participants = []
+                this.setState({
+                    calendar: calendar
+                })
+            })
     }
 
     handleRemoveParticipant = (userId) => {
@@ -278,27 +294,38 @@ class CalendarContextBinder extends React.Component {
         }
     }
 
+    getCalendar(calendarId, ignoreExchange) {
+        return axios.get(`/calendar/${calendarId}`)
+            .then(res => {
+                const calendar = res.data.body
+
+                let items = calendar.single.slice().map(item => {
+                    return this.buildSingleItem(item, calendar.currency, ignoreExchange)
+                })
+
+                calendar.recurrent.forEach((item) => {
+                    items = items.concat(this.buildRecurrentItem(item, calendar.currency, ignoreExchange))
+                })
+
+                this.setState({
+                    calendarId: calendarId,
+                    calendar: calendar,
+                    items: items,
+                    currency: calendar.currency
+                })
+
+                return calendarId
+            })
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.calendarId !== this.state.calendarId && prevState.calendarId !== null) {
-            axios.get(`/calendar/${this.state.calendarId}`)
-                .then(res => {
-                    const calendar = res.data.body
-
-                    let items = calendar.single.slice().map(item => {
-                        return this.buildSingleItem(item, calendar.currency, true)
-                    })
-
-                    calendar.recurrent.forEach((item) => {
-                        items = items.concat(this.buildRecurrentItem(item, calendar.currency, true))
-                    })
-
-                    window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + this.state.calendarId)
-                    this.setState({
-                        calendarId: this.state.calendarId,
-                        calendar: calendar,
-                        items: items,
-                        currency: calendar.currency
-                    })
+            this.getCalendar(this.state.calendarId, true)
+                .then(calendarId => {
+                    window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + calendarId)
+                })
+                .catch(err => {
+                    console.log(err)
                 })
         }
     }
@@ -311,28 +338,23 @@ class CalendarContextBinder extends React.Component {
         if (calendarId === undefined || calendarId === null) {
             calendarId = this.context.user.calendars[0].id
         }
-        axios.get(`/calendar/${calendarId}`)
-            .then(res => {
-                const calendar = res.data.body
 
-                let items = calendar.single.slice().map(item => {
-                    return this.buildSingleItem(item, calendar.currency)
-                })
-
-                calendar.recurrent.forEach((item) => {
-                    items = items.concat(this.buildRecurrentItem(item, calendar.currency))
-                })
-
-                this.setState({
-                    calendarId: calendarId,
-                    calendar: calendar,
-                    items: items,
-                    currency: calendar.currency
-                })
-            })
         this.setState({
             calendarDate: moment.now()
         })
+
+        this.getCalendar(calendarId, false)
+            .catch(err => {
+                if (err.response.status === 404) {
+                    const calendarId = this.context.user.calendars[0].id
+                    return this.getCalendar(calendarId, true)
+                        .then(calendarId => {
+                            window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + calendarId)
+                        })
+                } else {
+                    console.log(err)
+                }
+            })
     }
 
 

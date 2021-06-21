@@ -29,6 +29,10 @@ function calendarWebApi(router, calendarController){
         return calendarController.putShare(req, res, next)
     }))
 
+    router.put('/:calendarId/unshare', checkAuth, ((req, res, next) => {
+        return calendarController.putUnshare(req, res, next)
+    }))
+
     //Single
     router.post('/:calendarId/item/single', checkAuth, (req, res, next) => {
         return calendarController.postItem(req, res, next)

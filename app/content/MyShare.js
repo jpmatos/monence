@@ -19,6 +19,8 @@ import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import InviteUserFormDialog from "../components/forms/InviteUserFormDialog";
 import ChangeRoleFormDialog from "../components/forms/ChangeRoleFormDialog";
+import Box from "@material-ui/core/Box";
+import PromptConfirm from "../components/PromptConfirm";
 
 const useStyles = (theme) => ({
     pad: {
@@ -60,7 +62,8 @@ class MyShare extends React.Component {
             isRefreshInvitesDisabled: false,
             isInviteUserFDOpen: false,
             isChangeRoleFDOpen: false,
-            selectedParticipant: {}
+            selectedParticipant: {},
+            isUnsharePromptOpen: false
         }
     }
 
@@ -68,12 +71,16 @@ class MyShare extends React.Component {
         this.setState({isSharePromptOpen: value})
     }
 
+    setUnsharePrompt = (event) => {
+        this.setState({isUnsharePromptOpen: event})
+    }
+
     setInviteUserFD = (value) => {
         this.setState({isInviteUserFDOpen: value})
     }
 
     setChangeRoleFD = (value, participant) => {
-        if(!value)
+        if (!value)
             participant = {}
 
         this.setState({
@@ -82,13 +89,23 @@ class MyShare extends React.Component {
         })
     }
 
-    handleConfirmPrompt = () => {
-        axios.put(`/calendar/${this.context.calendarId}/share`)
-            .then(res => {
-                this.context.setCalendarShare()
+    handleShare = () => {
+        this.context.setCalendarShare()
+            .then(() => {
+                this.props.sendSuccessSnack('Shared calendar')
             })
             .catch(err => {
+                this.props.sendErrorSnack('Failed to share calendar!', err)
+            })
+    }
 
+    handleUnshare = () => {
+        this.context.setCalendarUnshare()
+            .then(() => {
+                this.props.sendSuccessSnack('Unshared calendar')
+            })
+            .catch(err => {
+                this.props.sendErrorSnack('Failed to unshare calendar!', err)
             })
     }
 
@@ -152,12 +169,32 @@ class MyShare extends React.Component {
             <InviteContext.Consumer>
                 {inviteContext => (
                     <React.Fragment>
-                        <Typography variant='h5' className={classes.pad}>
-                            {'Calendar Status '}
-                            <Typography variant='inherit' className={classes.status}>
-                                {this.context.calendar.share}
+                        <Grid
+                            container
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <Typography variant='h5' className={classes.pad}>
+                                {'Calendar Status: '}
+                                <Typography variant='inherit' className={classes.status}>
+                                    {this.context.calendar.share}
+                                </Typography>
                             </Typography>
-                        </Typography>
+                            {this.context.calendar.share === 'Shared' ?
+                                <Box pt={2.5} pl={2}>
+                                    <Button color="secondary" onClick={() => {this.setUnsharePrompt(true)}}>
+                                        Unshare
+                                    </Button>
+                                    <PromptConfirm isOpen={this.state.isUnsharePromptOpen}
+                                                   setOpen={this.setUnsharePrompt}
+                                                   onConfirm={this.handleUnshare}
+                                                   inputText={this.context.calendar.name}
+                                                   title='Unshare this calendar?'
+                                                   text='This action is irreversible! All participants will be kicked from the calendar! Type the name of the calendar to confirm.'/>
+
+                                </Box> : null}
+                        </Grid>
                         {this.context.calendar.share !== 'Shared' ?
                             (<React.Fragment>
                                 <Button variant="contained" color="primary" onClick={() => this.setSharePrompt(true)}>
@@ -165,7 +202,7 @@ class MyShare extends React.Component {
                                 </Button>
                                 <Prompt isOpen={this.state.isSharePromptOpen}
                                         setOpen={this.setSharePrompt}
-                                        onConfirm={this.handleConfirmPrompt}
+                                        onConfirm={this.handleShare}
                                         title='Share this calendar?'
                                         text='By setting this calendar to share, you will be able to invite
                         other users to participate in managing this calendar.'/>
