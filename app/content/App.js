@@ -23,6 +23,7 @@ import GroupIcon from '@material-ui/icons/Group'
 import Container from '@material-ui/core/Container'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import SettingsIcon from '@material-ui/icons/Settings'
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 
 import MyCalendar from './MyCalendar'
 import MyBudget from "./MyBudget"
@@ -36,6 +37,7 @@ import {Alert} from "@material-ui/lab"
 import PlaceHolder from "./PlaceHolder";
 import MyShare from "./MyShare";
 import MyShareParticipant from "./MyShareParticipant";
+import {blue, grey} from "@material-ui/core/colors";
 
 const drawerWidth = 220
 
@@ -105,6 +107,18 @@ const useStyles = (theme) => ({
     },
     bottomPush: {
         height: '100%'
+    },
+    calendarName: {
+        marginLeft: theme.spacing(2),
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
+        background: '#757de8',
+        padding: '5px',
+        borderRadius: '5px'
+        // fontFamily: 'sans-serif'
+    },
+    padLeft: {
+        marginLeft: theme.spacing(1)
     }
 })
 
@@ -198,8 +212,13 @@ class App extends React.Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant='h6' noWrap>
-                            Monence
+                            {`Monence - ${this.context.calendar.name}`}
                         </Typography>
+                        {/*<Typography variant='h6' className={classes.calendarName} noWrap>*/}
+                        {/*    {this.context.calendar.name}*/}
+                        {/*</Typography>*/}
+                        {this.context.calendar.share === 'Shared' ?
+                            <PeopleAltIcon className={classes.padLeft}/> : null}
                     </Toolbar>
                 </AppBar>
                 <Drawer
