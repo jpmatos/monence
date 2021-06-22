@@ -1,10 +1,10 @@
 import React from "react";
-import App from '../content/App'
 import {CalendarContext} from "./default/CalendarContext";
 import axios from "axios";
 import moment from "moment";
 import {UserContext} from "./default/UserContext";
 import LoadingScreen from "../components/LoadingScreen";
+import SocketBinder from "./SocketBinder";
 
 class CalendarContextBinder extends React.Component {
     constructor(props) {
@@ -358,13 +358,11 @@ class CalendarContextBinder extends React.Component {
             })
     }
 
-
-    ///TODO Show a loading screen instead of null
     render() {
         return (
             <CalendarContext.Provider value={this.state}>
                 {this.state.calendar !== null ?
-                    <App/> :
+                    <SocketBinder/> :
                     <LoadingScreen/>}
             </CalendarContext.Provider>
         )

@@ -114,7 +114,7 @@ class MyHome extends React.Component {
     handleOnCalendarChange = (event, calendarContext) => {
         window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + event.target.value)
         calendarContext.setCalendarId(event.target.value)
-
+        this.props.socket.changeCalendar(event.target.value)
     }
 
     handleDeleteCalendar = (calendarContext) => {

@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
-import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
@@ -30,17 +29,14 @@ import MyBudget from "./MyBudget"
 import {CalendarContext} from "../context/default/CalendarContext"
 import MyHome from "./MyHome"
 import Grid from "@material-ui/core/Grid"
-import MySettings from "./MySettings"
 import MyForecast from "./MyForecast"
 import {MenuItem, Slide, Snackbar} from "@material-ui/core"
 import {Alert} from "@material-ui/lab"
 import PlaceHolder from "./PlaceHolder";
 import MyShare from "./MyShare";
 import MyShareParticipant from "./MyShareParticipant";
-import {blue, grey} from "@material-ui/core/colors";
 
 const drawerWidth = 220
-
 const useStyles = (theme) => ({
     root: {
         display: 'flex'
@@ -132,7 +128,8 @@ function ListItemLink(props) {
 
     return (
         <li>
-            <MenuItem button selected={to === selected} onClick={() => setSelected(to)} component={renderLink} className={listClass}>
+            <MenuItem button selected={to === selected} onClick={() => setSelected(to)} component={renderLink}
+                      className={listClass}>
                 {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
                 <ListItemText primary={primary}/>
             </MenuItem>
@@ -148,7 +145,8 @@ class App extends React.Component {
             isSnackOpen: false,
             snackMessage: null,
             snackSeverity: 'success',
-            selected: null
+            selected: null,
+            response: ""
         }
     }
 
@@ -211,16 +209,14 @@ class App extends React.Component {
                 <CssBaseline/>
                 <AppBar
                     position='fixed'
-                    className={clsx(classes.appBar)}
-                >
+                    className={clsx(classes.appBar)}>
                     <Toolbar>
                         <IconButton
                             color='inherit'
                             aria-label='open drawer'
                             onClick={this.handleDrawer}
                             edge='start'
-                            className={clsx(classes.menuButton)}
-                        >
+                            className={clsx(classes.menuButton)}>
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant='h6' noWrap>
@@ -246,8 +242,7 @@ class App extends React.Component {
                         }),
                     }}
                     // onMouseEnter={this.handleDrawerOpen}
-                    onMouseLeave={this.handleDrawerClose}
-                >
+                    onMouseLeave={this.handleDrawerClose}>
                     <div className={classes.toolbar}/>
                     <Divider/>
                     <Grid
@@ -258,73 +253,92 @@ class App extends React.Component {
                         style={{
                             height: '100%',
                             minHeight: '450px'
-                        }}
-                    >
+                        }}>
                         <List>
-                            <ListItemLink to={`/home?c=${this.context.calendarId}`}
-                                          selected={this.state.selected}
-                                          setSelected={this.setSelected}
-                                          primary='Home'
-                                          icon={<HomeIcon/>}
-                                          listClass={classes.list}/>
-                            <ListItemLink to={`/calendar?c=${this.context.calendarId}`}
-                                          selected={this.state.selected}
-                                          setSelected={this.setSelected}
-                                          primary='Calendar'
-                                          icon={<CalendarIcon/>}
-                                          listClass={classes.list}/>
-                            <ListItemLink to={`/budget?c=${this.context.calendarId}`}
-                                          selected={this.state.selected}
-                                          setSelected={this.setSelected}
-                                          primary='Budget'
-                                          icon={<AccountBalanceWalletIcon/>}
-                                          listClass={classes.list}/>
-                            <ListItemLink to={`/forecast?c=${this.context.calendarId}`}
-                                          selected={this.state.selected}
-                                          setSelected={this.setSelected}
-                                          primary='Forecast'
-                                          icon={<ForecastIcon/>}
-                                          listClass={classes.list}/>
+                            <ListItemLink
+                                to={`/home?c=${this.context.calendarId}`}
+                                selected={this.state.selected}
+                                setSelected={this.setSelected}
+                                primary='Home'
+                                icon={<HomeIcon/>}
+                                listClass={classes.list}/>
+                            <ListItemLink
+                                to={`/calendar?c=${this.context.calendarId}`}
+                                selected={this.state.selected}
+                                setSelected={this.setSelected}
+                                primary='Calendar'
+                                icon={<CalendarIcon/>}
+                                listClass={classes.list}/>
+                            <ListItemLink
+                                to={`/budget?c=${this.context.calendarId}`}
+                                selected={this.state.selected}
+                                setSelected={this.setSelected}
+                                primary='Budget'
+                                icon={<AccountBalanceWalletIcon/>}
+                                listClass={classes.list}/>
+                            <ListItemLink
+                                to={`/forecast?c=${this.context.calendarId}`}
+                                selected={this.state.selected}
+                                setSelected={this.setSelected}
+                                primary='Forecast'
+                                icon={<ForecastIcon/>}
+                                listClass={classes.list}/>
                         </List>
                         <List>
-                            <ListItemLink to={`/share?c=${this.context.calendarId}`}
-                                          selected={this.state.selected}
-                                          setSelected={this.setSelected}
-                                          primary='Share'
-                                          icon={<GroupIcon/>}
-                                          listClass={classes.list}/>
-                            <ListItemLink to={`/settings?c=${this.context.calendarId}`}
-                                          selected={this.state.selected}
-                                          setSelected={this.setSelected}
-                                          primary='Settings'
-                                          icon={<SettingsIcon/>}
-                                          listClass={classes.list}/>
+                            <ListItemLink
+                                to={`/share?c=${this.context.calendarId}`}
+                                selected={this.state.selected}
+                                setSelected={this.setSelected}
+                                primary='Share'
+                                icon={<GroupIcon/>}
+                                listClass={classes.list}/>
+                            <ListItemLink
+                                to={`/settings?c=${this.context.calendarId}`}
+                                selected={this.state.selected}
+                                setSelected={this.setSelected}
+                                primary='Settings'
+                                icon={<SettingsIcon/>}
+                                listClass={classes.list}/>
                         </List>
                     </Grid>
                 </Drawer>
                 <Container maxWidth='lg' className={classes.content} fixed>
                     <Switch>
                         <Route path='/home*'>
-                            <MyHome sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                            <MyHome
+                                socket={this.props.socket}
+                                sendSuccessSnack={this.sendSuccessSnack}
+                                sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
                         <Route path='/calendar*'>
-                            <MyCalendar sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                            <MyCalendar
+                                socket={this.props.socket}
+                                sendSuccessSnack={this.sendSuccessSnack}
+                                sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
                         <Route path='/budget*'>
-                            <MyBudget sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                            <MyBudget
+                                sendSuccessSnack={this.sendSuccessSnack}
+                                sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
                         <Route path='/forecast*'>
-                            <MyForecast sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                            <MyForecast
+                                sendSuccessSnack={this.sendSuccessSnack}
+                                sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
                         <Route path='/share*'>
                             {this.context.isOwner() ?
-                                <MyShare sendSuccessSnack={this.sendSuccessSnack}
-                                         sendErrorSnack={this.sendErrorSnack}/> :
-                                <MyShareParticipant sendSuccessSnack={this.sendSuccessSnack}
-                                                    sendErrorSnack={this.sendErrorSnack}/>}
+                                <MyShare
+                                    sendSuccessSnack={this.sendSuccessSnack}
+                                    sendErrorSnack={this.sendErrorSnack}/> :
+                                <MyShareParticipant
+                                    sendSuccessSnack={this.sendSuccessSnack}
+                                    sendErrorSnack={this.sendErrorSnack}/>}
                         </Route>
                         <Route path='/settings*'>
-                            <PlaceHolder sendSuccessSnack={this.sendSuccessSnack} sendErrorSnack={this.sendErrorSnack}/>
+                            <PlaceHolder
+                                sendSuccessSnack={this.sendSuccessSnack}
+                                sendErrorSnack={this.sendErrorSnack}/>
                         </Route>
                         <Redirect to={`/home?c=${this.context.calendarId}`}/>
                     </Switch>
@@ -333,12 +347,9 @@ class App extends React.Component {
                     open={this.state.isSnackOpen}
                     onClose={this.handleCloseSnack}
                     TransitionComponent={(props) => (
-                        <Slide {...props} direction="up"/>
-                    )
-                    }
+                        <Slide {...props} direction="up"/>)}
                     key={'TransitionUp'}
-                    autoHideDuration={5000}
-                >
+                    autoHideDuration={5000}>
                     <Alert onClose={this.handleCloseSnack} elevation={6} variant="filled"
                            severity={this.state.snackSeverity}>
                         {this.state.snackMessage}
