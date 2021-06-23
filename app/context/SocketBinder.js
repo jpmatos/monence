@@ -20,15 +20,28 @@ const SocketBinder = (props) => {
         socket.emit('changeCalendar', calendarId)
     }
 
-    function toNewItem(item) {
-        socket.emit('toNewItem', item)
+    function fromNewItem(data) {
+        calendarContext.handleNewItem(data)
     }
 
-    function fromNewItem(data) {
-        // console.log(calendarContext.calendar.owner.name)
-        // console.log(userContext.user.id)
+    function fromUpdateItem(data) {
+        calendarContext.handleUpdateItem(data)
+    }
 
-        calendarContext.handleNewItem(data)
+    function fromDeleteItem(data) {
+        calendarContext.handleDeleteItem(data.id)
+    }
+
+    function fromNewBudget(data) {
+        calendarContext.handleNewBudget(data)
+    }
+
+    function fromUpdateBudget(data) {
+        calendarContext.handleUpdateBudget(data)
+    }
+
+    function fromDeleteBudget(data) {
+        calendarContext.handleDeleteBudget(data.id)
     }
 
     React.useEffect(() => {
@@ -42,11 +55,15 @@ const SocketBinder = (props) => {
 
         socket.emit('register', register)
         socket.on("fromNewItem", fromNewItem)
+        socket.on("fromUpdateItem", fromUpdateItem)
+        socket.on("fromDeleteItem", fromDeleteItem)
+        socket.on("fromNewBudget", fromNewBudget)
+        socket.on("fromUpdateBudget", fromUpdateBudget)
+        socket.on("fromDeleteBudget", fromDeleteBudget)
     }, [])
 
     return (
         <App socket={{
-            'toNewItem': toNewItem,
             'changeCalendar': changeCalendar
         }}/>
     )

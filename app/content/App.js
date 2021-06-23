@@ -312,7 +312,6 @@ class App extends React.Component {
                         </Route>
                         <Route path='/calendar*'>
                             <MyCalendar
-                                socket={this.props.socket}
                                 sendSuccessSnack={this.sendSuccessSnack}
                                 sendErrorSnack={this.sendErrorSnack}/>
                         </Route>

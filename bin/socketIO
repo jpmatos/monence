@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var socketManager = require('../middleware/socket-manager').init()
 var debug = require('debug')('monence:server');
 var http = require('http');
 var socketIo = require("socket.io");
@@ -15,13 +14,13 @@ var socketIo = require("socket.io");
  */
 
 var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+app.app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer(app.app);
 
 
 const io = socketIo(server, {
@@ -31,16 +30,9 @@ const io = socketIo(server, {
   }
 })
 
-let sockets = []
 io.on("connection", (socket) => {
-  socketManager.newSocket(socket)
+  app.socketManager.newSocket(socket)
 });
-
-const getApiAndEmit = socket => {
-  const response = new Date();
-  // Emitting a new message. Will be consumed by the client
-  socket.emit("FromAPI", response);
-};
 
 /**
  * Listen on provided port, on all network interfaces.

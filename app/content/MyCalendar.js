@@ -72,7 +72,6 @@ class MyCalendar extends React.Component {
         return axios.post(`/calendar/${this.context.calendarId}/item/${item.recurrency}`, item)
             .then(res => {
                 this.context.handleNewItem(res.data.body)
-                this.props.socket.toNewItem(item)
                 this.props.sendSuccessSnack(`Created item '${res.data.body.title}'!`)
             })
             .catch(err => {

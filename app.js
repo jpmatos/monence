@@ -43,7 +43,8 @@ if (process.env.MOCK_EXCHANGE_DB === 'true')
 else
     dbExchanges = require('./data/db-exchanges-api').init(process.env.OER_ID)
 
-const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges)
+const socketManager = require('./middleware/socket-manager').init()
+const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges, socketManager)
 const userService = require('./service/user-service').init(dbCalendar, dbUser)
 const inviteService = require('./service/invite-service').init(dbCalendar, dbUser, dbInvite)
 const calendarController = require('./web-api/controller/calendar-controller').init(calendarService)
@@ -117,4 +118,4 @@ app.use((err, req, res, next) => {
     }
 })
 
-module.exports = app
+module.exports = {app, socketManager}

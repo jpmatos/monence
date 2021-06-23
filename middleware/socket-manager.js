@@ -12,7 +12,6 @@ class SocketManager {
 
         socket.on('register', this.register(socket))
         socket.on('changeCalendar', this.changeCalendar(socket))
-        socket.on('toNewItem', this.toNewItem(socket))
         socket.on('disconnect', this.onDisconnect(socket));
     }
 
@@ -30,15 +29,52 @@ class SocketManager {
         }
     }
 
-    toNewItem(socket) {
-        return (data) => {
-            // console.log(data)
-            this.sockets.forEach(s => {
-                if (s !== socket && s.calendarId === socket.calendarId) {
-                    s.emit('fromNewItem', data)
-                }
-            })
-        }
+    toNewItem(calendarId, userId, item) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId) {
+                socket.emit('fromNewItem', item)
+            }
+        });
+    }
+
+    toUpdateItem(calendarId, userId, item) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId) {
+                socket.emit('fromUpdateItem', item)
+            }
+        })
+    }
+
+    toDeleteItem(calendarId, userId, item) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId) {
+                socket.emit('fromDeleteItem', item)
+            }
+        })
+    }
+
+    toNewBudget(calendarId, userId, budget) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId) {
+                socket.emit('fromNewBudget', budget)
+            }
+        });
+    }
+
+    toUpdateBudget(calendarId, userId, budget) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId) {
+                socket.emit('fromUpdateBudget', budget)
+            }
+        });
+    }
+
+    toDeleteBudget(calendarId, userId, budget) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId) {
+                socket.emit('fromDeleteBudget', budget)
+            }
+        });
     }
 
     onDisconnect(socket) {

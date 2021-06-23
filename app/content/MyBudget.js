@@ -21,6 +21,7 @@ class MyBudget extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            budget: null,
             periods: [],
             isNewBudgetFDOpen: false,
             isBudgetFDOpen: false,
@@ -76,7 +77,7 @@ class MyBudget extends React.Component {
                 this.updatePeriods(this.context.calendarDate)
                 this.props.sendSuccessSnack('Created budget!')
             })
-            .catch(err=> {
+            .catch(err => {
                 this.props.sendErrorSnack('Failed to create budget!', err)
                 console.debug(err.stack)
             })
@@ -89,7 +90,7 @@ class MyBudget extends React.Component {
                 this.updatePeriods(this.context.calendarDate)
                 this.props.sendSuccessSnack('Updated budget!')
             })
-            .catch(err=> {
+            .catch(err => {
                 this.props.sendErrorSnack('Failed to update budget!', err)
                 console.debug(err.stack)
             })
@@ -102,7 +103,7 @@ class MyBudget extends React.Component {
                 this.updatePeriods(this.context.calendarDate)
                 this.props.sendSuccessSnack('Deleted budget!')
             })
-            .catch(err=> {
+            .catch(err => {
                 this.props.sendErrorSnack('Failed to delete budget!', err)
                 console.debug(err.stack)
             })
@@ -117,9 +118,9 @@ class MyBudget extends React.Component {
     }
 
     updatePeriods = (calendarDate) => {
-        const calendar = this.context.calendar
+        const budget = this.context.calendar.budget
         let weekRows = []
-        calendar.budget
+        budget
             .filter(budget => {
                 return moment(budget.date).isSame(moment(calendarDate), 'month') && budget.period === 'week'
             })
@@ -135,7 +136,7 @@ class MyBudget extends React.Component {
             })
 
         let monthRows = []
-        calendar.budget
+        budget
             .filter(budget => {
                 return moment(budget.date).isSame(moment(calendarDate), 'month') && budget.period === 'month'
             })
@@ -150,7 +151,7 @@ class MyBudget extends React.Component {
             })
 
         let yearRows = []
-        calendar.budget
+        budget
             .filter(budget => {
                 return moment(budget.date).isSame(moment(calendarDate), 'year') && budget.period === 'year'
             })
@@ -165,6 +166,7 @@ class MyBudget extends React.Component {
             })
 
         this.setState({
+            budget: [...budget],
             periods: [
                 {
                     name: 'Weeks',
@@ -213,6 +215,11 @@ class MyBudget extends React.Component {
             "displayTotal": this.context.buildDisplayValue(total),
             "items": items
         }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.budget !== null && JSON.stringify(this.context.calendar.budget) !== JSON.stringify(prevState.budget))
+            this.updatePeriods(this.context.calendarDate)
     }
 
     componentDidMount() {

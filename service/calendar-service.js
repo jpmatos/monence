@@ -7,14 +7,15 @@ const itemSchemas = require('./joi-schemas/item-schemas')
 const budgetSchemas = require('./joi-schemas/budget-schemas')
 
 class CalendarService {
-    constructor(dbCalendar, dbUser, dbExchanges) {
+    constructor(dbCalendar, dbUser, dbExchanges, socketManager) {
         this.dbCalendar = dbCalendar
         this.dbUser = dbUser
         this.dbExchanges = dbExchanges
+        this.socketManager = socketManager
     }
 
-    static init(dbCalendar, dbUser, dbExchanges) {
-        return new CalendarService(dbCalendar, dbUser, dbExchanges)
+    static init(dbCalendar, dbUser, dbExchanges, socketManager) {
+        return new CalendarService(dbCalendar, dbUser, dbExchanges, socketManager)
     }
 
     getCalendar(calendarId, userId) {
@@ -176,6 +177,10 @@ class CalendarService {
 
                 return calendar.single[0]
             })
+            .then(item => {
+                this.socketManager.toNewItem(calendarId, userId, item)
+                return item
+            })
     }
 
     putItem(calendarId, itemId, item, userId) {
@@ -213,6 +218,10 @@ class CalendarService {
 
                 return calendar.single[0]
             })
+            .then(item => {
+                this.socketManager.toUpdateItem(calendarId, userId, item)
+                return item
+            })
     }
 
     deleteItem(calendarId, itemId, userId) {
@@ -222,7 +231,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -233,11 +242,15 @@ class CalendarService {
 
                 return this.dbCalendar.deleteItemSingle(calendarId, itemId, 'single')
             })
-            .then((calendar) => {
+            .then(calendar => {
                 if (calendar.single.length === 0)
                     return Promise.reject(error(500, 'Failed to delete item'))
 
                 return calendar.single[0]
+            })
+            .then(item => {
+                this.socketManager.toDeleteItem(calendarId, userId, item)
+                return item
             })
     }
 
@@ -256,7 +269,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -275,6 +288,10 @@ class CalendarService {
                     return Promise.reject(error(500, 'Failed to add item'))
 
                 return calendar.recurrent[0]
+            })
+            .then(item => {
+                this.socketManager.toNewItem(calendarId, userId, item)
+                return item
             })
     }
 
@@ -298,7 +315,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -315,6 +332,10 @@ class CalendarService {
 
                 return calendar.recurrent[0]
             })
+            .then(item => {
+                this.socketManager.toUpdateItem(calendarId, userId, item)
+                return item
+            })
     }
 
     deleteItemRecurrent(calendarId, itemId, userId) {
@@ -324,7 +345,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -341,6 +362,10 @@ class CalendarService {
 
                 return calendar.recurrent[0]
             })
+            .then(item => {
+                this.socketManager.toDeleteItem(calendarId, userId, item)
+                return item
+            })
     }
 
     //Budget
@@ -356,7 +381,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -374,6 +399,10 @@ class CalendarService {
                     return Promise.reject(error(500, 'Failed to add budget'))
 
                 return calendar.budget[0]
+            })
+            .then(budget => {
+                this.socketManager.toNewBudget(calendarId, userId, budget)
+                return budget
             })
     }
 
@@ -395,7 +424,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -412,6 +441,10 @@ class CalendarService {
 
                 return calendar.budget[0]
             })
+            .then(budget => {
+                this.socketManager.toUpdateBudget(calendarId, userId, budget)
+                return budget
+            })
     }
 
     deleteBudget(calendarId, budgetId, userId) {
@@ -421,7 +454,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -437,6 +470,10 @@ class CalendarService {
                     return Promise.reject(error(500, 'Failed to delete budget'))
 
                 return calendar.budget[0]
+            })
+            .then(budget => {
+                this.socketManager.toDeleteBudget(calendarId, userId, budget)
+                return budget
             })
     }
 }
