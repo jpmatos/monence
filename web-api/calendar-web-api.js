@@ -21,6 +21,10 @@ function calendarWebApi(router, calendarController){
         return calendarController.deleteParticipant(req, res, next)
     })
 
+    router.put('/:calendarId/leave', checkAuth, (req, res, next) => {
+        return calendarController.leaveCalendar(req, res, next)
+    })
+
     router.put(`/:calendarId/role/:userId`, checkAuth, (req, res, next) => {
         return calendarController.changeRole(req, res, next)
     })

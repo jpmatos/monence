@@ -54,6 +54,15 @@ class CalendarController {
             .catch(next)
     }
 
+    leaveCalendar(req, res, next) {
+        const userId = req.user.id
+        const calendarId = req.params.calendarId
+        return this.calendarService
+            .deleteParticipant(calendarId, userId, userId)
+            .then(participants => res.status(201).json(success(participants)))
+            .catch(next)
+    }
+
     changeRole(req, res, next) {
         const userId = req.user.id
         const calendarId = req.params.calendarId

@@ -77,6 +77,59 @@ class SocketManager {
         });
     }
 
+    toNewInvite(invite) {
+        const socket = this.sockets.find(socket => socket.user.id === invite.inviteeId)
+        if (socket)
+            socket.emit('fromNewInvite', invite)
+    }
+
+    toAcceptInvite(inviterId, participant) {
+        const socket = this.sockets.find(socket => socket.user.id === inviterId)
+        if (socket)
+            socket.emit('fromAcceptInvite', participant)
+    }
+
+    toChangeRole(calendarId, participant) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId)
+                socket.emit('fromChangeRole', participant)
+        })
+    }
+
+    toKickParticipant(calendarId, participant) {
+        const socket = this.sockets.find(socket => socket.user.id === participant.id)
+        if (socket)
+            socket.emit('fromKickedOut', calendarId)
+    }
+
+    toParticipantLeft(calendarId, userId, participant) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && socket.user.id !== userId)
+                socket.emit('fromParticipantLeft', participant)
+        })
+    }
+
+    toCalendarDeleted(calendarId, participants) {
+        const users = participants.map(participant => participant.id)
+
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId && users.includes(socket.user.id))
+                socket.emit('fromCalendarDeleted', calendarId)
+        })
+    }
+
+    toDeleteInvite(inviteeId, inviteId) {
+        const socket = this.sockets.find(socket => socket.user.id === inviteeId)
+        if(socket)
+            socket.emit('fromDeleteInvite', inviteId)
+    }
+
+    toDeclineInvite(inviterId, inviteId) {
+        const socket = this.sockets.find(socket => socket.user.id === inviterId)
+        if(socket)
+            socket.emit('fromDeclineInvite', inviteId)
+    }
+
     onDisconnect(socket) {
         return () => {
             console.log('Client disconnected');

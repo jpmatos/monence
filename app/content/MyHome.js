@@ -18,6 +18,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import PromptConfirm from "../components/PromptConfirm";
+import axios from "axios";
 
 const useStyles = (theme => ({
     large: {
@@ -144,7 +145,10 @@ class MyHome extends React.Component {
     }
 
     handleDeclineInvite = (inviteContext, inviteId) => {
-        inviteContext.handleDeclineInvite(inviteId)
+        axios.delete(`/invite/${inviteId}/decline`)
+            .then(res => {
+                inviteContext.handleDeclineInvite(inviteId)
+            })
             .then(() => {
                 this.props.sendSuccessSnack('Declined invite!')
             })

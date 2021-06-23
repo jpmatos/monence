@@ -4,14 +4,15 @@ const roleCheck = require('./roles/roleCheck')
 const postInviteSchema = require("./joi-schemas/invite-schemas").postInviteSchema
 
 class InviteService {
-    constructor(dbCalendar, dbUser, dbInvite) {
+    constructor(dbCalendar, dbUser, dbInvite, socketManager) {
         this.dbCalendar = dbCalendar
         this.dbUser = dbUser
         this.dbInvite = dbInvite
+        this.socketManager = socketManager
     }
 
-    static init(dbCalendar, dbUser, dbInvite){
-        return new InviteService(dbCalendar, dbUser, dbInvite)
+    static init(dbCalendar, dbUser, dbInvite, socketManager){
+        return new InviteService(dbCalendar, dbUser, dbInvite, socketManager)
     }
 
     postInvite(userId, invite){
@@ -45,6 +46,10 @@ class InviteService {
                 invite.inviteeEmail = invitee.email
 
                 return this.dbInvite.postInvite(invite)
+            })
+            .then(invite => {
+                this.socketManager.toNewInvite(invite)
+                return invite
             })
     }
 
@@ -89,15 +94,31 @@ class InviteService {
 
                 return Promise.all([
                     this.dbUser.postParticipating(userId, participating),
-                    this.dbCalendar.postCalendarParticipant(invite.calendarId, participant)
+                    this.dbCalendar.postCalendarParticipant(invite.calendarId, participant),
+                    invite.inviterId
                 ])
             })
             .then(res => {
                 const user = res[0]
+                const participant = res[1].participants[0]
+                const inviterId = res[2]
                 if(user.participating.length === 0)
                     return Promise.reject(error(500, 'Failed to register user as participant'))
 
-                return user.participating[0]
+                return Promise.all([
+                    user.participating[0],
+                    participant,
+                    inviterId
+                ])
+            })
+            .then(res => {
+                const participants = res[0]
+                const participant = res[1]
+                const inviterId = res[2]
+
+                this.socketManager.toAcceptInvite(inviterId, participant)
+
+                return participants
             })
     }
 
@@ -115,6 +136,11 @@ class InviteService {
 
                 return invite
             })
+            .then(invite => {
+                this.socketManager.toDeleteInvite(invite.inviteeId, invite.id)
+
+                return invite
+            })
     }
 
     declineInvite(userId, inviteId) {
@@ -128,6 +154,11 @@ class InviteService {
             .then(invite => {
                 if(!invite)
                     return Promise.reject(error(404, 'Invite Not Found'))
+
+                return invite
+            })
+            .then(invite => {
+                this.socketManager.toDeclineInvite(invite.inviterId, invite.id)
 
                 return invite
             })

@@ -121,7 +121,10 @@ class MyShare extends React.Component {
     }
 
     handleDeleteInvite = (inviteContext, inviteId) => {
-        inviteContext.handleDeleteInvite(inviteId)
+        axios.delete(`/invite/${inviteId}`)
+            .then(res => {
+                inviteContext.handleDeleteInvite(inviteId)
+            })
             .then(res => {
                 this.props.sendSuccessSnack(`Deleted invite`)
             })
@@ -132,7 +135,15 @@ class MyShare extends React.Component {
     }
 
     handleChangeRole = (participantId, role) => {
-        this.context.handleChangeRole(participantId, role)
+        const roleBody = {
+            role: role
+        }
+
+        return axios.put(`/calendar/${this.context.calendarId}/role/${participantId}`, roleBody)
+            .then(res => {
+                const participant = res.data.body
+                this.context.handleChangeRole(participant)
+            })
             .then(() => {
                 this.props.sendSuccessSnack(`Changed participant role`)
             })
@@ -144,7 +155,10 @@ class MyShare extends React.Component {
     }
 
     handleRemoveParticipant = (participantId) => {
-        this.context.handleRemoveParticipant(participantId)
+        return axios.put(`/calendar/${this.context.calendarId}/kick/${participantId}`)
+            .then(res => {
+                this.context.handleRemoveParticipant(participantId)
+            })
             .then(res => {
                 this.props.sendSuccessSnack(`Removed participant`)
             })

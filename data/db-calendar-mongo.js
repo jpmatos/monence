@@ -60,6 +60,7 @@ class DataBaseCalendarMongo {
                     $set: newCalendar
                 },
                 {
+                    returnOriginal: false,
                     projection: {
                         _id: 0,
                         share: 1,

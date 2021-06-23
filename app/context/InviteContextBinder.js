@@ -9,15 +9,25 @@ class InviteContextBinder extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pending: null,
+            pending: [],
             sent: [],
+            handleNewPending: this.handleNewPending,
             handleNewInvite: this.handleNewInvite,
+            handleNewParticipant: this.handleNewParticipant,
             handleDeleteInvite: this.handleDeleteInvite,
             handleAcceptInvite: this.handleAcceptInvite,
             handleDeclineInvite: this.handleDeclineInvite,
             handleRefreshPendingInvites: this.handleRefreshPendingInvites,
             handleRefreshSentInvites: this.handleRefreshSentInvites
         }
+    }
+
+    handleNewPending = (invite) => {
+        const pending = this.state.pending
+        pending.push(invite)
+        this.setState({
+            pending: pending
+        })
     }
 
     handleNewInvite = (invite) => {
@@ -32,14 +42,18 @@ class InviteContextBinder extends React.Component {
             })
     }
 
+    handleNewParticipant = (participant) => {
+        const sent = this.state.sent.filter(inv => inv.inviteeId !== participant.id)
+        this.setState({
+            sent: sent
+        })
+    }
+
     handleDeleteInvite = (inviteId) => {
-        return axios.delete(`/invite/${inviteId}`)
-            .then(res => {
-                const sent = this.state.sent.filter(inv => inv.id !== inviteId)
-                this.setState({
-                    sent: sent
-                })
-            })
+        const sent = this.state.sent.filter(inv => inv.id !== inviteId)
+        this.setState({
+            sent: sent
+        })
     }
 
 
@@ -57,13 +71,10 @@ class InviteContextBinder extends React.Component {
     }
 
     handleDeclineInvite = (inviteId) => {
-        return axios.delete(`/invite/${inviteId}/decline`)
-            .then(res => {
-                const pending = this.state.pending.filter(invite => invite.id !== inviteId)
-                this.setState({
-                    pending: pending
-                })
-            })
+        const pending = this.state.pending.filter(invite => invite.id !== inviteId)
+        this.setState({
+            pending: pending
+        })
     }
 
     handleRefreshPendingInvites = () => {

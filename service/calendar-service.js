@@ -47,19 +47,21 @@ class CalendarService {
             })
             .then(calendar => {
                 const promises = []
-                promises.push(Promise.resolve(calendar.participants))
+
+                promises.push(this.dbCalendar.deleteCalendar(calendarId))
+                promises.push(this.dbUser.deleteCalendar(userId, calendarId))
 
                 calendar.participants.forEach(participant => {
                     promises.push(this.dbUser.deleteParticipating(participant.id, calendarId))
                 })
 
-                promises.push(this.dbCalendar.deleteCalendar(calendarId))
-                promises.push(this.dbUser.deleteCalendar(userId, calendarId))
-
                 return Promise.all(promises)
             })
             .then(res => {
-                return res[0]
+                const calendar = res[0]
+
+                this.socketManager.toCalendarDeleted(calendarId, calendar.participants)
+                return calendar
             })
     }
 
@@ -96,6 +98,13 @@ class CalendarService {
 
                 return calendar.participants[0]
             })
+            .then(participant => {
+                if(participantId !== userId){
+                    this.socketManager.toKickParticipant(calendarId, participant)
+                }
+                this.socketManager.toParticipantLeft(calendarId, userId, participant)
+                return participant
+            })
     }
 
     changeRole(calendarId, participantId, role, userId) {
@@ -112,6 +121,10 @@ class CalendarService {
                     return Promise.reject(error(404, 'Participant Not Found'))
 
                 return calendar.participants[0]
+            })
+            .then(participant => {
+                this.socketManager.toChangeRole(calendarId, participant)
+                return participant
             })
     }
 
@@ -136,12 +149,21 @@ class CalendarService {
             .then(calendar => {
                 const promises = []
 
+                promises.push(calendar.participants)
                 promises.push(this.dbCalendar.putCalendarShare(calendarId, 'Personal'))
                 calendar.participants.forEach(participant => {
                     promises.push(this.dbUser.deleteParticipating(participant.id, calendarId))
                 })
 
                 return Promise.all(promises)
+            })
+            .then(res => {
+                const participants = res[0]
+                const calendar = res[1]
+
+                this.socketManager.toCalendarDeleted(calendarId, participants)
+
+                return calendar
             })
     }
 

@@ -32,6 +32,7 @@ class CalendarContextBinder extends React.Component {
             setCalendarUnshare: this.setCalendarUnshare,
             handleRemoveParticipant: this.handleRemoveParticipant,
             handleRefreshParticipants: this.handleRefreshParticipants,
+            handleNewParticipant: this.handleNewParticipant,
             handleChangeRole: this.handleChangeRole,
             handleLeaveCalendar: this.handleLeaveCalendar,
             handleDeleteCalendar: this.handleDeleteCalendar
@@ -106,15 +107,12 @@ class CalendarContextBinder extends React.Component {
             })
     }
 
-    handleRemoveParticipant = (userId) => {
-        return axios.put(`/calendar/${this.state.calendarId}/kick/${userId}`)
-            .then(res => {
-                const calendar = this.state.calendar
-                calendar.participants = calendar.participants.filter(inv => inv.id !== userId)
-                this.setState({
-                    calendar: calendar
-                })
-            })
+    handleRemoveParticipant = (participantId) => {
+        const calendar = this.state.calendar
+        calendar.participants = calendar.participants.filter(participant => participant.id !== participantId)
+        this.setState({
+            calendar: calendar
+        })
     }
 
     handleRefreshParticipants = () => {
@@ -128,6 +126,14 @@ class CalendarContextBinder extends React.Component {
                     calendar: calendar
                 })
             })
+    }
+
+    handleNewParticipant = (participant) => {
+        const calendar = this.state.calendar
+        calendar.participants.push(participant)
+        this.setState({
+            calendar: calendar
+        })
     }
 
     handleNewItem = (item) => {
@@ -207,34 +213,23 @@ class CalendarContextBinder extends React.Component {
         })
     }
 
-    handleChangeRole = (participantId, role) => {
-        const roleBody = {
-            role: role
-        }
-
-        return axios.put(`/calendar/${this.state.calendarId}/role/${participantId}`, roleBody)
-            .then(res => {
-                const participant = res.data.body
-                const calendar = this.state.calendar
-                calendar.participants = calendar.participants.filter(par => par.id !== participant.id)
-                calendar.participants.push(participant)
-                this.setState({
-                    calendar: calendar
-                })
-            })
+    handleChangeRole = participant => {
+        const calendar = this.state.calendar
+        calendar.participants = calendar.participants.filter(par => par.id !== participant.id)
+        calendar.participants.push(participant)
+        this.setState({
+            calendar: calendar
+        })
     }
 
     handleLeaveCalendar = () => {
-        return axios.put(`/calendar/${this.state.calendarId}/kick/${this.context.user.id}`)
-            .then(res => {
-                const oldCalendarId = this.state.calendarId
-                this.context.handleLeaveCalendar(oldCalendarId)
+        const oldCalendarId = this.state.calendarId
+        this.context.handleLeaveCalendar(oldCalendarId)
 
-                const calendarId = this.context.user.calendars[0].id;
-                this.setState({
-                    calendarId: calendarId
-                })
-            })
+        const calendarId = this.context.user.calendars[0].id;
+        this.setState({
+            calendarId: calendarId
+        })
     }
 
     handleDeleteCalendar = () => {

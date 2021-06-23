@@ -46,7 +46,7 @@ else
 const socketManager = require('./middleware/socket-manager').init()
 const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges, socketManager)
 const userService = require('./service/user-service').init(dbCalendar, dbUser)
-const inviteService = require('./service/invite-service').init(dbCalendar, dbUser, dbInvite)
+const inviteService = require('./service/invite-service').init(dbCalendar, dbUser, dbInvite, socketManager)
 const calendarController = require('./web-api/controller/calendar-controller').init(calendarService)
 const userController = require('./web-api/controller/user-controller').init(userService)
 const inviteController = require('./web-api/controller/invite-controller').init(inviteService)

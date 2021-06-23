@@ -23,6 +23,7 @@ export const CalendarContext = React.createContext({
     setCalendarUnshare: () => {},
     handleRemoveParticipant: () => {},
     handleRefreshParticipants: () => {},
+    handleNewParticipant: () => {},
     handleChangeRole: () => {},
     handleLeaveCalendar: () => {},
     handleDeleteCalendar: () => {}
