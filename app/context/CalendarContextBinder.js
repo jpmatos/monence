@@ -45,8 +45,18 @@ class CalendarContextBinder extends React.Component {
         })
     }
 
-    isOwner = () => {
-        return this.context.user.id === this.state.calendar.owner.ownerId
+    isOwner = (calendar) => {
+        if (calendar)
+            return this.context.user.id === calendar.owner.ownerId
+        else
+            return this.context.user.id === this.state.calendar.owner.ownerId
+    }
+
+    isShared = (calendar) => {
+        if (calendar)
+            return calendar.share === 'Shared'
+        else
+            return this.state.calendar.share === 'Shared'
     }
 
     canEdit = () => {
@@ -310,15 +320,20 @@ class CalendarContextBinder extends React.Component {
                     currency: calendar.currency
                 })
 
-                return calendarId
+                return calendar
             })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.calendarId !== this.state.calendarId && prevState.calendarId !== null) {
             this.getCalendar(this.state.calendarId, true)
-                .then(calendarId => {
+                .then(calendar => {
+                    const calendarId = calendar.id
                     window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + calendarId)
+                    if (this.isOwner(calendar) && this.isShared(calendar))
+                        return this.props.handleRefreshSentInvites(calendarId)
+                    else
+                        this.props.clearSentInvites()
                 })
                 .catch(err => {
                     console.log(err)
@@ -344,12 +359,23 @@ class CalendarContextBinder extends React.Component {
                 if (err.response.status === 404) {
                     const calendarId = this.context.user.calendars[0].id
                     return this.getCalendar(calendarId, true)
-                        .then(calendarId => {
-                            window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + calendarId)
-                        })
+
                 } else {
                     console.log(err)
                 }
+            })
+            .then(calendar => {
+                const calendarId = calendar.id
+                if (calendarId) {
+                    window.history.replaceState(null, '', window.location.href.split('?')[0] + '?c=' + calendarId)
+                    if (this.isOwner(calendar) && this.isShared(calendar))
+                        return this.props.handleRefreshSentInvites(calendarId)
+                    else
+                        this.props.clearSentInvites()
+                }
+            })
+            .catch(err => {
+                console.log(err)
             })
     }
 

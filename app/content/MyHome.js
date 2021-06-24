@@ -280,11 +280,11 @@ class MyHome extends React.Component {
                                                     component="div">
                                             Pending Invites
                                         </Typography>
-                                        <IconButton aria-label="refresh" component="span"
-                                                    onClick={() => this.handleRefreshInvites(inviteContext)}
-                                                    disabled={this.state.isRefreshInvitesDisabled}>
-                                            <RefreshIcon/>
-                                        </IconButton>
+                                        {/*<IconButton aria-label="refresh" component="span"*/}
+                                        {/*            onClick={() => this.handleRefreshInvites(inviteContext)}*/}
+                                        {/*            disabled={this.state.isRefreshInvitesDisabled}>*/}
+                                        {/*    <RefreshIcon/>*/}
+                                        {/*</IconButton>*/}
                                     </Grid>
                                     <Table aria-label="simple table">
                                         <TableHead>

@@ -21,7 +21,7 @@ class MyBudget extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            budget: null,
+            budget: null,   //Budget used to build the data with. Used for updating purposes. Not a source of truth
             periods: [],
             isNewBudgetFDOpen: false,
             isBudgetFDOpen: false,

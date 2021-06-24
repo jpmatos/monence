@@ -99,18 +99,11 @@ class InviteContextBinder extends React.Component {
             })
     }
 
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //     if (prevState.invites !== this.state.invites && prevState.invites !== null) {
-    //         axios.get('/invite')
-    //             .then(res => {
-    //                 const invites = res.data.body
-    //
-    //                 this.setState({
-    //                     invites: invites
-    //                 })
-    //             })
-    //     }
-    // }
+    clearSentInvites = () => {
+        this.setState({
+            sent: []
+        })
+    }
 
     componentDidMount() {
         axios.get('/invites/pending')
@@ -130,7 +123,9 @@ class InviteContextBinder extends React.Component {
         return (
             <InviteContext.Provider value={this.state}>
                 {this.state.pending !== null ?
-                    <CalendarContextBinder/>
+                    <CalendarContextBinder
+                        handleRefreshSentInvites={this.handleRefreshSentInvites}
+                        clearSentInvites={this.clearSentInvites}/>
                     : <LoadingScreen/>}
             </InviteContext.Provider>
         )

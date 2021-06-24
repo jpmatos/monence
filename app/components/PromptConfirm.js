@@ -13,7 +13,6 @@ class PromptConfirm extends React.Component {
         super(props);
         this.state = {
             inputText: '',
-
             isDisabled: true
         }
     }
@@ -27,6 +26,12 @@ class PromptConfirm extends React.Component {
 
     handleClose = () => {
         this.props.setOpen(false)
+        setTimeout(() => {
+            this.setState({
+                inputText: '',
+                isDisabled: true
+            })
+        }, 1000)
     }
 
     onConfirm = () => {

@@ -15,6 +15,7 @@ class MyForecast extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            items: null,    //Items used to build the data with. Used for updating purposes. Not a source of truth
             data: [],
             sumData: [],
             yearData: [],
@@ -111,10 +112,22 @@ class MyForecast extends React.Component {
         })
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.items !== null && JSON.stringify(prevState.items) !== JSON.stringify(this.context.items)){
+            this.updateStateValues(this.context.calendarDate)
+            this.updateStateYearValues(this.context.calendarDate)
+            this.setState({
+                items: [...this.context.items]
+            })
+        }
+    }
 
     componentDidMount() {
         this.updateStateValues(this.context.calendarDate)
         this.updateStateYearValues(this.context.calendarDate)
+        this.setState({
+            items: [...this.context.items]
+        })
     }
 
     render() {
