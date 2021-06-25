@@ -21,7 +21,7 @@ import ForecastIcon from '@material-ui/icons/TrendingUp'
 import GroupIcon from '@material-ui/icons/Group'
 import Container from '@material-ui/core/Container'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
-import SettingsIcon from '@material-ui/icons/Settings'
+import InfoIcon from '@material-ui/icons/Info';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 
 import MyCalendar from './MyCalendar'
@@ -32,9 +32,9 @@ import Grid from "@material-ui/core/Grid"
 import MyForecast from "./MyForecast"
 import {MenuItem, Slide, Snackbar} from "@material-ui/core"
 import {Alert} from "@material-ui/lab"
-import PlaceHolder from "./PlaceHolder";
 import MyShare from "./MyShare";
 import MyShareParticipant from "./MyShareParticipant";
+import About from "./About";
 
 const drawerWidth = 220
 const useStyles = (theme) => ({
@@ -293,11 +293,11 @@ class App extends React.Component {
                                 icon={<GroupIcon/>}
                                 listClass={classes.list}/>
                             <ListItemLink
-                                to={`/settings?c=${this.context.calendarId}`}
+                                to={`/about?c=${this.context.calendarId}`}
                                 selected={this.state.selected}
                                 setSelected={this.setSelected}
-                                primary='Settings'
-                                icon={<SettingsIcon/>}
+                                primary='About'
+                                icon={<InfoIcon/>}
                                 listClass={classes.list}/>
                         </List>
                     </Grid>
@@ -334,8 +334,8 @@ class App extends React.Component {
                                     sendSuccessSnack={this.sendSuccessSnack}
                                     sendErrorSnack={this.sendErrorSnack}/>}
                         </Route>
-                        <Route path='/settings*'>
-                            <PlaceHolder
+                        <Route path='/about*'>
+                            <About
                                 sendSuccessSnack={this.sendSuccessSnack}
                                 sendErrorSnack={this.sendErrorSnack}/>
                         </Route>

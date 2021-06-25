@@ -7,19 +7,32 @@
 var app = require('../app');
 var debug = require('debug')('monence:server');
 var http = require('http');
+var www = require("socket.io");
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+app.app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = http.createServer(app.app);
+
+
+const io = www(server, {
+  cors: {
+    origin: "localhost:3000",
+    methods: ["GET", "POST"]
+  }
+})
+
+io.on("connection", (socket) => {
+  app.socketManager.newSocket(socket)
+});
 
 /**
  * Listen on provided port, on all network interfaces.
