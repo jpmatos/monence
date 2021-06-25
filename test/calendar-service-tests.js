@@ -3,6 +3,7 @@ const expect = require('chai').expect
 //Load env variables
 const env = require('../env.json')
 Object.assign(process.env, env)
+const socketManager = require('../middleware/socket-manager').init()
 
 //See if mock API is set
 let dbCalendar
@@ -29,11 +30,11 @@ if (process.env.MOCK_EXCHANGE_DB === 'true')
 else
     dbExchanges = require('../data/db-exchanges-api').init(process.env.OER_ID)
 
-let calendarService = require('../service/calendar-service').init(dbCalendar, dbUser, dbExchanges)
+let calendarService = require('../service/calendar-service').init(dbCalendar, dbUser, dbExchanges, socketManager)
 
 describe('Monence tests for calendar service', () => {
-    const userId = 'testuserid123'
-    const calendarId = 'testcalendarid123'
+    const userId = 'testuserid12300000000'
+    const calendarId = 'testcalendarid12300000'
     const calendarToPost = {
         "name": "TestCalendar",
         "currency": "EUR",
@@ -49,7 +50,7 @@ describe('Monence tests for calendar service', () => {
             "email": "test.user@gmail.com"
         }
     }
-    const itemSingleId = "testitemsingleid123"
+    let itemSingleId = "testitemsingleid123000"
     const itemSingleToPost = {
         "id": itemSingleId,
         "title": "Test Single Item",
@@ -58,7 +59,7 @@ describe('Monence tests for calendar service', () => {
         "type": "expense",
         "recurrency": "single"
     }
-    const itemRecurrentId = "testitemrecurrentid123"
+    let itemRecurrentId = "testitemrecurrentid12"
     const itemRecurrentToPost = {
         "id": itemRecurrentId,
         "title": "Test Recurrent Item",
@@ -66,7 +67,8 @@ describe('Monence tests for calendar service', () => {
         "end": "2021-05-21T00:00:00.000Z",
         "value": 20.55,
         "type": "expense",
-        "recurrency": "recurrent"
+        "recurrency": "recurrent",
+        "recurrencyPeriod": "week"
     }
     const itemSingleToUpdate = {
         "start": "2021-05-16T00:00:00.000Z"
@@ -74,7 +76,7 @@ describe('Monence tests for calendar service', () => {
     const itemRecurrentToUpdate = {
         "start": "2021-05-16T00:00:00.000Z"
     }
-    const budgetId = "testbudgetid123"
+    let budgetId = "testbudgetid123000000"
     const budgetToPost = {
         "id": budgetId,
         "date": "2021-05-01T00:00:00.000Z",
@@ -85,12 +87,14 @@ describe('Monence tests for calendar service', () => {
         "value": 250.00
     }
     const participantToPost = {
-        'id': 'testuserid124',
+        'id': 'testuserid12400000000',
         'name': 'Test User 2',
         'email': 'test.user2@gmail.com',
         'role': 'Viewer'
     }
-    const roleToUpdate = 'Viewer'
+    const roleToUpdate = {
+        'role': 'Viewer'
+    }
 
     before(() => {
         return dbCalendar.isConnected()
@@ -152,11 +156,10 @@ describe('Monence tests for calendar service', () => {
             })
     })
 
-    it('Should update role', () => {
-        return calendarService.changeRole(calendarId, participantToPost.id, roleToUpdate, userId)
+    it('Should post a participant', () => {
+        return dbCalendar.postCalendarParticipant(calendarId, participantToPost)
             .then(calendar => {
                 expect(calendar.participants[0]).to.be.a('object')
-
                 const participant = calendar.participants[0]
                 expect(participant.id).to.eql(participantToPost.id)
                 expect(participant.name).to.eql(participantToPost.name)
@@ -165,41 +168,39 @@ describe('Monence tests for calendar service', () => {
             })
     })
 
-
-
-    it('Should Unshare', () => {
-        return calendarService.putUnshare(calendarId, userId)
-            .then(calendar => {
-                expect(calendar.share).to.equal('Personal')
-                expect(calendar.participants).to.be.a('array')
-                expect(calendar.participants).to.length(0)
+    it('Should update role', () => {
+        return calendarService.changeRole(calendarId, participantToPost.id, roleToUpdate, userId)
+            .then(participant => {
+                expect(participant).to.be.a('object')
+                expect(participant.id).to.eql(participantToPost.id)
+                expect(participant.name).to.eql(participantToPost.name)
+                expect(participant.email).to.eql(participantToPost.email)
+                expect(participant.role).to.eql(participantToPost.role)
             })
     })
 
     it('Should post a single item', () => {
         return calendarService.postItem(calendarId, itemSingleToPost, userId)
-            .then(calendar => {
-                expect(calendar.single[0]).to.be.a('object')
-
-                const item = calendar.single[0]
-                expect(item.id).to.eql(itemSingleToPost.id)
+            .then(item => {
+                expect(item).to.be.a('object')
+                expect(item.id).to.match(/^[a-zA-Z0-9]{22}$/)
                 expect(item.title).to.eql(itemSingleToPost.title)
-                expect(item.start).to.eql(itemSingleToPost.start)
+                expect(item.start.toISOString()).to.eql(itemSingleToPost.start)
                 expect(item.value).to.eql(itemSingleToPost.value)
                 expect(item.type).to.eql(itemSingleToPost.type)
                 expect(item.recurrency).to.eql(itemSingleToPost.recurrency)
+                itemSingleId = item.id
+                itemSingleToPost.id = item.id
             })
     })
 
     it('Should update a single item', () => {
         return calendarService.putItem(calendarId, itemSingleId, itemSingleToUpdate, userId)
-            .then(calendar => {
-                expect(calendar.single[0]).to.be.a('object')
-
-                const item = calendar.single[0]
+            .then(item => {
+                expect(item).to.be.a('object')
                 expect(item.id).to.eql(itemSingleToPost.id)
                 expect(item.title).to.eql(itemSingleToPost.title)
-                expect(item.start).to.eql(itemSingleToUpdate.start)
+                expect(item.start.toISOString()).to.eql(itemSingleToUpdate.start)
                 expect(item.value).to.eql(itemSingleToPost.value)
                 expect(item.type).to.eql(itemSingleToPost.type)
                 expect(item.recurrency).to.eql(itemSingleToPost.recurrency)
@@ -208,13 +209,11 @@ describe('Monence tests for calendar service', () => {
 
     it('Should delete a single item', () => {
         return calendarService.deleteItem(calendarId, itemSingleId, userId)
-            .then(calendar => {
-                expect(calendar.single[0]).to.be.a('object')
-
-                const item = calendar.single[0]
+            .then(item => {
+                expect(item).to.be.a('object')
                 expect(item.id).to.eql(itemSingleToPost.id)
                 expect(item.title).to.eql(itemSingleToPost.title)
-                expect(item.start).to.eql(itemSingleToUpdate.start)
+                expect(item.start.toISOString()).to.eql(itemSingleToUpdate.start)
                 expect(item.value).to.eql(itemSingleToPost.value)
                 expect(item.type).to.eql(itemSingleToPost.type)
                 expect(item.recurrency).to.eql(itemSingleToPost.recurrency)
@@ -223,30 +222,28 @@ describe('Monence tests for calendar service', () => {
 
     it('Should post a recurrent item', () => {
         return calendarService.postItemRecurrent(calendarId, itemRecurrentToPost, userId)
-            .then(calendar => {
-                expect(calendar.recurrent[0]).to.be.a('object')
-
-                const item = calendar.recurrent[0]
-                expect(item.id).to.eql(itemRecurrentToPost.id)
+            .then(item => {
+                expect(item).to.be.a('object')
+                expect(item.id).to.match(/^[a-zA-Z0-9]{22}$/)
                 expect(item.title).to.eql(itemRecurrentToPost.title)
-                expect(item.start).to.eql(itemRecurrentToPost.start)
-                expect(item.end).to.eql(itemRecurrentToPost.end)
+                expect(item.start.toISOString()).to.eql(itemRecurrentToPost.start)
+                expect(item.end.toISOString()).to.eql(itemRecurrentToPost.end)
                 expect(item.value).to.eql(itemRecurrentToPost.value)
                 expect(item.type).to.eql(itemRecurrentToPost.type)
                 expect(item.recurrency).to.eql(itemRecurrentToPost.recurrency)
+                itemRecurrentId = item.id
+                itemRecurrentToPost.id = item.id
             })
     })
 
     it('Should update a recurrent item', () => {
         return calendarService.putItemRecurrent(calendarId, itemRecurrentId, itemRecurrentToUpdate, userId)
-            .then(calendar => {
-                expect(calendar.recurrent[0]).to.be.a('object')
-
-                const item = calendar.recurrent[0]
+            .then(item => {
+                expect(item).to.be.a('object')
                 expect(item.id).to.eql(itemRecurrentToPost.id)
                 expect(item.title).to.eql(itemRecurrentToPost.title)
-                expect(item.start).to.eql(itemRecurrentToUpdate.start)
-                expect(item.end).to.eql(itemRecurrentToPost.end)
+                expect(item.start.toISOString()).to.eql(itemRecurrentToUpdate.start)
+                expect(item.end.toISOString()).to.eql(itemRecurrentToPost.end)
                 expect(item.value).to.eql(itemRecurrentToPost.value)
                 expect(item.type).to.eql(itemRecurrentToPost.type)
                 expect(item.recurrency).to.eql(itemRecurrentToPost.recurrency)
@@ -255,14 +252,12 @@ describe('Monence tests for calendar service', () => {
 
     it('Should delete a recurrent item', () => {
         return calendarService.deleteItemRecurrent(calendarId, itemRecurrentId, userId)
-            .then(calendar => {
-                expect(calendar.recurrent[0]).to.be.a('object')
-
-                const item = calendar.recurrent[0]
+            .then(item => {
+                expect(item).to.be.a('object')
                 expect(item.id).to.eql(itemRecurrentToPost.id)
                 expect(item.title).to.eql(itemRecurrentToPost.title)
-                expect(item.start).to.eql(itemRecurrentToUpdate.start)
-                expect(item.end).to.eql(itemRecurrentToPost.end)
+                expect(item.start.toISOString()).to.eql(itemRecurrentToUpdate.start)
+                expect(item.end.toISOString()).to.eql(itemRecurrentToPost.end)
                 expect(item.value).to.eql(itemRecurrentToPost.value)
                 expect(item.type).to.eql(itemRecurrentToPost.type)
                 expect(item.recurrency).to.eql(itemRecurrentToPost.recurrency)
@@ -271,25 +266,23 @@ describe('Monence tests for calendar service', () => {
 
     it('Should post a budget', () => {
         return calendarService.postBudget(calendarId, budgetToPost, userId)
-            .then(calendar => {
-                expect(calendar.budget[0]).to.be.a('object')
-
-                const budget = calendar.budget[0]
-                expect(budget.id).to.eql(budgetToPost.id)
-                expect(budget.date).to.eql(budgetToPost.date)
+            .then(budget => {
+                expect(budget).to.be.a('object')
+                expect(budget.id).to.match(/^[a-zA-Z0-9]{22}$/)
+                expect(budget.date.toISOString()).to.eql(budgetToPost.date)
                 expect(budget.value).to.eql(budgetToPost.value)
                 expect(budget.period).to.eql(budgetToPost.period)
+                budgetId = budget.id
+                budgetToPost.id = budget.id
             })
     })
 
     it('Should update a budget', () => {
         return calendarService.putBudget(calendarId, budgetId, budgetToUpdate, userId)
-            .then(calendar => {
-                expect(calendar.budget[0]).to.be.a('object')
-
-                const budget = calendar.budget[0]
+            .then(budget => {
+                expect(budget).to.be.a('object')
                 expect(budget.id).to.eql(budgetToPost.id)
-                expect(budget.date).to.eql(budgetToPost.date)
+                expect(budget.date.toISOString()).to.eql(budgetToPost.date)
                 expect(budget.value).to.eql(budgetToUpdate.value)
                 expect(budget.period).to.eql(budgetToPost.period)
             })
@@ -297,12 +290,10 @@ describe('Monence tests for calendar service', () => {
 
     it('Should delete a budget', () => {
         return calendarService.deleteBudget(calendarId, budgetId, userId)
-            .then(calendar => {
-                expect(calendar.budget[0]).to.be.a('object')
-
-                const budget = calendar.budget[0]
+            .then(budget => {
+                expect(budget).to.be.a('object')
                 expect(budget.id).to.eql(budgetToPost.id)
-                expect(budget.date).to.eql(budgetToPost.date)
+                expect(budget.date.toISOString()).to.eql(budgetToPost.date)
                 expect(budget.value).to.eql(budgetToUpdate.value)
                 expect(budget.period).to.eql(budgetToPost.period)
             })
@@ -310,14 +301,21 @@ describe('Monence tests for calendar service', () => {
 
     it('Should delete a participant', () => {
         return calendarService.deleteParticipant(calendarId, participantToPost.id, userId)
-            .then(calendar => {
-                expect(calendar.participants[0]).to.be.a('object')
-
-                const participant = calendar.participants[0]
+            .then(participant => {
+                expect(participant).to.be.a('object')
                 expect(participant.id).to.eql(participantToPost.id)
                 expect(participant.name).to.eql(participantToPost.name)
                 expect(participant.email).to.eql(participantToPost.email)
                 expect(participant.role).to.eql(participantToPost.role)
+            })
+    })
+
+    it('Should Unshare', () => {
+        return calendarService.putUnshare(calendarId, userId)
+            .then(calendar => {
+                expect(calendar.share).to.equal('Personal')
+                expect(calendar.participants).to.be.a('array')
+                expect(calendar.participants).to.length(0)
             })
     })
 

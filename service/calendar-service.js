@@ -117,7 +117,7 @@ class CalendarService {
                 return this.dbCalendar.putRole(calendarId, participantId, role.role)
             })
             .then(calendar => {
-                if (calendar.length === 0)
+                if (calendar.participants.length === 0)
                     return Promise.reject(error(404, 'Participant Not Found'))
 
                 return calendar.participants[0]
