@@ -1,9 +1,9 @@
 const expect = require('chai').expect
+const path = require('path')
+const dotenv = require('dotenv');
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-//Load env variables
-const env = require('../env.json')
-Object.assign(process.env, env)
-let socketManager = require('../middleware/socket-manager').init()
+const socketManager = require('../service/sockets/socket-manager').init()
 
 //See if mock API is set
 let dbCalendar

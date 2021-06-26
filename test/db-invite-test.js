@@ -1,8 +1,7 @@
 const expect = require('chai').expect
-
-//Load env variables
-const env = require('../env.json')
-Object.assign(process.env, env)
+const path = require('path')
+const dotenv = require('dotenv');
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 //See if mock API is set
 let dbInvite

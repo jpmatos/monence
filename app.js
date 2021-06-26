@@ -9,14 +9,16 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const session = require('express-session')
+const dotenv = require('dotenv');
 
 //Load env variables
-if (!fs.existsSync('./env.json')) {
-    console.log('Set up env.json!')
-    return null
-}
-const env = require('./env.json')
-Object.assign(process.env, env)
+// if (!fs.existsSync('./env.json')) {
+//     console.log('Set up env.json!')
+//     return null
+// }
+// const env = require('./env.json')
+// Object.assign(process.env, env)
+dotenv.config();
 
 //Project Files
 let dbCalendar

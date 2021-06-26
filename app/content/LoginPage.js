@@ -15,6 +15,7 @@ import {makeStyles, withStyles} from '@material-ui/core/styles';
 import GoogleButton from "react-google-button";
 import {UserContext} from "../context/default/UserContext";
 import {FormControl, NativeSelect} from "@material-ui/core";
+import Background from '../img/calculator.jpg'
 
 function Copyright() {
     return (
@@ -31,7 +32,8 @@ const useStyles = (theme => ({
         height: '100vh',
     },
     image: {
-        backgroundImage: 'url(https://source.unsplash.com/random)',
+        // backgroundImage: '../img/calculator.jpg',
+        backgroundImage: `url(${Background})`,
         backgroundRepeat: 'no-repeat',
         backgroundColor:
             theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],

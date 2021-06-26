@@ -1,12 +1,9 @@
 import React, {useContext, useState} from 'react'
 import App from '../content/App'
-
 import socketIOClient from 'socket.io-client'
 import {UserContext} from './default/UserContext'
 import {CalendarContext} from './default/CalendarContext'
 import {InviteContext} from './default/InviteContext'
-
-const ENDPOINT = 'localhost:3000'
 
 const SocketBinder = (props) => {
 
@@ -81,7 +78,7 @@ const SocketBinder = (props) => {
     }
 
     React.useEffect(() => {
-        const socket = socketIOClient(ENDPOINT)
+        const socket = socketIOClient(process.env.REACT_APP_SOCKET_ENDPOINT)
         setSocket(socket)
 
         const register = {

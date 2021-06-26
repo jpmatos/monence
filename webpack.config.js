@@ -1,5 +1,6 @@
 // Generated using webpack-cli http://github.com/webpack-cli
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -15,7 +16,11 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'app/index.html',
-            favicon: 'app/img/favicon.ico'
+            favicon: 'app/img/favicon.ico',
+            title: 'monence'
+        }),
+        new webpack.DefinePlugin({
+            'process.env.REACT_APP_SOCKET_ENDPOINT': JSON.stringify(process.env.REACT_APP_SOCKET_ENDPOINT)
         })
     ],
     module: {
@@ -55,16 +60,13 @@ module.exports = {
                 ]
             },
             {
-                test: /\.hbs$/,
-                loader: "handlebars-loader",
-                options: {
-                    inlineRequires: '\/img\/'
-                }
-            },
-            {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/inline'
-            }
+            },
+            // {
+            //     test: /\.(png|jpg)$/,
+            //     loader: 'url-loader'
+            // }
         ]
     },
 };
