@@ -8,14 +8,6 @@ function userWebApi(router, userController) {
         return userController.postCalendar(req, res, next)
     })
 
-    // router.get('/invites', (req, res, next) => {
-    //     return userController.getInvites(req, res, next)
-    // })
-
-    // router.put('/invite/:inviteId/decline', (req, res, next) => {
-    //     return userController.declineInvite(req, res, next)
-    // })
-
     return router
 }
 

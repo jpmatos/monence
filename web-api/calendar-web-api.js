@@ -5,6 +5,7 @@ function calendarWebApi(router, calendarController){
     router.get('/hello', (req, res, next) => {
         return calendarController.hello(req, res, next)
     })
+
     router.get('/:calendarId', checkAuth, (req, res, next) => {
         return calendarController.getCalendar(req, res, next)
     })

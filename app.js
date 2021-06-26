@@ -43,7 +43,10 @@ if (process.env.MOCK_EXCHANGE_DB === 'true')
 else
     dbExchanges = require('./data/db-exchanges-api').init(process.env.OER_ID)
 
-const socketManager = require('./middleware/socket-manager').init()
+const socketManager = require('./service/sockets/socket-manager').init()
+const catchError = require('./middleware/catch-error')
+const webpackConfig = require('./webpack.config.js')
+
 const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges, socketManager)
 const userService = require('./service/user-service').init(dbCalendar, dbUser)
 const inviteService = require('./service/invite-service').init(dbCalendar, dbUser, dbInvite, socketManager)
@@ -55,12 +58,8 @@ const calendarRoutes = require('./web-api/calendar-web-api')
 const authRoutes = require('./web-api/auth-web-api')
 const userRoutes = require('./web-api/user-web-api')
 const inviteRoutes = require('./web-api/invite-web-api')
-const webpackConfig = require('./webpack.config.js')
 
-// Use the GoogleStrategy within Passport.
-//   Strategies in Passport require a `verify` function, which accept
-//   credentials (in this case, an accessToken, refreshToken, and Google
-//   profile), and invoke a callback with a user object.
+//Passport setup
 passport.serializeUser(function (user, done) {
     done(null, user);
 });
@@ -70,22 +69,17 @@ passport.deserializeUser(function (obj, done) {
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        //callbackURL: 'http://localhost:3000/auth/google/callback'
         callbackURL: process.env.CALLBACK_URL
     },
     function (accessToken, refreshToken, profile, done) {
-        // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        //     return done(err, user)
-        // })
         process.nextTick(function () {
             return done(null, profile)
         })
     }
 ))
 
+//Express Setup
 const app = express()
-
-//Middleware
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -106,16 +100,6 @@ app.use('/calendar', calendarRoutes(express.Router(), calendarController))
 app.use('/auth', authRoutes(express.Router(), authController, passport))
 app.use('/user', userRoutes(express.Router(), userController))
 app.use(inviteRoutes(express.Router(), inviteController))
-app.use((err, req, res, next) => {
-    if (err !== undefined) {
-        if (err.stack !== undefined)
-            console.error(err.stack)
-        res.status(err.status)
-            .json({
-                'success': false,
-                'message': err.message
-            })
-    }
-})
+app.use(catchError)
 
 module.exports = {app, socketManager}
