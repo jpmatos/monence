@@ -23,7 +23,7 @@ class CalendarService {
             this.dbCalendar.getCalendar(calendarId),
             this.dbExchanges.getExchanges()
         ])
-            .then(res => {
+            .then((res) => {
                 const calendar = res[0]
                 const exchanges = res[1]
 
@@ -38,35 +38,40 @@ class CalendarService {
     }
 
     deleteCalendar(calendarId, userId) {
-        return this.dbCalendar.getCalendarOwner(calendarId)
-            .then(calendar => {
-                if (!calendar || !roleCheck.isOwner(calendar, userId))
-                    return Promise.reject(error(404, 'Calendar Not Found'))
+        const response = {body: null}
+        return this.dbCalendar.startTransaction(response, error, session => {
+            return () => {
+                return this.dbCalendar.getCalendarOwner(calendarId, session)
+                    .then(calendar => {
+                        if (!calendar || !roleCheck.isOwner(calendar, userId))
+                            return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return this.dbCalendar.getParticipants(calendarId)
-            })
-            .then(calendar => {
-                const promises = []
+                        return this.dbCalendar.getParticipants(calendarId, session)
+                    })
+                    .then(calendar => {
+                        const promises = []
 
-                promises.push(this.dbCalendar.deleteCalendar(calendarId))
-                promises.push(this.dbUser.deleteCalendar(userId, calendarId))
+                        promises.push(this.dbCalendar.deleteCalendar(calendarId, session))
+                        promises.push(this.dbUser.deleteCalendar(userId, calendarId, session))
 
-                calendar.participants.forEach(participant => {
-                    promises.push(this.dbUser.deleteParticipating(participant.id, calendarId))
-                })
+                        calendar.participants.forEach(participant => {
+                            promises.push(this.dbUser.deleteParticipating(participant.id, calendarId, session))
+                        })
 
-                return Promise.all(promises)
-            })
-            .then(res => {
-                const calendar = res[0]
+                        return Promise.all(promises)
+                    })
+                    .then(res => {
+                        const calendar = res[0]
 
-                this.socketManager.toCalendarDeleted(calendarId, calendar.participants)
-                return calendar
-            })
+                        this.socketManager.toCalendarDeleted(calendarId, calendar.participants)
+                        response.body = calendar
+                    })
+            }
+        })
     }
 
     getParticipants(userId, calendarId) {
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.canView(calendar, userId)))
@@ -80,31 +85,36 @@ class CalendarService {
     }
 
     deleteParticipant(calendarId, participantId, userId) {
-        return this.dbCalendar.getCalendarOwner(calendarId)
-            .then(calendar => {
-                if (!calendar ||
-                    (!roleCheck.isOwner(calendar, userId) && !roleCheck.isSame(participantId, userId)))
-                    return Promise.reject(error(404, 'Calendar Not Found'))
+        const response = {body: null}
+        return this.dbCalendar.startTransaction(response, error, session => {
+            return () => {
+                return this.dbCalendar.getCalendarOwner(calendarId, session)
+                    .then(calendar => {
+                        if (!calendar ||
+                            (!roleCheck.isOwner(calendar, userId) && !roleCheck.isSame(participantId, userId)))
+                            return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return Promise.all([
-                    this.dbCalendar.deleteParticipant(calendarId, participantId),
-                    this.dbUser.deleteParticipating(participantId, calendarId)
-                ])
-            })
-            .then(res => {
-                const calendar = res[0]
-                if (calendar.participants.length === 0)
-                    return Promise.reject(error(404, 'Participant Not Found'))
+                        return Promise.all([
+                            this.dbCalendar.deleteParticipant(calendarId, participantId, session),
+                            this.dbUser.deleteParticipating(participantId, calendarId, session)
+                        ])
+                    })
+                    .then(res => {
+                        const calendar = res[0]
+                        if (calendar.participants.length === 0)
+                            return Promise.reject(error(404, 'Participant Not Found'))
 
-                return calendar.participants[0]
-            })
-            .then(participant => {
-                if(participantId !== userId){
-                    this.socketManager.toKickParticipant(calendarId, participant)
-                }
-                this.socketManager.toParticipantLeft(calendarId, userId, participant)
-                return participant
-            })
+                        return calendar.participants[0]
+                    })
+                    .then(participant => {
+                        if (participantId !== userId) {
+                            this.socketManager.toKickParticipant(calendarId, participant)
+                        }
+                        this.socketManager.toParticipantLeft(calendarId, userId, participant)
+                        response.body = participant
+                    })
+            }
+        })
     }
 
     changeRole(calendarId, participantId, role, userId) {
@@ -136,35 +146,43 @@ class CalendarService {
 
                 return this.dbCalendar.putCalendarShare(calendarId, 'Shared')
             })
+            .then(calendar => {
+                return calendar
+            })
     }
 
     putUnshare(calendarId, userId) {
-        return this.dbCalendar.getCalendar(calendarId)
-            .then(calendar => {
-                if (!roleCheck.isOwner(calendar, userId))
-                    return Promise.reject(error(404, 'Calendar Not Found'))
+        const response = {body: null}
+        return this.dbCalendar.startTransaction(response, error, session => {
+            return () => {
+                return this.dbCalendar.getCalendar(calendarId, session)
+                    .then(calendar => {
+                        if (!roleCheck.isOwner(calendar, userId))
+                            return Promise.reject(error(404, 'Calendar Not Found'))
 
-                return this.dbCalendar.getParticipants(calendarId)
-            })
-            .then(calendar => {
-                const promises = []
+                        return this.dbCalendar.getParticipants(calendarId, session)
+                    })
+                    .then(calendar => {
+                        const promises = []
 
-                promises.push(calendar.participants)
-                promises.push(this.dbCalendar.putCalendarShare(calendarId, 'Personal'))
-                calendar.participants.forEach(participant => {
-                    promises.push(this.dbUser.deleteParticipating(participant.id, calendarId))
-                })
+                        promises.push(calendar.participants)
+                        promises.push(this.dbCalendar.putCalendarShare(calendarId, 'Personal'), session)
+                        calendar.participants.forEach(participant => {
+                            promises.push(this.dbUser.deleteParticipating(participant.id, calendarId), session)
+                        })
 
-                return Promise.all(promises)
-            })
-            .then(res => {
-                const participants = res[0]
-                const calendar = res[1]
+                        return Promise.all(promises)
+                    })
+                    .then(res => {
+                        const participants = res[0]
+                        const calendar = res[1]
 
-                this.socketManager.toCalendarDeleted(calendarId, participants)
+                        this.socketManager.toCalendarDeleted(calendarId, participants)
 
-                return calendar
-            })
+                        response.body = calendar
+                    })
+            }
+        })
     }
 
     postItem(calendarId, item, userId) {
@@ -291,7 +309,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -303,7 +321,7 @@ class CalendarService {
                 item.recurrency = 'recurrent'
                 item.id = uuid.generate()
 
-                return this.dbCalendar.postItemRecurrent(calendarId, item)
+                return this.dbCalendar.postItemRecurrent(calendarId, item, session)
             })
             .then(calendar => {
                 if (calendar.recurrent.length === 0)
@@ -337,7 +355,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -346,7 +364,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.putItemRecurrent(calendarId, itemId, item, 'recurrent')
+                return this.dbCalendar.putItemRecurrent(calendarId, itemId, item, 'recurrent', session)
             })
             .then(calendar => {
                 if (calendar.recurrent.length === 0)
@@ -367,7 +385,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -376,7 +394,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.deleteItemRecurrent(calendarId, itemId)
+                return this.dbCalendar.deleteItemRecurrent(calendarId, itemId, session)
             })
             .then((calendar) => {
                 if (calendar.recurrent.length === 0)
@@ -403,7 +421,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -414,7 +432,7 @@ class CalendarService {
 
                 budget.id = uuid.generate()
 
-                return this.dbCalendar.postBudget(calendarId, budget)
+                return this.dbCalendar.postBudget(calendarId, budget, session)
             })
             .then(calendar => {
                 if (calendar.budget.length === 0)
@@ -446,7 +464,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -455,7 +473,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.putBudget(calendarId, budgetId, budget)
+                return this.dbCalendar.putBudget(calendarId, budgetId, budget, session)
             })
             .then(calendar => {
                 if (calendar.budget.length === 0)
@@ -476,7 +494,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -485,7 +503,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.deleteBudget(calendarId, budgetId)
+                return this.dbCalendar.deleteBudget(calendarId, budgetId, session)
             })
             .then((calendar) => {
                 if (calendar.budget.length === 0)

@@ -11,11 +11,11 @@ class InviteService {
         this.socketManager = socketManager
     }
 
-    static init(dbCalendar, dbUser, dbInvite, socketManager){
+    static init(dbCalendar, dbUser, dbInvite, socketManager) {
         return new InviteService(dbCalendar, dbUser, dbInvite, socketManager)
     }
 
-    postInvite(userId, invite){
+    postInvite(userId, invite) {
         const result = postInviteSchema.validate(invite, {stripUnknown: true})
         if (result.error)
             return Promise.reject(error(400, result.error.details[0].message))
@@ -31,10 +31,10 @@ class InviteService {
                 const inviter = res[1]
                 const calendar = res[2]
 
-                if(!calendar || !roleCheck.isOwner(calendar, userId))
+                if (!calendar || !roleCheck.isOwner(calendar, userId))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
-                if(!invitee)
+                if (!invitee)
                     return Promise.reject(error(404, 'User Not Found'))
 
                 invite.id = uuid.generate()
@@ -60,7 +60,7 @@ class InviteService {
     getSent(userId, calendarId) {
         return this.dbCalendar.getCalendarOwner(calendarId)
             .then(calendar => {
-                if(!calendar || !roleCheck.isOwner(calendar, userId))
+                if (!calendar || !roleCheck.isOwner(calendar, userId))
                     return Promise.reject(error(404, 'Calendar Not Found'))
 
                 return this.dbInvite.getSent(calendarId)
@@ -68,70 +68,75 @@ class InviteService {
     }
 
     acceptInvite(userId, inviteId) {
-        return this.dbInvite.getInviteeId(inviteId)
-            .then(invite => {
-                if(!invite || !roleCheck.isSame(userId, invite.inviteeId))
-                    return Promise.reject(error(404, 'Invite Not Found'))
+        const response = {body: null}
+        return this.dbCalendar.startTransaction(response, error, session => {
+            return () => {
+                return this.dbInvite.getInviteeId(inviteId, session)
+                    .then(invite => {
+                        if (!invite || !roleCheck.isSame(userId, invite.inviteeId))
+                            return Promise.reject(error(404, 'Invite Not Found'))
 
-                return this.dbInvite.deleteInvite(inviteId)
-            })
-            .then(invite => {
-                if(!invite)
-                    return Promise.reject(error(404, 'Invite Not Found'))
+                        return this.dbInvite.deleteInvite(inviteId, session)
+                    })
+                    .then(invite => {
+                        if (!invite)
+                            return Promise.reject(error(404, 'Invite Not Found'))
 
-                const participating = {
-                    'calendarId': invite.calendarId,
-                    'calendarName': invite.calendarName,
-                    'role': invite.role
-                }
+                        const participating = {
+                            'calendarId': invite.calendarId,
+                            'calendarName': invite.calendarName,
+                            'role': invite.role
+                        }
 
-                const participant = {
-                    'id': invite.inviteeId,
-                    'name': invite.inviteeName,
-                    'email': invite.inviteeEmail,
-                    'role': invite.role
-                }
+                        const participant = {
+                            'id': invite.inviteeId,
+                            'name': invite.inviteeName,
+                            'email': invite.inviteeEmail,
+                            'role': invite.role
+                        }
 
-                return Promise.all([
-                    this.dbUser.postParticipating(userId, participating),
-                    this.dbCalendar.postCalendarParticipant(invite.calendarId, participant),
-                    invite.inviterId
-                ])
-            })
-            .then(res => {
-                const user = res[0]
-                const participant = res[1].participants[0]
-                const inviterId = res[2]
-                if(user.participating.length === 0)
-                    return Promise.reject(error(500, 'Failed to register user as participant'))
+                        return Promise.all([
+                            this.dbUser.postParticipating(userId, participating, session),
+                            this.dbCalendar.postCalendarParticipant(invite.calendarId, participant, session),
+                            invite.inviterId
+                        ])
+                    })
+                    .then(res => {
+                        const user = res[0]
+                        const participant = res[1].participants[0]
+                        const inviterId = res[2]
+                        if (user.participating.length === 0)
+                            return Promise.reject(error(500, 'Failed to register user as participant'))
 
-                return Promise.all([
-                    user.participating[0],
-                    participant,
-                    inviterId
-                ])
-            })
-            .then(res => {
-                const participants = res[0]
-                const participant = res[1]
-                const inviterId = res[2]
+                        return Promise.all([
+                            user.participating[0],
+                            participant,
+                            inviterId
+                        ])
+                    })
+                    .then(res => {
+                        const participants = res[0]
+                        const participant = res[1]
+                        const inviterId = res[2]
 
-                this.socketManager.toAcceptInvite(inviterId, participant)
+                        this.socketManager.toAcceptInvite(inviterId, participant)
 
-                return participants
-            })
+                        response.body = participants
+                    })
+            }
+        })
     }
 
     deleteInvite(userId, inviteId) {
         return this.dbInvite.getInviterId(inviteId)
             .then(invite => {
-                if(!invite || !roleCheck.isSame(userId, invite.inviterId))
+                if (!invite || !roleCheck.isSame(userId, invite.inviterId))
                     return Promise.reject(error(404, 'Invite Not Found'))
 
                 return this.dbInvite.deleteInvite(inviteId)
             })
             .then(invite => {
-                if(!invite)
+                if (!invite)
                     return Promise.reject(error(404, 'Invite Not Found'))
 
                 return invite
@@ -146,13 +151,13 @@ class InviteService {
     declineInvite(userId, inviteId) {
         return this.dbInvite.getInviteeId(inviteId)
             .then(invite => {
-                if(!invite || !roleCheck.isSame(userId, invite.inviteeId))
+                if (!invite || !roleCheck.isSame(userId, invite.inviteeId))
                     return Promise.reject(error(404, 'Invite Not Found'))
 
                 return this.dbInvite.deleteInvite(inviteId)
             })
             .then(invite => {
-                if(!invite)
+                if (!invite)
                     return Promise.reject(error(404, 'Invite Not Found'))
 
                 return invite

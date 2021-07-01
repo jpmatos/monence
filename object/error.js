@@ -1,7 +1,8 @@
 function error(status, message){
     return {
         'status': status,
-        'message': message
+        'message': message,
+        'isErrorObject': true
     }
 }
 

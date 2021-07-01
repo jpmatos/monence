@@ -6,6 +6,7 @@ class DataBaseInviteMongo {
         this.connect = MongoClient.connect(connectionString,
             {useUnifiedTopology: true})
             .then(client => {
+                this.client = client
                 this.db = client.db('monenceDB')
             })
     }
@@ -18,13 +19,32 @@ class DataBaseInviteMongo {
         return this.connect
     }
 
-    getPending(userId) {
+    startTransaction(response, error, transaction) {
+        const session = this.client.startSession()
+        return session.withTransaction(transaction(session))
+            .catch(err => {
+                if (!err.isErrorObject)
+                    return Promise.reject(error(500, 'Transaction Error'))
+                return Promise.reject(err)
+            })
+            .then(res => {
+                if (!res)
+                    return Promise.reject(error(500, 'Transaction Aborted'))
+                return response.body
+            })
+            .finally(() => {
+                return session.endSession()
+            })
+    }
+
+    getPending(userId, session) {
         return this.db.collection('invites')
             .find(
                 {
                     inviteeId: userId
                 },
                 {
+                    session: session,
                     projection:
                         {
                             _id: 0
@@ -33,13 +53,14 @@ class DataBaseInviteMongo {
             ).toArray()
     }
 
-    getSent(calendarId) {
+    getSent(calendarId, session) {
         return this.db.collection('invites')
             .find(
                 {
                     calendarId: calendarId
                 },
                 {
+                    session: session,
                     projection:
                         {
                             _id: 0
@@ -48,9 +69,9 @@ class DataBaseInviteMongo {
             ).toArray()
     }
 
-    postInvite(invite) {
+    postInvite(invite, session) {
         return this.db.collection('invites')
-            .insertOne(invite)
+            .insertOne(invite, {session: session})
             .then(result => {
                 if (result.ops.length === 0)
                     return null
@@ -59,13 +80,14 @@ class DataBaseInviteMongo {
             })
     }
 
-    getInviteeId(inviteId) {
+    getInviteeId(inviteId, session) {
         return this.db.collection('invites')
             .findOne(
                 {
                     id: inviteId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         inviteeId: 1
@@ -74,13 +96,14 @@ class DataBaseInviteMongo {
             )
     }
 
-    getInviterId(inviteId) {
+    getInviterId(inviteId, session) {
         return this.db.collection('invites')
             .findOne(
                 {
                     id: inviteId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         inviterId: 1
@@ -89,13 +112,14 @@ class DataBaseInviteMongo {
             )
     }
 
-    deleteInvite(inviteId) {
+    deleteInvite(inviteId, session) {
         return this.db.collection('invites')
             .findOneAndDelete(
                 {
                     id: inviteId
                 },
                 {
+                    session: session,
                     projection:
                         {
                             _id: 0

@@ -7,6 +7,7 @@ class DataBaseUserMongo {
                 useUnifiedTopology: true
             })
             .then(client => {
+                this.client = client
                 this.db = client.db('monenceDB')
             })
     }
@@ -19,13 +20,32 @@ class DataBaseUserMongo {
         return this.connect
     }
 
-    getUser(userId) {
+    startTransaction(response, error, transaction) {
+        const session = this.client.startSession()
+        return session.withTransaction(transaction(session))
+            .catch(err => {
+                if (!err.isErrorObject)
+                    return Promise.reject(error(500, 'Transaction Error'))
+                return Promise.reject(err)
+            })
+            .then(res => {
+                if (!res)
+                    return Promise.reject(error(500, 'Transaction Aborted'))
+                return response.body
+            })
+            .finally(() => {
+                return session.endSession()
+            })
+    }
+
+    getUser(userId, session) {
         return this.db.collection('users')
             .findOne(
                 {
                     id: userId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0
                     }
@@ -33,9 +53,9 @@ class DataBaseUserMongo {
             )
     }
 
-    createNewUser(user) {
+    createNewUser(user, session) {
         return this.db.collection('users')
-            .insertOne(user)
+            .insertOne(user, {session: session})
             .then(result => {
                 if (result.ops.length === 0)
                     return null
@@ -44,13 +64,14 @@ class DataBaseUserMongo {
             })
     }
 
-    deleteUser(userId) {
+    deleteUser(userId, session) {
         return this.db.collection('users')
             .findOneAndDelete(
                 {
                     id: userId
                 },
                 {
+                    session: session,
                     projection:
                         {
                             _id: 0
@@ -62,13 +83,14 @@ class DataBaseUserMongo {
             })
     }
 
-    getUserByEmail(email) {
+    getUserByEmail(email, session) {
         return this.db.collection('users')
             .findOne(
                 {
                     email: email
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0
                     }
@@ -76,7 +98,7 @@ class DataBaseUserMongo {
             )
     }
 
-    postCalendarToUser(userId, userCalendar) {
+    postCalendarToUser(userId, userCalendar, session) {
         return this.db.collection('users')
             .findOneAndUpdate(
                 {
@@ -88,6 +110,7 @@ class DataBaseUserMongo {
                     }
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -106,7 +129,7 @@ class DataBaseUserMongo {
             })
     }
 
-    deleteCalendar(userId, calendarId){
+    deleteCalendar(userId, calendarId, session){
         return this.db.collection('users')
             .findOneAndUpdate(
                 {
@@ -120,6 +143,7 @@ class DataBaseUserMongo {
                     }
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         calendars: {
@@ -137,7 +161,7 @@ class DataBaseUserMongo {
             })
     }
 
-    postParticipating(userId, participating) {
+    postParticipating(userId, participating, session) {
         return this.db.collection('users')
             .findOneAndUpdate(
                 {
@@ -149,6 +173,7 @@ class DataBaseUserMongo {
                     }
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -166,7 +191,7 @@ class DataBaseUserMongo {
             })
     }
 
-    deleteParticipating(userId, calendarId) {
+    deleteParticipating(userId, calendarId, session) {
         return this.db.collection('users')
             .findOneAndUpdate(
                 {
@@ -180,6 +205,7 @@ class DataBaseUserMongo {
                     }
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         participating: {

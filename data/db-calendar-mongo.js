@@ -6,6 +6,7 @@ class DataBaseCalendarMongo {
         this.connect = MongoClient.connect(connectionString,
             {useUnifiedTopology: true})
             .then(client => {
+                this.client = client
                 this.db = client.db('monenceDB')
             })
     }
@@ -18,14 +19,33 @@ class DataBaseCalendarMongo {
         return this.connect
     }
 
+    startTransaction(response, error, transaction) {
+        const session = this.client.startSession()
+        return session.withTransaction(transaction(session))
+            .catch(err => {
+                if (!err.isErrorObject)
+                    return Promise.reject(error(500, 'Transaction Error'))
+                return Promise.reject(err)
+            })
+            .then(res => {
+                if (!res)
+                    return Promise.reject(error(500, 'Transaction Aborted'))
+                return response.body
+            })
+            .finally(() => {
+                return session.endSession()
+            })
+    }
+
     // Calendar methods
-    getCalendar(calendarId) {
+    getCalendar(calendarId, session) {
         return this.db.collection('calendars')
             .findOne(
                 {
                     id: calendarId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0
                     }
@@ -33,9 +53,9 @@ class DataBaseCalendarMongo {
             )
     }
 
-    postCalendar(calendar) {
+    postCalendar(calendar, session) {
         return this.db.collection('calendars')
-            .insertOne(calendar)
+            .insertOne(calendar, {session: session})
             .then(result => {
                 if (result.ops.length === 0)
                     return null
@@ -44,11 +64,11 @@ class DataBaseCalendarMongo {
             })
     }
 
-    putCalendarShare(calendarId, share) {
+    putCalendarShare(calendarId, share, session) {
         const newCalendar = {
             participants: []
         }
-        if(share)
+        if (share)
             newCalendar.share = share
 
         return this.db.collection('calendars')
@@ -60,6 +80,7 @@ class DataBaseCalendarMongo {
                     $set: newCalendar
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -73,13 +94,14 @@ class DataBaseCalendarMongo {
             })
     }
 
-    deleteCalendar(calendarId) {
+    deleteCalendar(calendarId, session) {
         return this.db.collection('calendars')
             .findOneAndDelete(
                 {
                     id: calendarId
                 },
                 {
+                    session: session,
                     projection:
                         {
                             _id: 0
@@ -91,13 +113,14 @@ class DataBaseCalendarMongo {
             })
     }
 
-    getCalendarOwner(calendarId) {
+    getCalendarOwner(calendarId, session) {
         return this.db.collection('calendars')
             .findOne(
                 {
                     id: calendarId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         owner: 1
@@ -106,13 +129,14 @@ class DataBaseCalendarMongo {
             )
     }
 
-    getCalendarOwnerAndParticipant(calendarId, participantId) {
+    getCalendarOwnerAndParticipant(calendarId, participantId, session) {
         return this.db.collection('calendars')
             .findOne(
                 {
                     id: calendarId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         owner: 1,
@@ -128,13 +152,14 @@ class DataBaseCalendarMongo {
             )
     }
 
-    getCalendarOwnerAndName(calendarId) {
+    getCalendarOwnerAndName(calendarId, session) {
         return this.db.collection('calendars')
             .findOne(
                 {
                     id: calendarId
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         owner: 1,
@@ -145,7 +170,7 @@ class DataBaseCalendarMongo {
     }
 
     // Item methods
-    postItemSingle(calendarId, item) {
+    postItemSingle(calendarId, item, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -157,6 +182,7 @@ class DataBaseCalendarMongo {
                     }
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -175,7 +201,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    postItemRecurrent(calendarId, item) {
+    postItemRecurrent(calendarId, item, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -185,6 +211,7 @@ class DataBaseCalendarMongo {
                     $push: {recurrent: item}
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -203,7 +230,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    putItemSingle(calendarId, itemId, item) {
+    putItemSingle(calendarId, itemId, item, session) {
         const newItem = {}
         if (item.start)
             newItem["single.$.start"] = item.start
@@ -222,6 +249,7 @@ class DataBaseCalendarMongo {
                     $set: newItem
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -239,7 +267,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    putItemRecurrent(calendarId, itemId, item) {
+    putItemRecurrent(calendarId, itemId, item, session) {
         const newItem = {}
         if (item.start)
             newItem["recurrent.$.start"] = item.start
@@ -260,6 +288,7 @@ class DataBaseCalendarMongo {
                     $set: newItem
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -277,7 +306,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    deleteItemSingle(calendarId, itemId) {
+    deleteItemSingle(calendarId, itemId, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -291,6 +320,7 @@ class DataBaseCalendarMongo {
                     }
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         single: {
@@ -308,7 +338,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    deleteItemRecurrent(calendarId, itemId) {
+    deleteItemRecurrent(calendarId, itemId, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -318,6 +348,7 @@ class DataBaseCalendarMongo {
                     $pull: {recurrent: {"id": itemId}}
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         recurrent: {
@@ -336,7 +367,7 @@ class DataBaseCalendarMongo {
     }
 
     // Budget methods
-    postBudget(calendarId, budget) {
+    postBudget(calendarId, budget, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -346,6 +377,7 @@ class DataBaseCalendarMongo {
                     $push: {budget: budget}
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -363,7 +395,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    putBudget(calendarId, budgetId, budget) {
+    putBudget(calendarId, budgetId, budget, session) {
         const newBudget = {}
         if (budget.date)
             newBudget["budget.$.date"] = budget.date
@@ -379,6 +411,7 @@ class DataBaseCalendarMongo {
                     $set: newBudget
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -396,7 +429,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    deleteBudget(calendarId, budgetId) {
+    deleteBudget(calendarId, budgetId, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -410,6 +443,7 @@ class DataBaseCalendarMongo {
                     }
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         budget: {
@@ -428,22 +462,23 @@ class DataBaseCalendarMongo {
     }
 
     // Participant methods
-    getParticipants(calendarId) {
+    getParticipants(calendarId, session) {
         return this.db.collection('calendars')
             .findOne(
                 {
                     id: calendarId
                 },
                 {
+                    session: session,
                     projection: {
-                        participants: 1,
-                        _id: 0
+                        _id: 0,
+                        participants: 1
                     }
                 }
             )
     }
 
-    postCalendarParticipant(calendarId, participant) {
+    postCalendarParticipant(calendarId, participant, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -455,6 +490,7 @@ class DataBaseCalendarMongo {
                     }
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
@@ -472,7 +508,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    deleteParticipant(calendarId, participantId) {
+    deleteParticipant(calendarId, participantId, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -487,6 +523,7 @@ class DataBaseCalendarMongo {
                     }
                 },
                 {
+                    session: session,
                     projection: {
                         _id: 0,
                         participants: {
@@ -504,7 +541,7 @@ class DataBaseCalendarMongo {
             })
     }
 
-    putRole(calendarId, participantId, role) {
+    putRole(calendarId, participantId, role, session) {
         return this.db.collection('calendars')
             .findOneAndUpdate(
                 {
@@ -517,6 +554,7 @@ class DataBaseCalendarMongo {
                     }
                 },
                 {
+                    session: session,
                     returnOriginal: false,
                     projection: {
                         _id: 0,
