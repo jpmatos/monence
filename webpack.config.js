@@ -20,7 +20,8 @@ module.exports = {
             title: 'monence'
         }),
         new webpack.DefinePlugin({
-            'process.env.REACT_APP_SOCKET_ENDPOINT': JSON.stringify(process.env.REACT_APP_SOCKET_ENDPOINT)
+            'process.env.REACT_APP_SOCKET_ENDPOINT': JSON.stringify(process.env.REACT_APP_SOCKET_ENDPOINT),
+            'process.env.REACT_APP_CURRENCIES': JSON.stringify(process.env.REACT_APP_CURRENCIES)
         })
     ],
     module: {
@@ -62,11 +63,7 @@ module.exports = {
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/inline'
-            },
-            // {
-            //     test: /\.(png|jpg)$/,
-            //     loader: 'url-loader'
-            // }
+            }
         ]
     },
 };

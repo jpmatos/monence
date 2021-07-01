@@ -6,6 +6,7 @@ import {CalendarContext} from "../../context/default/CalendarContext";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
+import CurrencyOptions from "../CurrencyOptions";
 
 class CurrencyPickerFormDialog extends React.Component {
     constructor(props) {
@@ -46,7 +47,6 @@ class CurrencyPickerFormDialog extends React.Component {
                         alignItems="center"
                     >
                         <FormControl>
-                            {/*<InputLabel htmlFor="uncontrolled-native">Current Currency Displayed</InputLabel>*/}
                             <NativeSelect
                                 defaultValue={this.context.currency}
                                 inputProps={{
@@ -55,8 +55,7 @@ class CurrencyPickerFormDialog extends React.Component {
                                 }}
                                 onChange={this.handleChange}
                             >
-                                <option key="EUR" value="EUR">€ - Euro</option>
-                                <option key="USD" value="USD">$ - US Dollar</option>
+                                <CurrencyOptions />
                             </NativeSelect>
                         </FormControl>
                     </Grid>

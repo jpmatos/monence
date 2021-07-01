@@ -1,10 +1,8 @@
 const fs = require('fs').promises
 const path = require('path')
 
-const currencies = ['USD', 'EUR', 'GBP']
-
 class DataBaseExchangesMock {
-    constructor() {
+    constructor(currencies) {
         this.readFile(path.join(__dirname, '/mock-data/exchanges.json'))
             .then(res => {
                 Object.keys(res.rates).forEach((key) => currencies.includes(key) || delete res.rates[key]);
@@ -23,8 +21,8 @@ class DataBaseExchangesMock {
             })
     }
 
-    static init(){
-        return new DataBaseExchangesMock()
+    static init(currencies){
+        return new DataBaseExchangesMock(currencies)
     }
 
     getExchanges() {

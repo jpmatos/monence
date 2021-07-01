@@ -1,10 +1,8 @@
 const fs = require('fs').promises
 const axios = require('axios')
 
-const currencies = ['USD', 'EUR', 'GBP']
-
 class DataBaseExchangesApi {
-    constructor(key) {
+    constructor(key, currencies) {
         axios.get(`https://openexchangerates.org/api/latest.json?app_id=${key}`)
             .then(res => {
                 res = res.data
@@ -24,8 +22,8 @@ class DataBaseExchangesApi {
             })
     }
 
-    static init(key){
-        return new DataBaseExchangesApi(key)
+    static init(key, currencies){
+        return new DataBaseExchangesApi(key, currencies)
     }
 
     getExchanges() {

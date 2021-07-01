@@ -5,6 +5,7 @@ import moment from "moment";
 import {UserContext} from "./default/UserContext";
 import LoadingScreen from "../components/LoadingScreen";
 import SocketBinder from "./SocketBinder";
+import buildCurrencyDisplay from "../util/currency";
 
 class CalendarContextBinder extends React.Component {
     constructor(props) {
@@ -290,14 +291,7 @@ class CalendarContextBinder extends React.Component {
             value = value * rate
         }
 
-        switch (currency) {
-            case 'EUR':
-                return `${value.toFixed(2)}€`
-            case 'USD':
-                return `$${value.toFixed(2)}`
-            default:
-                return `${value}`
-        }
+        return buildCurrencyDisplay(value, currency)
     }
 
     getCalendar(calendarId, ignoreExchange) {

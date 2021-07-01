@@ -37,9 +37,9 @@ else
 
 let dbExchanges
 if (process.env.MOCK_EXCHANGE_DB === 'true')
-    dbExchanges = require('./data/mock/db-exchanges-mock').init()
+    dbExchanges = require('./data/mock/db-exchanges-mock').init(process.env.REACT_APP_CURRENCIES.split(','))
 else
-    dbExchanges = require('./data/db-exchanges-api').init(process.env.OER_ID)
+    dbExchanges = require('./data/db-exchanges-api').init(process.env.OER_ID, process.env.REACT_APP_CURRENCIES.split(','))
 
 const socketManager = require('./service/sockets/socket-manager').init()
 const catchError = require('./middleware/catch-error')
