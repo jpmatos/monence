@@ -4,11 +4,13 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 //See if mock API is set
+const mongoConnection = require('../data/mongo-connection').init(process.env.CONNECTION_STRING, process.env.MONGO_INDEX)
+
 let dbCalendar
 if (process.env.MOCK_CALENDAR_DB === 'true')
     dbCalendar = require('../data/mock/db-calendar-mock').init()
 else
-    dbCalendar = require('../data/db-calendar-mongo').init(process.env.CONNECTION_STRING)
+    dbCalendar = require('../data/db-calendar-mongo').init(mongoConnection)
 
 describe('Monence tests for calendar database', () => {
     const userId = 'testuserid123'

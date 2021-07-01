@@ -4,11 +4,13 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 //See if mock API is set
+const mongoConnection = require('../data/mongo-connection').init(process.env.CONNECTION_STRING, process.env.MONGO_INDEX)
+
 let dbUser
 if (process.env.MOCK_USER_DB === 'true')
     dbUser = require('../data/mock/db-user-mock').init()
 else
-    dbUser = require('../data/db-user-mongo').init(process.env.CONNECTION_STRING)
+    dbUser = require('../data/db-user-mongo').init(mongoConnection)
 
 describe('Monence tests for user database', () => {
 

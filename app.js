@@ -12,32 +12,28 @@ const session = require('express-session')
 const dotenv = require('dotenv');
 
 //Load env variables
-// if (!fs.existsSync('./env.json')) {
-//     console.log('Set up env.json!')
-//     return null
-// }
-// const env = require('./env.json')
-// Object.assign(process.env, env)
 dotenv.config();
 
 //Project Files
+const mongoConnection = require('./data/mongo-connection').init(process.env.CONNECTION_STRING, process.env.MONGO_INDEX)
+
 let dbCalendar
 if (process.env.MOCK_CALENDAR_DB === 'true')
     dbCalendar = require('./data/mock/db-calendar-mock').init()
 else
-    dbCalendar = require('./data/db-calendar-mongo').init(process.env.CONNECTION_STRING)
+    dbCalendar = require('./data/db-calendar-mongo').init(mongoConnection)
 
 let dbUser
 if (process.env.MOCK_USER_DB === 'true')
     dbUser = require('./data/mock/db-user-mock').init()
 else
-    dbUser = require('./data/db-user-mongo').init(process.env.CONNECTION_STRING)
+    dbUser = require('./data/db-user-mongo').init(mongoConnection)
 
 let dbInvite
 if(process.env.MOCK_INVITE_DB === 'true')
     dbInvite = require('./data/mock/db-invite-mock').init()
 else
-    dbInvite = require('./data/db-invite-mongo').init(process.env.CONNECTION_STRING)
+    dbInvite = require('./data/db-invite-mongo').init(mongoConnection)
 
 let dbExchanges
 if (process.env.MOCK_EXCHANGE_DB === 'true')

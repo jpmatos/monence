@@ -4,11 +4,13 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 //See if mock API is set
+const mongoConnection = require('../data/mongo-connection').init(process.env.CONNECTION_STRING, process.env.MONGO_INDEX)
+
 let dbInvite
 if(process.env.MOCK_INVITE_DB === 'true')
     dbInvite = require('../data/mock/db-invite-mock').init()
 else
-    dbInvite = require('../data/db-invite-mongo').init(process.env.CONNECTION_STRING)
+    dbInvite = require('../data/db-invite-mongo').init(mongoConnection)
 
 describe('Monence tests for invite database', () => {
 

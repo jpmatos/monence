@@ -1,19 +1,15 @@
-const MongoClient = require('mongodb').MongoClient
 
 class DataBaseUserMongo {
-    constructor(connectionString) {
-        this.connect = MongoClient.connect(connectionString,
-            {
-                useUnifiedTopology: true
-            })
-            .then(client => {
-                this.client = client
-                this.db = client.db('monenceDB')
+    constructor(mongoConnection) {
+        this.connect = mongoConnection.getConnect()
+            .then(() => {
+                this.client = mongoConnection.getClient()
+                this.db = mongoConnection.getDb()
             })
     }
 
-    static init(connectionString) {
-        return new DataBaseUserMongo(connectionString)
+    static init(mongoConnection) {
+        return new DataBaseUserMongo(mongoConnection)
     }
 
     isConnected() {
