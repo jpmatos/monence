@@ -17,6 +17,20 @@ class DataBaseInviteMock {
         return this.read
     }
 
+    startTransaction(response, error, transaction) {
+        return Promise.resolve(() => {
+            return transaction(null)()
+        })
+            .catch(err => {
+                if (!err.isErrorObject)
+                    return Promise.reject(error(500, 'Transaction Error'))
+                return Promise.reject(err)
+            })
+            .then(() => {
+                return response.body
+            })
+    }
+
     getPending(userId) {
         const invites = this.invites.filter(inv => inv.inviteeId === userId)
 

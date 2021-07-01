@@ -21,6 +21,20 @@ class DataBaseCalendarMock {
         return this.read
     }
 
+    startTransaction(response, error, transaction) {
+        return Promise.resolve(() => {
+            return transaction(null)()
+        })
+            .catch(err => {
+                if (!err.isErrorObject)
+                    return Promise.reject(error(500, 'Transaction Error'))
+                return Promise.reject(err)
+            })
+            .then(() => {
+                return response.body
+            })
+    }
+
     getCalendar(calendarId) {
         const calendar = this.calendars.find(calendar => calendar.id === calendarId)
         if (!calendar)
