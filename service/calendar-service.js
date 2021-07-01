@@ -71,7 +71,7 @@ class CalendarService {
     }
 
     getParticipants(userId, calendarId) {
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.canView(calendar, userId)))
@@ -280,7 +280,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.deleteItemSingle(calendarId, itemId, 'single')
+                return this.dbCalendar.deleteItemSingle(calendarId, itemId)
             })
             .then(calendar => {
                 if (calendar.single.length === 0)
@@ -309,7 +309,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -321,7 +321,7 @@ class CalendarService {
                 item.recurrency = 'recurrent'
                 item.id = uuid.generate()
 
-                return this.dbCalendar.postItemRecurrent(calendarId, item, session)
+                return this.dbCalendar.postItemRecurrent(calendarId, item)
             })
             .then(calendar => {
                 if (calendar.recurrent.length === 0)
@@ -355,7 +355,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         item = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -364,7 +364,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.putItemRecurrent(calendarId, itemId, item, 'recurrent', session)
+                return this.dbCalendar.putItemRecurrent(calendarId, itemId, item)
             })
             .then(calendar => {
                 if (calendar.recurrent.length === 0)
@@ -385,7 +385,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(itemId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -394,7 +394,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.deleteItemRecurrent(calendarId, itemId, session)
+                return this.dbCalendar.deleteItemRecurrent(calendarId, itemId)
             })
             .then((calendar) => {
                 if (calendar.recurrent.length === 0)
@@ -421,7 +421,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -432,7 +432,7 @@ class CalendarService {
 
                 budget.id = uuid.generate()
 
-                return this.dbCalendar.postBudget(calendarId, budget, session)
+                return this.dbCalendar.postBudget(calendarId, budget)
             })
             .then(calendar => {
                 if (calendar.budget.length === 0)
@@ -464,7 +464,7 @@ class CalendarService {
             return Promise.reject(error(400, result.error.details[0].message))
         budget = Object.assign({}, result.value)
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -473,7 +473,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.putBudget(calendarId, budgetId, budget, session)
+                return this.dbCalendar.putBudget(calendarId, budgetId, budget)
             })
             .then(calendar => {
                 if (calendar.budget.length === 0)
@@ -494,7 +494,7 @@ class CalendarService {
         if (idSchemas.uuidSchema.validate(budgetId).error)
             return Promise.reject(error(400, 'Invalid Item Id'))
 
-        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId, session)
+        return this.dbCalendar.getCalendarOwnerAndParticipant(calendarId, userId)
             .then(calendar => {
                 if (!calendar ||
                     (!roleCheck.isOwner(calendar, userId) && !roleCheck.isParticipating(calendar, userId)))
@@ -503,7 +503,7 @@ class CalendarService {
                 if (!roleCheck.isOwner(calendar, userId) && !roleCheck.canEdit(calendar, userId))
                     return Promise.reject(error(403, 'Insufficient permission'))
 
-                return this.dbCalendar.deleteBudget(calendarId, budgetId, session)
+                return this.dbCalendar.deleteBudget(calendarId, budgetId)
             })
             .then((calendar) => {
                 if (calendar.budget.length === 0)

@@ -49,6 +49,8 @@ describe('Monence tests for user service', () => {
                 expect(user.photos).to.be.eql(userToPost.photos)
                 expect(user.calendars).to.be.a('array')
                 expect(user.participating).to.be.a('array')
+
+                return dbCalendar.deleteCalendar(calendarId)
             })
     })
 
