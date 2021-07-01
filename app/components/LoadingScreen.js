@@ -1,7 +1,7 @@
-import React from 'react'
+import {createMuiTheme, CssBaseline, MuiThemeProvider, withStyles} from "@material-ui/core"
 import Backdrop from '@material-ui/core/Backdrop'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import {createMuiTheme, CssBaseline, Dialog, MuiThemeProvider, withStyles} from "@material-ui/core"
+import React from 'react'
 
 const useStyles = theme => ({
     backdrop: {
@@ -26,7 +26,7 @@ class LoadingScreen extends React.Component {
         const classes = this.props
         return (
             <MuiThemeProvider theme={themeLight}>
-                <CssBaseline />
+                <CssBaseline/>
                 <Backdrop open={true} invisible={true}>
                     <CircularProgress color="primary"/>
                 </Backdrop>

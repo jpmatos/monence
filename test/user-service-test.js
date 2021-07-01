@@ -1,7 +1,7 @@
 const expect = require('chai').expect
 const path = require('path')
 const dotenv = require('dotenv');
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({path: path.resolve(__dirname, '../.env')});
 
 //See if mock API is set
 const mongoConnection = require('../data/mongo-connection').init(process.env.CONNECTION_STRING, process.env.MONGO_INDEX)

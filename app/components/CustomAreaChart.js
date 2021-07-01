@@ -1,7 +1,6 @@
 import React from 'react';
-import {Area, CartesianGrid, Label, Tooltip, XAxis, YAxis} from "recharts";
+import {Area, AreaChart, CartesianGrid, Label, Tooltip, XAxis, YAxis} from "recharts";
 import CustomTooltip from "./CustomToolTip";
-import {AreaChart} from 'recharts';
 
 export default class CustomAreaChart extends React.Component {
     constructor(props) {

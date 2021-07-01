@@ -1,16 +1,16 @@
-import React from 'react'
-
-import {withStyles} from '@material-ui/core/styles'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import AddIcon from '@material-ui/icons/Add'
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import {Fab} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+
+import {withStyles} from '@material-ui/core/styles'
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import AddIcon from '@material-ui/icons/Add'
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import {DatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+import React from 'react'
 import CurrencyPickerFormDialog from "./forms/CurrencyPickerFormDialog";
 
 const useStyles = (theme) => ({
@@ -99,7 +99,8 @@ class FloatingActionButton extends React.Component {
                         TextFieldComponent={() => null}
                     />
                 </MuiPickersUtilsProvider>
-                <CurrencyPickerFormDialog isOpen={this.state.isCurrencyOpen} setOpen={this.setCurrencyFD} onChange={this.props.handleCurrencyChange}/>
+                <CurrencyPickerFormDialog isOpen={this.state.isCurrencyOpen} setOpen={this.setCurrencyFD}
+                                          onChange={this.props.handleCurrencyChange}/>
             </React.Fragment>
         )
     }

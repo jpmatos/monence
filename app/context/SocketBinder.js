@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react'
-import App from '../content/App'
 import socketIOClient from 'socket.io-client'
-import {UserContext} from './default/UserContext'
+import App from '../content/App'
 import {CalendarContext} from './default/CalendarContext'
 import {InviteContext} from './default/InviteContext'
+import {UserContext} from './default/UserContext'
 
 const SocketBinder = (props) => {
 

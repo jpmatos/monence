@@ -1,4 +1,4 @@
-function error(status, message){
+function error(status, message) {
     return {
         'status': status,
         'message': message,

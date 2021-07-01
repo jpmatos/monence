@@ -1,26 +1,24 @@
-import React from "react";
-import Typography from "@material-ui/core/Typography";
-import {withStyles} from '@material-ui/core/styles'
-import {grey} from "@material-ui/core/colors";
+import {TableCell} from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import Prompt from "../components/Prompt";
-import {CalendarContext} from "../context/default/CalendarContext";
-import axios from "axios";
-import {InviteContext} from "../context/default/InviteContext";
+import {grey} from "@material-ui/core/colors";
 import Grid from "@material-ui/core/Grid";
-import TableContainer from "@material-ui/core/TableContainer";
+import Paper from '@material-ui/core/Paper';
+import {withStyles} from '@material-ui/core/styles'
 import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import {TableCell} from "@material-ui/core";
-import TableBody from "@material-ui/core/TableBody";
-import Paper from '@material-ui/core/Paper';
-import IconButton from "@material-ui/core/IconButton";
-import RefreshIcon from '@material-ui/icons/Refresh';
-import InviteUserFormDialog from "../components/forms/InviteUserFormDialog";
+import Typography from "@material-ui/core/Typography";
+import axios from "axios";
+import React from "react";
 import ChangeRoleFormDialog from "../components/forms/ChangeRoleFormDialog";
-import Box from "@material-ui/core/Box";
+import InviteUserFormDialog from "../components/forms/InviteUserFormDialog";
+import Prompt from "../components/Prompt";
 import PromptConfirm from "../components/PromptConfirm";
+import {CalendarContext} from "../context/default/CalendarContext";
+import {InviteContext} from "../context/default/InviteContext";
 
 const useStyles = (theme) => ({
     pad: {
@@ -197,7 +195,9 @@ class MyShare extends React.Component {
                             </Typography>
                             {this.context.calendar.share === 'Shared' ?
                                 <Box pt={2.5} pl={2}>
-                                    <Button color="secondary" onClick={() => {this.setUnsharePrompt(true)}}>
+                                    <Button color="secondary" onClick={() => {
+                                        this.setUnsharePrompt(true)
+                                    }}>
                                         Unshare
                                     </Button>
                                     <PromptConfirm isOpen={this.state.isUnsharePromptOpen}

@@ -1,20 +1,19 @@
-import React from 'react'
-import axios from 'axios'
-import capitalize from 'capitalize'
+import {Box, TextField} from "@material-ui/core";
+import Button from '@material-ui/core/Button'
 
 import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogActions from '@material-ui/core/DialogActions'
+import IconButton from "@material-ui/core/IconButton";
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import {KeyboardDatePicker} from '@material-ui/pickers'
 
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import {Box, TextField} from "@material-ui/core";
+import capitalize from 'capitalize'
 import moment from "moment";
-import IconButton from "@material-ui/core/IconButton";
-import EventNoteIcon from '@material-ui/icons/EventNote';
+import React from 'react'
 
 class ViewItemFormDialog extends React.Component {
     constructor(props) {
@@ -156,10 +155,10 @@ class ViewItemFormDialog extends React.Component {
                             {this.capitalizeWord()}
                         </DialogTitle>
                         <Box pr={2} pt={1}>
-                        <IconButton aria-label="googlecalendar" component="span"
-                                    onClick={this.handleGoogleCalendar}>
-                            <EventNoteIcon/>
-                        </IconButton>
+                            <IconButton aria-label="googlecalendar" component="span"
+                                        onClick={this.handleGoogleCalendar}>
+                                <EventNoteIcon/>
+                            </IconButton>
                         </Box>
                     </Grid>
                 </Box>

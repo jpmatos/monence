@@ -1,4 +1,3 @@
-
 class DataBaseInviteMongo {
     constructor(mongoConnection) {
         this.connect = mongoConnection.getConnect()

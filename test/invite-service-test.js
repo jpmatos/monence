@@ -1,7 +1,7 @@
 const expect = require('chai').expect
 const path = require('path')
 const dotenv = require('dotenv');
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({path: path.resolve(__dirname, '../.env')});
 
 const socketManager = require('../service/sockets/socket-manager').init()
 

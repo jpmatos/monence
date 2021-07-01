@@ -1,10 +1,10 @@
-import ReactDOM from "react-dom";
-import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import React from "react";
-import UserContextBinder from "./context/UserContextBinder";
+import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 
-import 'bootstrap/dist/css/bootstrap.min.css';      ///TODO Review this here
+import 'bootstrap/dist/css/bootstrap.min.css'; ///TODO Review this here
+import React from "react";
+import ReactDOM from "react-dom";
+import UserContextBinder from "./context/UserContextBinder";
 import './index.css'
 
 ReactDOM.render(

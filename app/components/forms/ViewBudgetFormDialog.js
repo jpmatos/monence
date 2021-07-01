@@ -1,16 +1,15 @@
-import React from "react";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import {Box} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import DialogContent from "@material-ui/core/DialogContent";
-import CurrencyTextField from "@unicef/material-ui-currency-textfield";
-import {KeyboardDatePicker} from "@material-ui/pickers";
-import capitalize from "capitalize";
 import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import axios from "axios";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Grid from "@material-ui/core/Grid";
+import {KeyboardDatePicker} from "@material-ui/pickers";
+import CurrencyTextField from "@unicef/material-ui-currency-textfield";
+import capitalize from "capitalize";
 import moment from "moment";
+import React from "react";
 
 class ViewBudgetFormDialog extends React.Component {
     constructor(props) {
@@ -45,7 +44,7 @@ class ViewBudgetFormDialog extends React.Component {
             return;
 
         let value = this.state.value
-        if(typeof(value) === 'string')
+        if (typeof (value) === 'string')
             value = parseFloat(value.replace(/,/g, ''))
         const budget = {
             'date': moment.utc(this.state.selectedDate)

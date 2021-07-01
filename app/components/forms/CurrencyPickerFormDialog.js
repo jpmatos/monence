@@ -1,11 +1,11 @@
-import React from 'react'
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import {Box, DialogContent, FormControl, InputLabel, NativeSelect} from "@material-ui/core";
-import {CalendarContext} from "../../context/default/CalendarContext";
-import Grid from "@material-ui/core/Grid";
+import {Box, DialogContent, FormControl, NativeSelect} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Grid from "@material-ui/core/Grid";
+import React from 'react'
+import {CalendarContext} from "../../context/default/CalendarContext";
 import CurrencyOptions from "../CurrencyOptions";
 
 class CurrencyPickerFormDialog extends React.Component {
@@ -55,7 +55,7 @@ class CurrencyPickerFormDialog extends React.Component {
                                 }}
                                 onChange={this.handleChange}
                             >
-                                <CurrencyOptions />
+                                <CurrencyOptions/>
                             </NativeSelect>
                         </FormControl>
                     </Grid>

@@ -1,22 +1,15 @@
-import React from 'react'
-import moment from 'moment'
-
+import {blue, green, red, yellow} from '@material-ui/core/colors';
 import Container from '@material-ui/core/Container'
-
-import {Calendar} from 'react-big-calendar'
-import {momentLocalizer} from 'react-big-calendar'
+import Typography from "@material-ui/core/Typography";
+import axios from "axios";
+import moment from 'moment'
+import React from 'react'
+import {Calendar, momentLocalizer} from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import {red} from '@material-ui/core/colors';
-import {green} from '@material-ui/core/colors';
-import {yellow} from '@material-ui/core/colors';
-import {blue} from '@material-ui/core/colors';
-
 import FloatingActionButton from '../components/FloatingActionButton'
 import CreateItemFormDialog from '../components/forms/CreateItemFormDialog'
 import ViewItemFormDialog from '../components/forms/ViewItemFormDialog'
 import {CalendarContext} from '../context/default/CalendarContext'
-import Typography from "@material-ui/core/Typography";
-import axios from "axios";
 
 moment.locale('en')
 const localizer = momentLocalizer(moment)

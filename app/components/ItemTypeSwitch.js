@@ -1,10 +1,9 @@
-import React from 'react';
+import {Box} from "@material-ui/core";
+import {green, red} from '@material-ui/core/colors';
 import {withStyles} from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import {red} from '@material-ui/core/colors';
-import {green} from '@material-ui/core/colors';
-import {Box} from "@material-ui/core";
+import React from 'react';
 
 const AntSwitch = withStyles((theme) => ({
     root: {

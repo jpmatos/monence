@@ -1,4 +1,3 @@
-
 class DataBaseCalendarMongo {
     constructor(mongoConnection) {
         this.connect = mongoConnection.getConnect()

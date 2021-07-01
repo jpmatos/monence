@@ -141,7 +141,7 @@ class SocketManager {
 
     toDeleteInvite(inviteeId, inviteId) {
         const socket = this.sockets.find(socket => socket.user.id === inviteeId)
-        if(socket) {
+        if (socket) {
             console.log(`${chalk.yellow('Socket Emit')} - Delete Invite - To ${socket.id}`);
             socket.emit('fromDeleteInvite', inviteId)
         }
@@ -149,7 +149,7 @@ class SocketManager {
 
     toDeclineInvite(inviterId, inviteId) {
         const socket = this.sockets.find(socket => socket.user.id === inviterId)
-        if(socket) {
+        if (socket) {
             console.log(`${chalk.yellow('Socket Emit')} - Decline Invite - To ${socket.id}`);
             socket.emit('fromDeclineInvite', inviteId)
         }

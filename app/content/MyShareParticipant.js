@@ -1,22 +1,21 @@
-import React from "react";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import {TableCell} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import {grey} from "@material-ui/core/colors";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Paper from "@material-ui/core/Paper";
+import {withStyles} from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import {grey} from "@material-ui/core/colors";
-import {withStyles} from "@material-ui/core/styles";
-import {CalendarContext} from "../context/default/CalendarContext";
-import {InviteContext} from "../context/default/InviteContext";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import IconButton from "@material-ui/core/IconButton";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import Prompt from "../components/Prompt";
 import axios from "axios";
+import React from "react";
+import Prompt from "../components/Prompt";
+import {CalendarContext} from "../context/default/CalendarContext";
 
 const useStyles = (theme) => ({
     pad: {

@@ -1,40 +1,37 @@
-import React from 'react'
-import clsx from 'clsx'
-import {HashRouter, Route, Redirect, Switch} from 'react-router-dom'
-import {Link as RouterLink} from 'react-router-dom'
-
-import {withStyles} from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
+import {MenuItem, Slide, Snackbar} from "@material-ui/core"
 import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import List from '@material-ui/core/List'
+import Container from '@material-ui/core/Container'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
+import Drawer from '@material-ui/core/Drawer'
+import Grid from "@material-ui/core/Grid"
 import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
+import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import HomeIcon from '@material-ui/icons/Home'
-import CalendarIcon from '@material-ui/icons/CalendarToday'
-import ForecastIcon from '@material-ui/icons/TrendingUp'
-import GroupIcon from '@material-ui/icons/Group'
-import Container from '@material-ui/core/Container'
+import {withStyles} from '@material-ui/core/styles'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
+import CalendarIcon from '@material-ui/icons/CalendarToday'
+import GroupIcon from '@material-ui/icons/Group'
+import HomeIcon from '@material-ui/icons/Home'
 import InfoIcon from '@material-ui/icons/Info';
+import MenuIcon from '@material-ui/icons/Menu'
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
-
-import MyCalendar from './MyCalendar'
-import MyBudget from "./MyBudget"
-import {CalendarContext} from "../context/default/CalendarContext"
-import MyHome from "./MyHome"
-import Grid from "@material-ui/core/Grid"
-import MyForecast from "./MyForecast"
-import {MenuItem, Slide, Snackbar} from "@material-ui/core"
+import ForecastIcon from '@material-ui/icons/TrendingUp'
 import {Alert} from "@material-ui/lab"
+import clsx from 'clsx'
+import React from 'react'
+import {HashRouter, Link as RouterLink, Redirect, Route, Switch} from 'react-router-dom'
+import {CalendarContext} from "../context/default/CalendarContext"
+import About from "./About";
+import MyBudget from "./MyBudget"
+import MyCalendar from './MyCalendar'
+import MyForecast from "./MyForecast"
+import MyHome from "./MyHome"
 import MyShare from "./MyShare";
 import MyShareParticipant from "./MyShareParticipant";
-import About from "./About";
 
 const drawerWidth = 220
 const useStyles = (theme) => ({

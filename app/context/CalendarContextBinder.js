@@ -1,11 +1,11 @@
-import React from "react";
-import {CalendarContext} from "./default/CalendarContext";
 import axios from "axios";
 import moment from "moment";
-import {UserContext} from "./default/UserContext";
+import React from "react";
 import LoadingScreen from "../components/LoadingScreen";
-import SocketBinder from "./SocketBinder";
 import buildCurrencyDisplay from "../util/currency";
+import {CalendarContext} from "./default/CalendarContext";
+import {UserContext} from "./default/UserContext";
+import SocketBinder from "./SocketBinder";
 
 class CalendarContextBinder extends React.Component {
     constructor(props) {

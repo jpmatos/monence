@@ -1,10 +1,10 @@
+import axios from "axios";
 import React from 'react';
+import LoadingScreen from "../components/LoadingScreen";
+import LoginPage from "../content/LoginPage";
 
 import {UserContext} from "./default/UserContext";
-import LoginPage from "../content/LoginPage";
-import axios from "axios";
 import InviteContextBinder from "./InviteContextBinder";
-import LoadingScreen from "../components/LoadingScreen";
 
 class UserContextBinder extends React.Component {
     constructor(props) {

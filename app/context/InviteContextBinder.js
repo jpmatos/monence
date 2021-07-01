@@ -1,9 +1,9 @@
-import React from 'react';
-import {InviteContext} from "./default/InviteContext";
 import axios from "axios";
-import CalendarContextBinder from "./CalendarContextBinder";
-import {UserContext} from "./default/UserContext";
+import React from 'react';
 import LoadingScreen from "../components/LoadingScreen";
+import CalendarContextBinder from "./CalendarContextBinder";
+import {InviteContext} from "./default/InviteContext";
+import {UserContext} from "./default/UserContext";
 
 class InviteContextBinder extends React.Component {
     constructor(props) {

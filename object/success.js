@@ -1,4 +1,4 @@
-function success(body){
+function success(body) {
     return {
         'success': true,
         'body': body

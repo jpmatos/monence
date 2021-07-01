@@ -1,17 +1,16 @@
 {
-    "plugins":
+  "plugins": [
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-proposal-class-properties"
+  ],
+  "presets": [
     [
-        "@babel/plugin-transform-runtime",
-        "@babel/plugin-syntax-dynamic-import",
-        "@babel/plugin-proposal-class-properties",
+      "@babel/preset-env",
+      {
+        "modules": false
+      }
     ],
-    "presets": [
-        [
-            "@babel/preset-env",
-            {
-                "modules": false
-            }
-        ],
-        "@babel/preset-react"
-    ]
+    "@babel/preset-react"
+  ]
 }

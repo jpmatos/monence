@@ -1,19 +1,16 @@
-import React from 'react'
-import axios from 'axios'
-
+import {Box, TextField} from "@material-ui/core";
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Grid from '@material-ui/core/Grid'
-import {KeyboardDatePicker} from '@material-ui/pickers'
-
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import {Box, TextField} from "@material-ui/core";
-import ItemTypeSwitch from "../ItemTypeSwitch";
-import ItemRecurrencySwitch from "../ItemRecurrencySwitch";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import {KeyboardDatePicker} from '@material-ui/pickers'
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import React from 'react'
+import ItemRecurrencySwitch from "../ItemRecurrencySwitch";
+import ItemTypeSwitch from "../ItemTypeSwitch";
 
 class CreateItemFormDialog extends React.Component {
     constructor(props) {
@@ -31,7 +28,7 @@ class CreateItemFormDialog extends React.Component {
         }
     }
 
-        handleClose = () => {
+    handleClose = () => {
         this.props.setOpen(false)
         setTimeout(() => {
             this.setState({

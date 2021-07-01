@@ -1,15 +1,14 @@
-import React from 'react'
-import axios from 'axios'
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import {Box, DialogContent} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import CurrencyTextField from "@unicef/material-ui-currency-textfield";
-import {KeyboardDatePicker} from "@material-ui/pickers";
-import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Grid from "@material-ui/core/Grid";
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import {KeyboardDatePicker} from "@material-ui/pickers";
+import CurrencyTextField from "@unicef/material-ui-currency-textfield";
 import moment from "moment";
+import React from 'react'
 
 class CreateBudgetFormDialog extends React.Component {
     constructor(props) {
@@ -55,7 +54,7 @@ class CreateBudgetFormDialog extends React.Component {
             return;
 
         let value = this.state.value
-        if(typeof(value) === 'string')
+        if (typeof (value) === 'string')
             value = parseFloat(value.replace(/,/g, ''))
 
         if (this.state.value === null || value === 0) {

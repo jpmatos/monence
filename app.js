@@ -1,6 +1,5 @@
 const express = require('express')
 const path = require('path')
-const fs = require('fs')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const webpack = require('webpack')
@@ -30,7 +29,7 @@ else
     dbUser = require('./data/db-user-mongo').init(mongoConnection)
 
 let dbInvite
-if(process.env.MOCK_INVITE_DB === 'true')
+if (process.env.MOCK_INVITE_DB === 'true')
     dbInvite = require('./data/mock/db-invite-mock').init()
 else
     dbInvite = require('./data/db-invite-mongo').init(mongoConnection)

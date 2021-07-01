@@ -21,7 +21,7 @@ class DataBaseExchangesMock {
             })
     }
 
-    static init(currencies){
+    static init(currencies) {
         return new DataBaseExchangesMock(currencies)
     }
 

@@ -1,4 +1,3 @@
-
 function buildCurrencyDisplay(value, currency) {
     switch (currency) {
         case 'EUR':

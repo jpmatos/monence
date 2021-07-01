@@ -1,4 +1,3 @@
-
 class DataBaseUserMongo {
     constructor(mongoConnection) {
         this.connect = mongoConnection.getConnect()
@@ -125,7 +124,7 @@ class DataBaseUserMongo {
             })
     }
 
-    deleteCalendar(userId, calendarId, session){
+    deleteCalendar(userId, calendarId, session) {
         return this.db.collection('users')
             .findOneAndUpdate(
                 {

@@ -22,7 +22,7 @@ class DataBaseExchangesApi {
             })
     }
 
-    static init(key, currencies){
+    static init(key, currencies) {
         return new DataBaseExchangesApi(key, currencies)
     }
 

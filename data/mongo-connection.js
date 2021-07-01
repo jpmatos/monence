@@ -11,7 +11,7 @@ class MongoConnection {
     }
 
     getConnect() {
-        if(this.connect)
+        if (this.connect)
             return this.connect
 
         return this.connect = MongoClient.connect(this.connectionString,

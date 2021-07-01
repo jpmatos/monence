@@ -1,24 +1,22 @@
-import React from 'react'
+import {FormControl, InputLabel, NativeSelect, TableCell, TextField} from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import {withStyles} from "@material-ui/core/styles";
-import {UserContext} from "../context/default/UserContext";
-import {CalendarContext} from "../context/default/CalendarContext";
-import {InviteContext} from "../context/default/InviteContext";
-import Avatar from "@material-ui/core/Avatar";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import {FormControl, FormHelperText, InputLabel, NativeSelect, TableCell, TextField} from "@material-ui/core";
-import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
-import IconButton from "@material-ui/core/IconButton";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import PromptConfirm from "../components/PromptConfirm";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 import axios from "axios";
+import React from 'react'
+import PromptConfirm from "../components/PromptConfirm";
+import {CalendarContext} from "../context/default/CalendarContext";
+import {InviteContext} from "../context/default/InviteContext";
+import {UserContext} from "../context/default/UserContext";
 
 const useStyles = (theme => ({
     large: {

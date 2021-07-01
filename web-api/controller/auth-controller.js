@@ -1,5 +1,4 @@
-
-class AuthController{
+class AuthController {
     constructor(userService) {
         this.userService = userService
     }
@@ -8,7 +7,7 @@ class AuthController{
         return new AuthController(userService)
     }
 
-    verifyNewUser(req, res, next){
+    verifyNewUser(req, res, next) {
         const userId = req.user.id
         const name = req.user.displayName
         const emails = req.user.emails[0].value

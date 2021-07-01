@@ -51,7 +51,7 @@ class DataBaseInviteMock {
 
     getInviteeId(inviteId) {
         const invite = this.invites.find(invite => invite.id === inviteId)
-        if(!invite)
+        if (!invite)
             return null
 
         return Promise.resolve({
@@ -61,7 +61,7 @@ class DataBaseInviteMock {
 
     getInviterId(inviteId) {
         const invite = this.invites.find(invite => invite.id === inviteId)
-        if(!invite)
+        if (!invite)
             return null
 
         return Promise.resolve({
@@ -71,7 +71,7 @@ class DataBaseInviteMock {
 
     deleteInvite(inviteId) {
         const invite = this.invites.find(invite => invite.id === inviteId)
-        if(!invite)
+        if (!invite)
             return null
 
         const res = Object.assign({}, invite)

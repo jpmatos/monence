@@ -1,14 +1,14 @@
+import {FormControlLabel, Switch} from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import moment from "moment";
 import React from 'react';
 
 import {ResponsiveContainer} from 'recharts';
-import {CalendarContext} from "../context/default/CalendarContext";
-import Grid from "@material-ui/core/Grid";
-import moment from "moment";
-import FloatingActionButton from "../components/FloatingActionButton";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
 import CustomAreaChart from "../components/CustomAreaChart";
-import {FormControl, FormControlLabel, Switch} from "@material-ui/core";
+import FloatingActionButton from "../components/FloatingActionButton";
+import {CalendarContext} from "../context/default/CalendarContext";
 
 class MyForecast extends React.Component {
 
@@ -113,7 +113,7 @@ class MyForecast extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevState.items !== null && JSON.stringify(prevState.items) !== JSON.stringify(this.context.items)){
+        if (prevState.items !== null && JSON.stringify(prevState.items) !== JSON.stringify(this.context.items)) {
             this.updateStateValues(this.context.calendarDate)
             this.updateStateYearValues(this.context.calendarDate)
             this.setState({
