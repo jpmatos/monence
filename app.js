@@ -78,6 +78,14 @@ passport.use(new GoogleStrategy({
 
 //Express Setup
 const app = express()
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}
+if(process.env.SAVE_SESSION_IN_DB === 'true')
+    sessionOptions.store = MongoStore.create({ clientPromise: mongoConnection.getConnect() })
+
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -85,12 +93,7 @@ app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(webpackMiddleware(webpack(webpackConfig)))
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ clientPromise: mongoConnection.getConnect() })
-}))
+app.use(session(sessionOptions))
 app.use(passport.initialize());
 app.use(passport.session());
 
