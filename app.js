@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const session = require('express-session')
+const MongoStore = require('connect-mongo');
 const dotenv = require('dotenv');
 
 //Load env variables
@@ -87,8 +88,9 @@ app.use(webpackMiddleware(webpack(webpackConfig)))
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
-}));
+    saveUninitialized: true,
+    store: MongoStore.create({ clientPromise: mongoConnection.getConnect() })
+}))
 app.use(passport.initialize());
 app.use(passport.session());
 

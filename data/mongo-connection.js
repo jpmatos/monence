@@ -22,6 +22,7 @@ class MongoConnection {
             .then(client => {
                 this.client = client
                 this.db = client.db(this.index)
+                return client
             })
     }
 
