@@ -1,7 +1,8 @@
 {
-  "name": "my-webpack-project",
+  "name": "monence",
+  "description": "Monence Project",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "start": "node ./bin/www",
     "build": "webpack --mode=production",
@@ -60,7 +61,10 @@
     "@babel/preset-react": "^7.14.5",
     "babel-loader": "^8.2.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "webpack-cli": "^4.7.2"
   },
-  "description": "My webpack project"
+  "engines": {
+    "node": "16.x"
+  }
 }
