@@ -1,6 +1,5 @@
 const success = require("../object/success");
 
-// /auth/...
 function authWebApi(router, authController, passport) {
 
     router.get('/google',

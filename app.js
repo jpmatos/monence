@@ -87,6 +87,14 @@ const sessionOptions = {
 if(process.env.SAVE_SESSION_IN_DB === 'true')
     sessionOptions.store = MongoStore.create({ clientPromise: mongoConnection.getConnect() })
 
+app.use((req, res, next) => {
+    const host = req.header("host");
+    if (host.match(/^herokuapp\..*/i)) {
+        res.redirect(301, process.env.HOST_URL);
+    } else {
+        next();
+    }
+})
 app.use(secure)
 app.use(logger('dev'))
 app.use(express.json())
