@@ -78,7 +78,7 @@ const SocketBinder = (props) => {
     }
 
     React.useEffect(() => {
-        const socket = socketIOClient(process.env.REACT_APP_SOCKET_ENDPOINT)
+        const socket = socketIOClient()
         setSocket(socket)
 
         const register = {
