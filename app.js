@@ -8,11 +8,12 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const session = require('express-session')
-const MongoStore = require('connect-mongo');
-const dotenv = require('dotenv');
+const secure = require('ssl-express-www')
+const MongoStore = require('connect-mongo')
+const dotenv = require('dotenv')
 
 //Load env variables
-dotenv.config();
+dotenv.config()
 
 //Project Files
 const mongoConnection = require('./data/mongo-connection').init(process.env.CONNECTION_STRING, process.env.MONGO_INDEX)
@@ -59,11 +60,11 @@ const inviteRoutes = require('./web-api/invite-web-api')
 
 //Passport setup
 passport.serializeUser(function (user, done) {
-    done(null, user);
-});
+    done(null, user)
+})
 passport.deserializeUser(function (obj, done) {
-    done(null, obj);
-});
+    done(null, obj)
+})
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -86,6 +87,7 @@ const sessionOptions = {
 if(process.env.SAVE_SESSION_IN_DB === 'true')
     sessionOptions.store = MongoStore.create({ clientPromise: mongoConnection.getConnect() })
 
+app.use(secure)
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -94,8 +96,8 @@ app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(webpackMiddleware(webpack(webpackConfig)))
 app.use(session(sessionOptions))
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Routes
 app.use('/calendar', calendarRoutes(express.Router(), calendarController))

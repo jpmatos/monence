@@ -63,6 +63,7 @@
     "short-uuid": "^4.2.0",
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
+    "ssl-express-www": "^3.0.8",
     "style-loader": "^3.0.0",
     "webpack": "^5.42.0",
     "webpack-cli": "^4.7.2",
