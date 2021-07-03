@@ -89,7 +89,9 @@ if(process.env.SAVE_SESSION_IN_DB === 'true')
 
 app.use((req, res, next) => {
     const host = req.header("host");
+    console.log("HOST: " + host)
     if (host.match(/^herokuapp\..*/i)) {
+        console.log("--REDIRECTING--")
         res.redirect(301, process.env.HOST_URL);
     } else {
         next();
