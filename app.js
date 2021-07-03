@@ -44,6 +44,7 @@ else
 
 const socketManager = require('./service/sockets/socket-manager').init()
 const catchError = require('./middleware/catch-error')
+const herokuRedirect = require("./middleware/heroku-redirect");
 const webpackConfig = require('./webpack.config.js')
 
 const calendarService = require('./service/calendar-service').init(dbCalendar, dbUser, dbExchanges, socketManager)
@@ -87,14 +88,7 @@ const sessionOptions = {
 if(process.env.SAVE_SESSION_IN_DB === 'true')
     sessionOptions.store = MongoStore.create({ clientPromise: mongoConnection.getConnect() })
 
-app.use((req, res, next) => {
-    const host = req.header("host");
-    if (host.match(/.+\.herokuapp\..+/)) {
-        res.redirect(301, process.env.HOST_URL);
-    } else {
-        next();
-    }
-})
+app.use(herokuRedirect)
 app.use(secure)
 app.use(logger('dev'))
 app.use(express.json())
