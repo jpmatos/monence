@@ -32,10 +32,10 @@ class InviteService {
                 const calendar = res[2]
 
                 if (!calendar || !roleCheck.isOwner(calendar, userId))
-                    return Promise.reject(error(404, 'Calendar Not Found'))
+                    return Promise.reject(error(404, 'Calendar not found'))
 
                 if (!invitee)
-                    return Promise.reject(error(404, 'User Not Found'))
+                    return Promise.reject(error(404, 'User not found'))
 
                 invite.id = uuid.generate()
                 invite.inviteeId = invitee.id
@@ -61,7 +61,7 @@ class InviteService {
         return this.dbCalendar.getCalendarOwner(calendarId)
             .then(calendar => {
                 if (!calendar || !roleCheck.isOwner(calendar, userId))
-                    return Promise.reject(error(404, 'Calendar Not Found'))
+                    return Promise.reject(error(404, 'Calendar not found'))
 
                 return this.dbInvite.getSent(calendarId)
             })
@@ -74,13 +74,13 @@ class InviteService {
                 return this.dbInvite.getInviteeId(inviteId, session)
                     .then(invite => {
                         if (!invite || !roleCheck.isSame(userId, invite.inviteeId))
-                            return Promise.reject(error(404, 'Invite Not Found'))
+                            return Promise.reject(error(404, 'Invite not found'))
 
                         return this.dbInvite.deleteInvite(inviteId, session)
                     })
                     .then(invite => {
                         if (!invite)
-                            return Promise.reject(error(404, 'Invite Not Found'))
+                            return Promise.reject(error(404, 'Invite not found'))
 
                         const participating = {
                             'calendarId': invite.calendarId,
@@ -131,13 +131,13 @@ class InviteService {
         return this.dbInvite.getInviterId(inviteId)
             .then(invite => {
                 if (!invite || !roleCheck.isSame(userId, invite.inviterId))
-                    return Promise.reject(error(404, 'Invite Not Found'))
+                    return Promise.reject(error(404, 'Invite not found'))
 
                 return this.dbInvite.deleteInvite(inviteId)
             })
             .then(invite => {
                 if (!invite)
-                    return Promise.reject(error(404, 'Invite Not Found'))
+                    return Promise.reject(error(404, 'Invite not found'))
 
                 return invite
             })
@@ -152,13 +152,13 @@ class InviteService {
         return this.dbInvite.getInviteeId(inviteId)
             .then(invite => {
                 if (!invite || !roleCheck.isSame(userId, invite.inviteeId))
-                    return Promise.reject(error(404, 'Invite Not Found'))
+                    return Promise.reject(error(404, 'Invite not found'))
 
                 return this.dbInvite.deleteInvite(inviteId)
             })
             .then(invite => {
                 if (!invite)
-                    return Promise.reject(error(404, 'Invite Not Found'))
+                    return Promise.reject(error(404, 'Invite not found'))
 
                 return invite
             })

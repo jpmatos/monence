@@ -39,7 +39,7 @@ class UserService {
         return this.dbUser.getUser(userId)
             .then(user => {
                 if (!user)
-                    return Promise.reject(error(404, 'User Not Found'))
+                    return Promise.reject(error(404, 'User not found'))
                 return user
             })
     }

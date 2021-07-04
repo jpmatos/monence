@@ -150,9 +150,11 @@ class App extends React.Component {
     handleDrawer = () => {
         this.setState({open: !this.state.open})
     }
+
     handleDrawerOpen = () => {
         this.setState({open: true})
     }
+
     handleDrawerClose = () => {
         this.setState({open: false})
     }
@@ -160,6 +162,7 @@ class App extends React.Component {
     handleCloseSnack = () => {
         this.setState({isSnackOpen: false})
     }
+
     sendSuccessSnack = (message) => {
         this.sendSnack(message, 'success')
     }
@@ -168,6 +171,20 @@ class App extends React.Component {
         this.setState({
             selected: value
         })
+    }
+
+    buildTitle = () => {
+        let title = `Monence - ${this.context.calendar.name}`
+        let location = ''
+
+        const split = window.location.href.split('#')
+        if(split.length > 1) {
+            location = split[1].split('?')[0].replace(/\//g, '')
+            location = location.charAt(0).toUpperCase() + location.slice(1)
+            location = ' - ' + location
+        }
+
+        return title + location
     }
 
     sendErrorSnack = (message, err) => {
@@ -217,7 +234,7 @@ class App extends React.Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant='h6' noWrap>
-                            {`Monence - ${this.context.calendar.name}`}
+                            {this.buildTitle()}
                         </Typography>
                         {/*<Typography variant='h6' className={classes.calendarName} noWrap>*/}
                         {/*    {this.context.calendar.name}*/}
