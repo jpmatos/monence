@@ -1,0 +1,99 @@
+{
+	"info": {
+		"_postman_id": "5f2d5fdc-d8c6-45fb-b766-ffb5037cad6f",
+		"name": "MonenceCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Calendar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"calendarId\", jsonData.body.id)",
+							"",
+							"pm.test('Should return inserted calendar.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.name).to.eql(req.name)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"TestCalendar\",\n    \"currency\": \"EUR\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/user/calendars",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"user",
+						"calendars"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Calendar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should return calendar.\", function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.name).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.currency).to.eql(\"EUR\")",
+							"    pm.expect(res.body.id).to.eql(pm.environment.get(\"calendarId\"))",
+							"    pm.expect(res.body.share).to.eql(\"Personal\")",
+							"    pm.expect(res.body.single).to.be.a('array')",
+							"    pm.expect(res.body.recurrent).to.be.a('array')",
+							"    pm.expect(res.body.budget).to.be.a('array')",
+							"    pm.expect(res.body.participants).to.be.a('array')",
+							"    pm.expect(res.body.owner.ownerId).to.eql(\"testuserid12300000000\")",
+							"    pm.expect(res.body.owner.name).to.eql(\"Test User\")",
+							"    pm.expect(res.body.owner.email).to.eql(\"test.user@gmail.com\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

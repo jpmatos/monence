@@ -1,8 +1,7 @@
 const error = require('../object/error')
 
 function checkAuth(req, res, next) {
-    // if (process.env.REQUIRES_AUTH === 'true') {
-    if (true) { //Ignore REQUIRES_AUTH for now
+    if (process.env.REQUIRES_AUTH === 'true') {
         if (req.isAuthenticated())
             next()
         else {
@@ -10,8 +9,13 @@ function checkAuth(req, res, next) {
         }
     } else {
         if (req.user === undefined) {
-            req.user = {}
-            req.user.id = req.header('id')
+            req.user = {
+                'isAuthenticated': true,
+                'id': 'testuserid12300000000',
+                'name': 'Test User',
+                'email': 'test.user@gmail.com',
+                'photo': 'testphoto.png'
+            }
         }
         next()
     }
