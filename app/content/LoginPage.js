@@ -1,4 +1,4 @@
-import {NativeSelect} from "@material-ui/core";
+import {Card, NativeSelect} from "@material-ui/core";
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,6 +11,7 @@ import React from 'react';
 import GoogleButton from "react-google-button";
 import {UserContext} from "../context/default/UserContext";
 import Background from '../img/calculator.jpg'
+import ReactLogo from '../img/monence.svg'
 
 function Copyright() {
     return (
@@ -51,6 +52,10 @@ const useStyles = (theme => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    logo: {
+        width: '150px',
+        backgroundSize: '150px'
+    }
 }));
 
 class LoginPage extends React.Component {
@@ -103,11 +108,15 @@ class LoginPage extends React.Component {
                       justify="center"
                       alignItems="center">
                     <div className={classes.paper}>
-                        <Box mb={2}>
-                            <Typography variant="h4">
-                                Monence
-                            </Typography>
-                        </Box>
+                        <Grid
+                            container
+                            direction="column"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Box mb={5} mr={5}>
+                            <img src={ReactLogo} alt="React Logo" width="400px"/>
+                            </Box>
                         {this.props.needsCalendar ?
                             <React.Fragment>
                                 <Box mb={2}>
@@ -144,7 +153,7 @@ class LoginPage extends React.Component {
                                     </Button>
                                 </Grid>
                             </React.Fragment> :
-                            <form className={classes.form} noValidate>
+                            <React.Fragment>
                                 <GoogleButton onClick={(e) => {
                                     e.preventDefault();
                                     window.location.href = '/auth/google';
@@ -152,7 +161,8 @@ class LoginPage extends React.Component {
                                 <Box mt={5}>
                                     <Copyright/>
                                 </Box>
-                            </form>}
+                            </React.Fragment>}
+                        </Grid>
                     </div>
                 </Grid>
             </Grid>
