@@ -14,15 +14,15 @@ function inviteWebApi(router, inviteController) {
         return inviteController.getSent(req, res, next)
     })
 
-    router.put('/invite/:inviteId/accept', (req, res, next) => {
+    router.put('/invite/:inviteId/accept', checkAuth, (req, res, next) => {
         return inviteController.acceptInvite(req, res, next)
     })
 
-    router.delete('/invite/:inviteId', (req, res, next) => {
+    router.delete('/invite/:inviteId', checkAuth, (req, res, next) => {
         return inviteController.deleteInvite(req, res, next)
     })
 
-    router.delete('/invite/:inviteId/decline', (req, res, next) => {
+    router.delete('/invite/:inviteId/decline', checkAuth, (req, res, next) => {
         return inviteController.declineInvite(req, res, next)
     })
 

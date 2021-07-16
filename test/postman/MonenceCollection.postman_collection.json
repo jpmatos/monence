@@ -94,6 +94,1050 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Participants",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should return participants.\", function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body).to.be.a('array')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/participants",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"participants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item Single",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"itemSingleId\", jsonData.body.id)",
+							"",
+							"pm.test('Should post a single item.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.title).to.eql(\"Test Single Item\")",
+							"    pm.expect(res.body.start).to.eql(\"2021-05-14T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(20.55)",
+							"    pm.expect(res.body.type).to.eql(\"expense\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"title\": \"Test Single Item\",\n        \"start\": \"2021-05-14T00:00:00.000Z\",\n        \"value\": 20.55,\n        \"type\": \"expense\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/item/single",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"item",
+						"single"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item Single",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should update a single item.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.title).to.eql(\"Test Single Item\")",
+							"    pm.expect(res.body.start).to.eql(\"2021-05-14T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(25.22)",
+							"    pm.expect(res.body.type).to.eql(\"expense\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"value\": 25.22\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/item/single/{{itemSingleId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"item",
+						"single",
+						"{{itemSingleId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item Single",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should delete a single item.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.title).to.eql(\"Test Single Item\")",
+							"    pm.expect(res.body.start).to.eql(\"2021-05-14T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(25.22)",
+							"    pm.expect(res.body.type).to.eql(\"expense\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/item/single/{{itemSingleId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"item",
+						"single",
+						"{{itemSingleId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item Recurrent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"itemRecurrentId\", jsonData.body.id)",
+							"",
+							"pm.test('Should post a recurrent item.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.title).to.eql(\"Test Recurrent Item\")",
+							"    pm.expect(res.body.start).to.eql(\"2021-05-14T00:00:00.000Z\")",
+							"    pm.expect(res.body.end).to.eql(\"2021-05-21T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(20.55)",
+							"    pm.expect(res.body.type).to.eql(\"expense\")",
+							"    pm.expect(res.body.recurrencyPeriod).to.eql(\"week\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"title\": \"Test Recurrent Item\",\n        \"start\": \"2021-05-14T00:00:00.000Z\",\n        \"end\": \"2021-05-21T00:00:00.000Z\",\n        \"value\": 20.55,\n        \"type\": \"expense\",\n        \"recurrencyPeriod\": \"week\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/item/recurrent",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"item",
+						"recurrent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item Recurrent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should update a recurrent item.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.title).to.eql(\"Test Recurrent Item\")",
+							"    pm.expect(res.body.start).to.eql(\"2021-05-14T00:00:00.000Z\")",
+							"    pm.expect(res.body.end).to.eql(\"2021-05-21T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(25.22)",
+							"    pm.expect(res.body.type).to.eql(\"expense\")",
+							"    pm.expect(res.body.recurrencyPeriod).to.eql(\"week\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"value\": 25.22\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/item/recurrent/{{itemRecurrentId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"item",
+						"recurrent",
+						"{{itemRecurrentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Item Recurrent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should delete a recurrent item.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.title).to.eql(\"Test Recurrent Item\")",
+							"    pm.expect(res.body.start).to.eql(\"2021-05-14T00:00:00.000Z\")",
+							"    pm.expect(res.body.end).to.eql(\"2021-05-21T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(25.22)",
+							"    pm.expect(res.body.type).to.eql(\"expense\")",
+							"    pm.expect(res.body.recurrencyPeriod).to.eql(\"week\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/item/recurrent/{{itemRecurrentId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"item",
+						"recurrent",
+						"{{itemRecurrentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Budget",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"budgetId\", jsonData.body.id)",
+							"",
+							"pm.test('Should post a budget.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.date).to.eql(\"2021-05-01T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(200.00)",
+							"    pm.expect(res.body.period).to.eql(\"week\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"date\": \"2021-05-01T00:00:00.000Z\",\n    \"value\": 200.00,\n    \"period\": \"week\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/budget",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"budget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Budget",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should update a budget.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.date).to.eql(\"2021-05-01T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(250.00)",
+							"    pm.expect(res.body.period).to.eql(\"week\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"value\": 250.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/budget/{{budgetId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"budget",
+						"{{budgetId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Budget",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should delete a budget.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.date).to.eql(\"2021-05-01T00:00:00.000Z\")",
+							"    pm.expect(res.body.value).to.eql(250.00)",
+							"    pm.expect(res.body.period).to.eql(\"week\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/budget/{{budgetId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"budget",
+						"{{budgetId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Share",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should share a calendar.\", function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.share).to.eql(\"Shared\")",
+							"    pm.expect(res.body.participants).to.be.a('array')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/share",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"share"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"inviteId\", jsonData.body.id)",
+							"",
+							"pm.test('Should invite a user.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.inviteeId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.inviterId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.inviterName).to.eql(\"Test User\")",
+							"    pm.expect(res.body.inviteeName).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.inviteeEmail).to.eql(\"test.user2@gmail.com\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"calendarId\": \"{{calendarId}}\",\n  \"email\": \"test.user2@gmail.com\",\n  \"role\": \"Viewer\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should delete a invite.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.inviteeId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.inviterId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.inviterName).to.eql(\"Test User\")",
+							"    pm.expect(res.body.inviteeName).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.inviteeEmail).to.eql(\"test.user2@gmail.com\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite/{{inviteId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite",
+						"{{inviteId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"inviteId\", jsonData.body.id)",
+							"postman.setEnvironmentVariable(\"user2Id\", jsonData.body.inviteeId)",
+							"",
+							"pm.test('Should invite a user.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.inviteeId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.inviterId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.inviterName).to.eql(\"Test User\")",
+							"    pm.expect(res.body.inviteeName).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.inviteeEmail).to.eql(\"test.user2@gmail.com\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"calendarId\": \"{{calendarId}}\",\n  \"email\": \"test.user2@gmail.com\",\n  \"role\": \"Viewer\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite Decline",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should decline an invite.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.inviteeId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.inviterId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.inviterName).to.eql(\"Test User\")",
+							"    pm.expect(res.body.inviteeName).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.inviteeEmail).to.eql(\"test.user2@gmail.com\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "altTestUser",
+						"value": "true",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite/{{inviteId}}/decline",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite",
+						"{{inviteId}}",
+						"decline"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"inviteId\", jsonData.body.id)",
+							"postman.setEnvironmentVariable(\"user2Id\", jsonData.body.inviteeId)",
+							"",
+							"pm.test('Should invite a user.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.inviteeId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.inviterId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.inviterName).to.eql(\"Test User\")",
+							"    pm.expect(res.body.inviteeName).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.inviteeEmail).to.eql(\"test.user2@gmail.com\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"calendarId\": \"{{calendarId}}\",\n  \"email\": \"test.user2@gmail.com\",\n  \"role\": \"Viewer\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite Accept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should accept a invite.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "altTestUser",
+						"value": "true",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite/{{inviteId}}/accept",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite",
+						"{{inviteId}}",
+						"accept"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Calendar Kick",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should kick a user.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.name).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/kick/{{user2Id}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"kick",
+						"{{user2Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = JSON.parse(responseBody)",
+							"postman.setEnvironmentVariable(\"inviteId\", jsonData.body.id)",
+							"",
+							"pm.test('Should invite a user.', function(){",
+							"    const res = pm.response.json()",
+							"    const req = JSON.parse(request.data)",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.inviteeId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.inviterId).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.inviterName).to.eql(\"Test User\")",
+							"    pm.expect(res.body.inviteeName).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.inviteeEmail).to.eql(\"test.user2@gmail.com\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"calendarId\": \"{{calendarId}}\",\n  \"email\": \"test.user2@gmail.com\",\n  \"role\": \"Viewer\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite Accept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should accpet an invite.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.calendarId).to.match((/^[a-zA-Z0-9]{22}$/))",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"    pm.expect(res.body.calendarName).to.eql(\"TestCalendar\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "altTestUser",
+						"value": "true",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_API_URL}}/invite/{{inviteId}}/accept",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"invite",
+						"{{inviteId}}",
+						"accept"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Calendar Leave",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should leave a calendar.', function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.id).to.match((/^[a-zA-Z0-9]{21}$/))",
+							"    pm.expect(res.body.name).to.eql(\"Test User 2\")",
+							"    pm.expect(res.body.email).to.eql(\"test.user2@gmail.com\")",
+							"    pm.expect(res.body.role).to.eql(\"Viewer\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "altTestUser",
+						"value": "true",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/leave",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"leave"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unshare",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should unshare a calendar.\", function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.share).to.eql(\"Personal\")",
+							"    pm.expect(res.body.participants).to.be.a('array')",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}/unshare",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}",
+						"unshare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Calendar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should delete calendar.\", function(){",
+							"    const res = pm.response.json()",
+							"    pm.expect(res.success).to.eql(true)",
+							"    pm.expect(res.body.name).to.eql(\"TestCalendar\")",
+							"    pm.expect(res.body.currency).to.eql(\"EUR\")",
+							"    pm.expect(res.body.id).to.eql(pm.environment.get(\"calendarId\"))",
+							"    pm.expect(res.body.share).to.eql(\"Personal\")",
+							"    pm.expect(res.body.single).to.be.a('array')",
+							"    pm.expect(res.body.recurrent).to.be.a('array')",
+							"    pm.expect(res.body.budget).to.be.a('array')",
+							"    pm.expect(res.body.participants).to.be.a('array')",
+							"    pm.expect(res.body.owner.ownerId).to.eql(\"testuserid12300000000\")",
+							"    pm.expect(res.body.owner.name).to.eql(\"Test User\")",
+							"    pm.expect(res.body.owner.email).to.eql(\"test.user@gmail.com\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASE_API_URL}}/calendar/{{calendarId}}",
+					"host": [
+						"{{BASE_API_URL}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendarId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

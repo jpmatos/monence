@@ -141,7 +141,7 @@ class CalendarService {
     putShare(calendarId, userId) {
         return this.dbCalendar.getCalendar(calendarId)
             .then(calendar => {
-                if (!roleCheck.isOwner(calendar, userId))
+                if (!calendar || !roleCheck.isOwner(calendar, userId))
                     return Promise.reject(error(404, 'Calendar not found'))
 
                 return this.dbCalendar.putCalendarShare(calendarId, 'Shared')
@@ -157,7 +157,7 @@ class CalendarService {
             return () => {
                 return this.dbCalendar.getCalendar(calendarId, session)
                     .then(calendar => {
-                        if (!roleCheck.isOwner(calendar, userId))
+                        if (!calendar || !roleCheck.isOwner(calendar, userId))
                             return Promise.reject(error(404, 'Calendar not found'))
 
                         return this.dbCalendar.getParticipants(calendarId, session)
