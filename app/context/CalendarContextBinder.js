@@ -16,11 +16,15 @@ class CalendarContextBinder extends React.Component {
             calendarDate: null,
             items: null,
             currency: null,
+            activeUsers: [],
             isOwner: this.isOwner,
             canEdit: this.canEdit,
             setCalendarId: this.setCalendarId,
             setCalendarDate: this.setCalendarDate,
             setCurrency: this.setCurrency,
+            setActiveUsers: this.setActiveUsers,
+            handleUserLeft: this.handleUserLeft,
+            handleNewUser: this.handleNewUser,
             offsetCalendarDate: this.offsetCalendarDate,
             handleNewItem: this.handleNewItem,
             handleUpdateItem: this.handleUpdateItem,
@@ -116,6 +120,27 @@ class CalendarContextBinder extends React.Component {
                     calendar: calendar
                 })
             })
+    }
+
+    setActiveUsers = (users) => {
+        this.setState({
+            activeUsers: users
+        })
+    }
+
+    handleUserLeft = (userId) => {
+        const activeUsers = this.state.activeUsers.filter(user => user.id !== userId)
+        this.setState({
+            activeUsers: activeUsers
+        })
+    }
+
+    handleNewUser = (user) => {
+        const activeUsers = this.state.activeUsers
+        activeUsers.push(user)
+        this.setState({
+            activeUsers: activeUsers
+        })
     }
 
     handleRemoveParticipant = (participantId) => {
@@ -241,6 +266,8 @@ class CalendarContextBinder extends React.Component {
         this.setState({
             calendarId: calendarId
         })
+
+        return calendarId
     }
 
     handleDeleteCalendar = () => {

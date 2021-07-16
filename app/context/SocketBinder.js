@@ -13,8 +13,20 @@ const SocketBinder = (props) => {
 
     const [socket, setSocket] = useState(null)
 
-    function changeCalendar(calendarId) {
-        socket.emit('changeCalendar', calendarId)
+    function changeCalendar(calendarId, soc = socket) {
+        soc.emit('changeCalendar', calendarId)
+    }
+
+    function fromActiveUsers(data) {
+        calendarContext.setActiveUsers(data)
+    }
+
+    function fromUserLeft(data) {
+        calendarContext.handleUserLeft(data)
+    }
+
+    function fromNewUser(data) {
+        calendarContext.handleNewUser(data)
     }
 
     function fromNewItem(data) {
@@ -54,9 +66,10 @@ const SocketBinder = (props) => {
         calendarContext.handleChangeRole(data)
     }
 
-    function fromKickedOut(data) {
+    function fromKickedOut(socket, data) {
         userContext.handleLeaveCalendar(data)
-        calendarContext.handleLeaveCalendar()
+        const calendarId = calendarContext.handleLeaveCalendar()
+        changeCalendar(calendarId, socket)
     }
 
     function fromParticipantLeft(data) {
@@ -87,6 +100,9 @@ const SocketBinder = (props) => {
         }
 
         socket.emit('register', register)
+        socket.on('fromActiveUsers', fromActiveUsers)
+        socket.on('fromUserLeft', fromUserLeft)
+        socket.on('fromNewUser', fromNewUser)
         socket.on('fromNewItem', fromNewItem)
         socket.on('fromUpdateItem', fromUpdateItem)
         socket.on('fromDeleteItem', fromDeleteItem)
@@ -96,7 +112,7 @@ const SocketBinder = (props) => {
         socket.on('fromNewInvite', fromNewInvite)
         socket.on('fromAcceptInvite', fromAcceptInvite)
         socket.on('fromChangeRole', fromChangeRole)
-        socket.on('fromKickedOut', fromKickedOut)
+        socket.on('fromKickedOut', fromKickedOut.bind(this, socket))
         socket.on('fromParticipantLeft', fromParticipantLeft)
         socket.on('fromCalendarDeleted', toCalendarDeleted)
         socket.on('fromDeleteInvite', toDeleteInvite)

@@ -1,5 +1,7 @@
-import {MenuItem, Slide, Snackbar} from "@material-ui/core"
+import {MenuItem, Slide, Snackbar, Tooltip} from "@material-ui/core"
 import AppBar from '@material-ui/core/AppBar'
+import Avatar from "@material-ui/core/Avatar";
+import Box from "@material-ui/core/Box";
 import Container from '@material-ui/core/Container'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
@@ -20,7 +22,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import MenuIcon from '@material-ui/icons/Menu'
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import ForecastIcon from '@material-ui/icons/TrendingUp'
-import {Alert} from "@material-ui/lab"
+import {Alert, AvatarGroup} from "@material-ui/lab"
 import clsx from 'clsx'
 import React from 'react'
 import {HashRouter, Link as RouterLink, Redirect, Route, Switch} from 'react-router-dom'
@@ -115,6 +117,16 @@ const useStyles = (theme) => ({
     }
 })
 
+const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        backgroundColor: '#f5f5f9',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 220,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
+    },
+}))(Tooltip);
+
 function ListItemLink(props) {
     const {icon, primary, to, selected, setSelected, listClass} = props
 
@@ -178,7 +190,7 @@ class App extends React.Component {
         let location = ''
 
         const split = window.location.href.split('#')
-        if(split.length > 1) {
+        if (split.length > 1) {
             location = split[1].split('?')[0].replace(/\//g, '')
             location = location.charAt(0).toUpperCase() + location.slice(1)
             location = ' - ' + location
@@ -224,24 +236,40 @@ class App extends React.Component {
                 <AppBar
                     position='fixed'
                     className={clsx(classes.appBar)}>
-                    <Toolbar>
-                        <IconButton
-                            color='inherit'
-                            aria-label='open drawer'
-                            onClick={this.handleDrawer}
-                            edge='start'
-                            className={clsx(classes.menuButton)}>
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant='h6' noWrap>
-                            {this.buildTitle()}
-                        </Typography>
-                        {/*<Typography variant='h6' className={classes.calendarName} noWrap>*/}
-                        {/*    {this.context.calendar.name}*/}
-                        {/*</Typography>*/}
-                        {this.context.calendar.share === 'Shared' ?
-                            <PeopleAltIcon className={classes.padLeft}/> : null}
-                    </Toolbar>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                    >
+                        <Toolbar>
+                            <IconButton
+                                color='inherit'
+                                aria-label='open drawer'
+                                onClick={this.handleDrawer}
+                                edge='start'
+                                className={clsx(classes.menuButton)}>
+                                <MenuIcon/>
+                            </IconButton>
+                            <Typography variant='h6' noWrap>
+                                {this.buildTitle()}
+                            </Typography>
+                            {this.context.calendar.share === 'Shared' ?
+                                <PeopleAltIcon className={classes.padLeft}/> : null}
+                        </Toolbar>
+                        <Box mr={5}>
+                            <AvatarGroup max={4}>
+                                {this.context.activeUsers.map(user => (
+                                    <HtmlTooltip
+                                        title={<Typography variant="h5">{user.name}</Typography>}
+                                        key={user.id}
+                                    >
+                                        <Avatar alt={user.name} src={user.photos}/>
+                                    </HtmlTooltip>
+                                ))}
+                            </AvatarGroup>
+                        </Box>
+                    </Grid>
                 </AppBar>
                 <Drawer
                     variant='permanent'
@@ -345,6 +373,7 @@ class App extends React.Component {
                                     sendSuccessSnack={this.sendSuccessSnack}
                                     sendErrorSnack={this.sendErrorSnack}/> :
                                 <MyShareParticipant
+                                    socket={this.props.socket}
                                     sendSuccessSnack={this.sendSuccessSnack}
                                     sendErrorSnack={this.sendErrorSnack}/>}
                         </Route>

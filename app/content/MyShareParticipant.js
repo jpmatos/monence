@@ -71,7 +71,8 @@ class MyShareParticipant extends React.Component {
     handleConfirmPrompt = () => {
         return axios.put(`/calendar/${this.context.calendarId}/leave`)
             .then(res => {
-                this.context.handleLeaveCalendar()
+                const calendarId = this.context.handleLeaveCalendar()
+                this.props.socket.changeCalendar(calendarId)
             })
             .then(res => {
                 this.props.sendSuccessSnack(`Left calendar`)

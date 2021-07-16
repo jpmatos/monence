@@ -22,14 +22,30 @@ class SocketManager {
             socket.calendarId = data.calendarId
             socket.user = data.user
             this.sockets.push(socket)
+            this.toActiveUsers(socket)
         }
     }
 
     changeCalendar(socket) {
         console.log(`${chalk.blue('Socket On')} - Change Calendar - From ${socket.id}`);
         return (data) => {
+            if (socket.user && socket.calendarId)
+                this.userLeft(socket.calendarId, socket.user.id)
             socket.calendarId = data
+            this.toActiveUsers(socket)
         }
+    }
+
+    toActiveUsers(userSocket) {
+        const users = []
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === userSocket.calendarId) {
+                users.push(socket.user)
+                socket.emit('fromNewUser', userSocket.user)
+            }
+        })
+        if (users.length > 0)
+            userSocket.emit('fromActiveUsers', users)
     }
 
     toNewItem(calendarId, userId, item) {
@@ -155,10 +171,20 @@ class SocketManager {
         }
     }
 
+    userLeft(calendarId, userId) {
+        this.sockets.forEach(socket => {
+            if (socket.calendarId === calendarId) {
+                socket.emit('fromUserLeft', userId)
+            }
+        })
+    }
+
     onDisconnect(socket) {
         return () => {
             console.log(`${chalk.blue('Socket On')} - Client Disconnected - From ${socket.id}`)
             this.sockets = this.sockets.filter(s => s !== socket)
+            if (socket.user && socket.calendarId)
+                this.userLeft(socket.calendarId, socket.user.id)
         }
     }
 }

@@ -16,6 +16,12 @@ export const CalendarContext = React.createContext({
     },
     setCurrency: () => {
     },
+    setActiveUsers: () => {
+    },
+    handleUserLeft: () => {
+    },
+    handleNewUser: () => {
+    },
     offsetCalendarDate: () => {
     },
     handleNewItem: () => {

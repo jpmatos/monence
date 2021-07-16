@@ -1,5 +1,8 @@
+import Box from "@material-ui/core/Box";
 import {blue, green, red, yellow} from '@material-ui/core/colors';
 import Container from '@material-ui/core/Container'
+import Grid from "@material-ui/core/Grid";
+import {withStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import moment from 'moment'
@@ -14,14 +17,25 @@ import {CalendarContext} from '../context/default/CalendarContext'
 moment.locale('en')
 const localizer = momentLocalizer(moment)
 
+const useStyles = (theme) => ({
+    expenses: {
+        color: red[500]
+    },
+    gains: {
+        color: green[500]
+    }
+})
+
 class MyCalendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            items: null,   //Items used to build the data with. Used for updating purposes. Not a source of truth
             isNewItemFDOpen: false,
             isItemFDOpen: false,
-            items: [],
-            currentlyOpenItem: {}
+            currentlyOpenItem: {},
+            totalExpenses: 0,
+            totalGains: 0
         }
     }
 
@@ -89,7 +103,7 @@ class MyCalendar extends React.Component {
     handleDeleteItem = (itemId, recurrency) => {
         axios.delete(`/calendar/${this.context.calendarId}/item/${recurrency}/${itemId}`)
             .then(res => {
-                this.context.handleDeleteItem(itemId)  //TODO Change to response from id
+                this.context.handleDeleteItem(itemId)
                 this.props.sendSuccessSnack(`Deleted item!`)
             })
             .catch(err => {
@@ -125,7 +139,34 @@ class MyCalendar extends React.Component {
         };
     }
 
+    buildTotalValues = (currency = undefined) => {
+        let totalExpenses = 0
+        let totalGains = 0
+        this.context.items.forEach(item => {
+            if(item.type === 'expense')
+                totalExpenses += item.value
+            if(item.type === 'gain')
+                totalGains += item.value
+        })
+        this.setState({
+            items: [...this.context.items],
+            totalExpenses: this.context.buildDisplayValue(totalExpenses, currency),
+            totalGains: this.context.buildDisplayValue(totalGains, currency)
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.items !== null && JSON.stringify(this.context.items) !== JSON.stringify(prevState.items)) {
+            this.buildTotalValues()
+        }
+    }
+
+    componentDidMount() {
+        this.buildTotalValues()
+    }
+
     render() {
+        const {classes} = this.props
         return (
             <Container style={{height: 800}}>
                 <Typography variant='h4' align='center'>
@@ -159,14 +200,36 @@ class MyCalendar extends React.Component {
                     onNavigate={() => {
                     }}
                 />
+                <Grid
+                    container
+                    direction="row"
+                    justify="space-evenly"
+                    alignItems="center"
+                >
+                    <Box display="flex" justifyContent="space-around" mt={2}>
+                        <Typography variant="h4">
+                            {"Total Expenses: "}
+                        </Typography>
+                        <Typography variant="h4" className={classes.expenses}>
+                            {this.state.totalExpenses}
+                        </Typography>
+                    </Box>
+                    <Box display="flex" justifyContent="space-around" mt={2}>
+                        <Typography variant="h4">
+                            {"Total Gains: "}
+                        </Typography>
+                        <Typography variant="h4" className={classes.gains}>
+                            {this.state.totalGains}
+                        </Typography>
+                    </Box>
+                </Grid>
                 <FloatingActionButton date={this.context.calendarDate}
                                       canEdit={this.context.canEdit()}
                                       handleOnClickFAB={this.handleClickOpen}
                                       handleDateChange={this.handleDateChange}
                                       handleAdvanceMonth={this.handleAdvanceMonth}
                                       handleRecedeMonth={this.handleRecedeMonth}
-                                      handleCurrencyChange={() => {
-                                      }}/>
+                                      handleCurrencyChange={this.buildTotalValues}/>
                 <CreateItemFormDialog isOpen={this.state.isNewItemFDOpen} setOpen={this.setNewItemFD}
                                       handleNewItem={this.handleNewItem}/>
                 <ViewItemFormDialog isOpen={this.state.isItemFDOpen} setOpen={this.setItemFD}
@@ -181,4 +244,4 @@ class MyCalendar extends React.Component {
 
 MyCalendar.contextType = CalendarContext
 
-export default MyCalendar
+export default withStyles(useStyles)(MyCalendar)
