@@ -44,15 +44,18 @@ class MyCalendar extends React.Component {
     }
 
     handleAdvanceMonth = (event) => {
-        this.context.offsetCalendarDate(1)
+        const calendarDate = this.context.offsetCalendarDate(1)
+        this.buildTotalValues(undefined, calendarDate)
     }
 
     handleRecedeMonth = (event) => {
-        this.context.offsetCalendarDate(-1)
+        const calendarDate = this.context.offsetCalendarDate(-1)
+        this.buildTotalValues(undefined, calendarDate)
     }
 
     handleDateChange = (event) => {
-        this.context.setCalendarDate(event)
+        const calendarDate = this.context.setCalendarDate(event)
+        this.buildTotalValues(undefined, calendarDate)
     }
 
     onClickItem = (item) => {
@@ -139,13 +142,17 @@ class MyCalendar extends React.Component {
         };
     }
 
-    buildTotalValues = (currency = undefined) => {
+    buildTotalValues = (currency = undefined, calendarDate = this.context.calendarDate) => {
         let totalExpenses = 0
         let totalGains = 0
         this.context.items.forEach(item => {
-            if(item.type === 'expense')
+            if (!moment(item.start).isBetween(
+                moment(calendarDate).startOf('month'),
+                moment(calendarDate).endOf('month')))
+                return
+            if (item.type === 'expense')
                 totalExpenses += item.value
-            if(item.type === 'gain')
+            if (item.type === 'gain')
                 totalGains += item.value
         })
         this.setState({
@@ -156,7 +163,7 @@ class MyCalendar extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevState.items !== null && JSON.stringify(this.context.items) !== JSON.stringify(prevState.items)) {
+        if (prevState.items !== null && JSON.stringify(this.context.items) !== JSON.stringify(prevState.items)) {
             this.buildTotalValues()
         }
     }
